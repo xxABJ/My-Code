@@ -1,0 +1,20 @@
+{
+    "tasks": [
+        {
+            "description": "finish the task manager project",
+            "status": true
+        },
+        {
+            "description": "fix it as while :p",
+            "status": true
+        },
+        {
+            "description": "test kjfdg",
+            "status": false
+        },
+        {
+            "description": "sleep later",
+            "status": true
+        }
+    ]
+}

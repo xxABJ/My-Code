@@ -1,0 +1,22 @@
+{
+    "Monitors": [
+        {
+            "name": "bedroom",
+            "brand": "acer",
+            "size": "27.4",
+            "model": "2017"
+        },
+        {
+            "name": "livingroom",
+            "brand": "msi",
+            "size": "27.4",
+            "model": "2019"
+        },
+        {
+            "name": "ballroom",
+            "brand": "lg",
+            "size": "28.1",
+            "model": "2020"
+        }
+    ]
+}

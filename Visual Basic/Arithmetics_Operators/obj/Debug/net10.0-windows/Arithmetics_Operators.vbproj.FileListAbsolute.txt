@@ -1,0 +1,16 @@
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\bin\Debug\net10.0-windows\Arithmetics_Operators.exe
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\bin\Debug\net10.0-windows\Arithmetics_Operators.deps.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\bin\Debug\net10.0-windows\Arithmetics_Operators.runtimeconfig.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\bin\Debug\net10.0-windows\Arithmetics_Operators.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\bin\Debug\net10.0-windows\Arithmetics_Operators.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.Form1.resources
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.vbproj.GenerateResource.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.AssemblyInfoInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.AssemblyInfo.vb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.vbproj.CoreCompileInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\refint\Arithmetics_Operators.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\Arithmetics_Operators.genruntimeconfig.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Arithmetics_Operators\obj\Debug\net10.0-windows\ref\Arithmetics_Operators.dll

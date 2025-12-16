@@ -1,0 +1,16 @@
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\bin\Debug\net10.0-windows\Variables_Userinputs_Initializers.exe
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\bin\Debug\net10.0-windows\Variables_Userinputs_Initializers.deps.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\bin\Debug\net10.0-windows\Variables_Userinputs_Initializers.runtimeconfig.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\bin\Debug\net10.0-windows\Variables_Userinputs_Initializers.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\bin\Debug\net10.0-windows\Variables_Userinputs_Initializers.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.Form1.resources
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.vbproj.GenerateResource.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.AssemblyInfoInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.AssemblyInfo.vb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.vbproj.CoreCompileInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\refint\Variables_Userinputs_Initializers.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\Variables_Userinputs_Initializers.genruntimeconfig.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\Variables_And_Userinputs\obj\Debug\net10.0-windows\ref\Variables_Userinputs_Initializers.dll

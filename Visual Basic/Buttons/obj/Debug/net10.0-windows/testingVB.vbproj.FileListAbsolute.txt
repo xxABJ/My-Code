@@ -1,0 +1,16 @@
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingVB.exe
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingVB.deps.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingVB.runtimeconfig.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingVB.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingVB.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.vbproj.GenerateResource.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.AssemblyInfoInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.AssemblyInfo.vb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.vbproj.CoreCompileInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\refint\testingVB.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.genruntimeconfig.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\ref\testingVB.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingVB.Form1.resources

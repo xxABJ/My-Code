@@ -1,0 +1,16 @@
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingButtons.exe
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingButtons.deps.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingButtons.runtimeconfig.json
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingButtons.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\bin\Debug\net10.0-windows\testingButtons.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.Form1.resources
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.vbproj.GenerateResource.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.AssemblyInfoInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.AssemblyInfo.vb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.vbproj.CoreCompileInputs.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\refint\testingButtons.dll
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.pdb
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\testingButtons.genruntimeconfig.cache
+C:\Users\Abj\OneDrive\Other\Code\Visual Basic\testingVB\obj\Debug\net10.0-windows\ref\testingButtons.dll

@@ -25,14 +25,6 @@ def edit(event, edit_icon):
     
 
 
-
-
-
-
-    
-    
-
-
 window = tk.Tk()
 window.title("Edible Buttons")
 window.geometry("400x300")

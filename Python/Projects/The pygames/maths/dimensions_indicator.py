@@ -1,10 +1,10 @@
 ## n^y
 
 # Any Number n
-_n = 1
+_n = 3
 
 # To the power of y
-_p = 3
+_p = 5
 
 """
 A module to handle "direction layers" (or dimensions?) and indicators in mathematical calculations by Abj.

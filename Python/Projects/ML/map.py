@@ -5,9 +5,9 @@ def print_maze():
         print(row)
 
 maze = []
-for row in range(10):
+for row in range(20):
       maze.append([])
-      for col in range(10):
+      for col in range(20):
           maze[row].append([])
 
 for col in maze[0]:
@@ -33,6 +33,7 @@ left = "left" #-1
 complete = False
 limit = 0
 while limit < 10*10:
+    #limit += 1
 
     marker = []
     for row, col in [(row, col) for row in range(len(maze)) for col in range (len(maze[0]))][::-1]: # Main-condition
@@ -79,6 +80,7 @@ while limit < 10*10:
                     lefts = -1
                     if direction == up:
                         while direction == up:
+                            limit -= 1
                             print(up)
                             maze[row+ups][col] = ["u"]
                             marker.append((row+ups, col))
@@ -86,12 +88,14 @@ while limit < 10*10:
                             ups -= 1
                             #### NO DIRECTION FOR IF: the choice is |right| , so *Main-condition keeps on running and "var: limit" reachs the limit. ###
                             if direction == left:
-                                print(right, "- breaking up")
+                                limit -= 1
+                                print(left, "- breaking up")
                                 maze[row+ups][col+rights] = ["r"]
                                 marker.append((row+ups, col+rights))
-                                break
+                                break        
                     if direction == right:
                         while direction == right:
+                            limit -= 1
                             print(right)
                             if ups == -1:
                                 maze[row][col+rights] = ["r"]
@@ -103,6 +107,7 @@ while limit < 10*10:
                             rights += 1
                             #### NO DIRECTION FOR IF: the choice is |up| , so *Main-condition keeps on running and "var: limit" reachs the limit. ###
                             if direction == left:
+                                limit -= 1
                                 if ups == -1:
                                     print("(UP) no ups movement- breaking right")
                                     maze[row+ups][col+rights] = ["u"]
@@ -239,10 +244,15 @@ while limit < 10*10:
 
         #print(marker)
         #marker = []
-        
+        print("(before filling) limit loop:", limit)
         if len(maze[row][col]) == 0:
-            maze[row][col] = ["."]
+            maze[row][col] = [""]
             #print(". added")
+        else:
+            limit += 1
+        print(" (filling) limit loop:", limit)
+    
+    print(" -- -- limit loop:", limit)
 
 print()
 print_maze()

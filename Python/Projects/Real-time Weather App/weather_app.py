@@ -22,7 +22,7 @@ class WeatherAPI:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Weather API by Abj :p")
-        self.window.configure(background= 'lightblue')
+        self.window.configure(background= WeatherAPI.background)
         self.tkUI()
         
 

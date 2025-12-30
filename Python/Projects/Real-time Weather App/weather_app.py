@@ -1,10 +1,10 @@
-# Api is from: 
-# openweathermap.org
+# API is from:
+# • openweathermap.org
 
 # Requirements:
-# PYTHON LANGUAGE
-# terminal~ pip install tkinter
-# terminal~ pip install requests
+# • PYTHON LANGUAGE
+# • terminal~ pip install tkinter
+# • terminal~ pip install requests
 
 import tkinter as tk
 import requests
@@ -19,12 +19,12 @@ class WeatherAPI:
     API_DATA = {}
     background = 'lightblue'
 
+
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Weather API by Abj :p")
         self.window.configure(background= WeatherAPI.background)
         self.tkUI()
-        
 
 
     def tkUI(self):
@@ -42,11 +42,13 @@ class WeatherAPI:
 
                         self.weatherdescription_label_var.set("")
                         self.weathertemperature_label.configure(font= 'calibri 1')
-                
+
+
                 def api_data(city, api_key):
                     url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
                     response = requests.get(url)
                     return response.json()
+
 
                 def exception_handler(weather_connectivity):
                     match int(weather_connectivity):
@@ -69,9 +71,11 @@ class WeatherAPI:
                             self.weathertemperature_label_var.set(f"Error {weather_connectivity}: ?")
                             self.weathertemperature_label.configure(font= 'calibri 18', foreground="red")
                 
+
                     if 500 <= int(weather_connectivity) <= 504:
                         self.weathertemperature_label_var.set(f"Error {weather_connectivity}: Please contact API managers!")
                         self.weathertemperature_label.configure(font= 'calibri 18', foreground= 'red')
+              
                 
                 def handler():
 
@@ -123,7 +127,8 @@ class WeatherAPI:
                                 
                                 case 'Tornado':
                                     return '     🌪️'
-                                    
+
+
                         self.weathertemperature_label_var.set(f"{weather_temperature:.1f}°C")
                         self.weathertemperature_label.configure(font= 'calibri 28')
 
@@ -133,10 +138,12 @@ class WeatherAPI:
                         self.weatherdescription_label_var.set(f"{weather_description}")
                         self.weatherdescription_label.configure(font= 'calibri 24')
 
+
                     weather_data = WeatherAPI.API_DATA
                     weather_connectivity = weather_data['cod']
 
-                    if weather_connectivity == 200:
+
+                    if weather_connectivity == 200: # Successful API connection
                         weather = weather_data['weather'][0]
                         weather_temperature = weather_data['main']['temp'] - 272.15        
                         weather_icon_info = weather['main']
@@ -144,14 +151,17 @@ class WeatherAPI:
 
                         var_assigner(weather_temperature, weather_icon_info, weather_description)
 
+
                     else:
                         exception_handler(weather_connectivity)
+
 
                 label_resetter()
                 WeatherAPI.CITY = self.entry_box.get()
                 WeatherAPI.API_DATA = api_data(WeatherAPI.CITY, WeatherAPI.API_KEY)
                 handler()
-            
+
+
             data_handler()
         
 

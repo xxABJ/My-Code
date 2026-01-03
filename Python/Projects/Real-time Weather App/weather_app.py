@@ -14,7 +14,7 @@ from tkinter import ttk
 
 class WeatherAPI:
 
-    API_KEY = '116a4dc8e408d5c2a030d629cc1be768'
+    API_KEY = ''
     CITY = ''
     API_DATA = {}
     background = 'lightblue'

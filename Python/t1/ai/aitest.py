@@ -27,9 +27,9 @@ jump_strength = 15
 font_style = pygame.font.SysFont(None, 50)
 
 # Load images
-background_img = pygame.image.load('c:/Users/gz/OneDrive/Other/Code/Python/t1/ai/background.png')
-player_img = pygame.image.load('c:/Users/gz/OneDrive/Other/Code/Python/t1/ai/player.png')
-platform_img = pygame.image.load('c:/Users/gz/OneDrive/Other/Code/Python/t1/ai/platform.png')
+background_img = pygame.image.load('background.png')
+player_img = pygame.image.load('player.png')
+platform_img = pygame.image.load('platform.png')
 
 class Player:
     def __init__(self):

@@ -1,4 +1,4 @@
-import json, sys
+import json, sys, os
 from datetime import datetime
 
 #LOGFILE_PATH = ""
@@ -6,14 +6,16 @@ from datetime import datetime
 class test:
     def __init__(self):
         pass
+class test2:
+    def __init__(self):
+        pass
 
 class Log:
-    LOGFILE_PATH = "testing_grounds/t1"
+    LOGFILE_PATH = "_logs"
     LOGFILE_NAME = "Logs.json"
     TEMPLATE = {
-        f"logs (Created at {datetime.now()})":{
+        f"_logs.json (Created at {datetime.now()})":{
             "object":{
-                "":[]
             }
         }
     }
@@ -28,20 +30,36 @@ class Log:
         print(f"\nAccessing Log file:\n {Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}")
 
         try:
-            #if Log.LOGFILE_PATH != "":
-            with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
-                print("  Successful.\n")
+            if Log.LOGFILE_PATH != "":
+                with open(f"{Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}", "r") as logfile:
+                    print("  Successful.\n")
+            else:
+                with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
+                    print("  Successful.\n")
+            
 
         except:
             print(f"  Failure.\n\nCreating a new logfile:\n {Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}")
-            with open(f"{Log.LOGFILE_NAME}", "x") as new_logfile:
-                json.dump(Log.TEMPLATE, new_logfile)
+            if Log.LOGFILE_PATH != "":
+                # Create directory if it doesn't exist
+                os.makedirs(Log.LOGFILE_PATH, exist_ok=True)
+                with open(f"{Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}", "x") as new_logfile:
+                    json.dump(Log.TEMPLATE, new_logfile)
                 print("  Successful.\n")
+            else:
+                with open(f"{Log.LOGFILE_NAME}", "x") as new_logfile:
+                    json.dump(Log.TEMPLATE, new_logfile)
+                    print("  Successful.\n")
 
     def load_json(self) -> dict:
-        print("load json")
-        with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
-            return json.load(logfile)
+        #print("load json")
+        if Log.LOGFILE_PATH != "":
+            with open(f"{Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}", "r") as logfile:
+                return json.load(logfile)
+            
+        else:
+            with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
+                return json.load(logfile)
 
 
     def check_object(self, object) -> bool:
@@ -65,19 +83,29 @@ class Log:
                 #print(logfile_data[str(list(logfile_data.keys())[0])]["object"].keys())
                 pass
             else:
-                logfile_data[str(list(logfile_data.keys())[0])]["object"] = {str(type(logfile_object)).replace("<class '__main__.", "").replace("'>", ""): []}
+                logfile_data[str(list(logfile_data.keys())[0])]["object"][str(type(logfile_object)).replace("<class '__main__.", "").replace("'>", "")] = []
 
-            
-            with open(f"{Log.LOGFILE_NAME}", "w") as logfile:
-                json.dump(logfile_data, logfile)
-                print()
-                print(f"logfile:\n{logfile_data}")
-                print("  Successful.\n")
+            if Log.LOGFILE_PATH != "":    
+                with open(f"{Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}", "w") as logfile:    
+                    json.dump(logfile_data, logfile)
+                    print()
+                    print(f"logfile:\n{logfile_data}")
+                    print("  Successful.\n")
+            else:    
+                with open(f"{Log.LOGFILE_NAME}", "w") as logfile:
+                    json.dump(logfile_data, logfile)
+                    print()
+                    print(f"logfile:\n{logfile_data}")
+                    print("  Successful.\n")
         
 
         print(f"\nUpdating Log file:\n {Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}")
-        with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
-            logfile_data = json.load(logfile)
+        if Log.LOGFILE_PATH != "":    
+            with open(f"{Log.LOGFILE_PATH}/{Log.LOGFILE_NAME}", "r") as logfile:
+                logfile_data = json.load(logfile)
+        else:    
+            with open(f"{Log.LOGFILE_NAME}", "r") as logfile:
+                logfile_data = json.load(logfile)
 
 
         update_jsonfile(logfile_data= logfile_data, logfile_object= object)
@@ -94,13 +122,22 @@ print(l1.check_oject_in_logfile)
 print(l1.logfile_data)
 
 testobject1 = test()
-l1 = Log(testobject1)
-print(l1.check_oject_in_logfile)
-print(l1.logfile_data)
+#l1 = Log(testobject1)
+#print(l1.check_oject_in_logfile)
+#print(l1.logfile_data)
+
+testobject2 = test2()
+#l1 = Log(testobject2)
+#print(l1.check_oject_in_logfile)
+#print(l1.logfile_data)
 
 #print(testobject1.__name__)
 
 l1.log_object(testobject1)
+print(l1.check_oject_in_logfile)
+print(l1.logfile_data)
+
+l1.log_object(testobject2)
 print(l1.check_oject_in_logfile)
 print(l1.logfile_data)
 

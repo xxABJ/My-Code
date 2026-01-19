@@ -9,18 +9,21 @@ class test:
     var_class3 = "loool"
 
     def __init__(self):
-        self.one = "one"
-        self.two = 2
-        self.three = 3.098
-        self.four_func = self.tt
+        self.string= "oaaaa"
+        self.int = 2
+        self.float= 33.021213123
+        # TODO: fix callable() in the Log file, to accept multiple func states and make it return that it is a method and if it returns something or not @F
+        self.fanccall = self.tt
+        self.fanccall2 = self.tt1()
+        self.fanccall3 = self.ar3()
     
     def tt(self):
         a = []
         return a
-    def tt1():
-        pass
+    def tt1(self):
+        return
     def ar3(self):
-        pass
+        return
 
 
 class test2:
@@ -46,7 +49,7 @@ class Log:
         #for self_arg, value in super().__init__():
         #    attribute = setattr(self_arg, value)
         #    self.class_attributes.append(str(attribute))
-        print(self.object)
+        print(f"self.object.__name__: {self.object}")
 
 
         self.default_logfile_path = "_logs"
@@ -59,33 +62,109 @@ class Log:
     # TODO: Other specific checks ?
     def object_extraction(self, object):
         
-        print(object.__dir__())
+
+        #print(object.__dir__())
+        print(f"\n\nattribute & funcs:")
         ll = []
         for word in object.__dir__():
             if not "__" in word:
                 ll.append(word)
-        print(f"\nattribute & funcs:\n{ll}\n")
+        print(f"{ll}\n")
         #print(f"\natribute list:\n{list(object.)}")
         #print(f"\natribute list:\n{list(object.__static_attributes__)}")
         
-        
+
+
         print(f"\natribute list:")
-        
-        default = 10
+        longest_attribute_length = 0
+        longest_value_length = 0
+        longest_float_concantenation_length = 1
         for attribute in list(object.__static_attributes__):
-            length = default-(len(attribute) + 5)
-            if length < default:
-                length = default
-            #print(length)
+            
+            
+            if not callable(getattr(object, attribute)):
+                #longest attribute_length setter
+                accountingfor_selfandpoint_in_attribute_variable = 5
+                new_attribute_length = (len(attribute) + accountingfor_selfandpoint_in_attribute_variable)
+                if new_attribute_length > longest_attribute_length:
+                    longest_attribute_length = new_attribute_length
+                
+
+                #longest value_length setter
+                new_value_length = len(str(getattr(object, attribute)))
+                if new_value_length > longest_value_length:
+                    longest_value_length = new_value_length
+
+
+                #longest float_concatenation_length setter
+                floaat = ""
+                for key, value in enumerate(str(getattr(object, attribute))):
+                    floaat += value
+                # Check if the string can be converted to a number
+                try: # float or int @F
+                    new_float_concantenation_length = len(str(int(float(floaat))))
+                    if new_float_concantenation_length > longest_float_concantenation_length:
+                        longest_float_concantenation_length = new_float_concantenation_length
+                except ValueError: # strings
+                    # Skip conversion for non-numeric strings
+                    pass
+                #if new_float_concantenation_length > longest_float_concantenation_length:
+                #    longest_float_concantenation_length = new_float_concantenation_length
+
+
+            else:
+                # attribute is a func
+                pass
+
+
+        # Acheiving synamic formating spaces & printing back in terimal !
+        for attribute in list(object.__static_attributes__): 
+            
+            
+            accountingfor_decimalpoint = 1
+            accountingfor_floatdecimalplaces = 0
+            accountingfor_selfandpoint_in_attribute_variable = 5
+
+
+            attribute_length = (len(attribute) + accountingfor_selfandpoint_in_attribute_variable)
+            value_length = len(str(getattr(object, attribute)))
+            
+            
+            # TODO: wtf is this, try to calculate better -.-
+            if type(getattr(object, attribute)) == float:
+                accountingfor_floatdecimalplaces = (len(str(getattr(object, attribute))) - longest_float_concantenation_length - accountingfor_decimalpoint)
+                formatting_spacing = (longest_attribute_length + value_length - accountingfor_floatdecimalplaces) - value_length + (longest_value_length - value_length) + (longest_attribute_length - attribute_length) + accountingfor_floatdecimalplaces
+            
+            
+            # TODO: wtf is this, try to calculate better -.-
+            elif type(getattr(object, attribute)) == int:
+                formatting_spacing_old = (longest_attribute_length - value_length)
+                formatting_spacing = ((longest_attribute_length - value_length) + (longest_attribute_length - formatting_spacing_old)) + (longest_value_length - value_length) + (longest_attribute_length - attribute_length)
+
+            
+            # TODO: wtf is this, try to calculate better -.-
+            else:
+                formatting_spacing_old = (longest_attribute_length - value_length) + accountingfor_decimalpoint
+                formatting_spacing_new = (longest_attribute_length - value_length) + (longest_attribute_length - formatting_spacing_old)
+                formatting_spacing = (formatting_spacing_new + (accountingfor_floatdecimalplaces + accountingfor_decimalpoint + value_length)) - (longest_attribute_length - formatting_spacing_new) - value_length + (longest_value_length - value_length) + (longest_attribute_length - attribute_length) + accountingfor_decimalpoint
+            
+
+            #print(f"longest_float_number_concantenation_length: {longest_float_concantenation_length}")
+            #print(f"formatting_spacing: {formatting_spacing}")
+            #print(f"longest_attribute_length: {longest_attribute_length}")
+            #print(f"longest_value_length: {longest_value_length}")
+            #print(f"value_length: {value_length}")
+
+
+            # TODO: Try to add dynamic formatting spaces :') @F
             if callable(getattr(object, attribute)):
                 #print("callable")
                 #print(getattr(object, attribute))
                 #print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f' -> Type {str(type(getattr(object, attribute))): >5}'}")
-                
-                
                 object_as_str = str(type(object)).replace("<class '__main__.", "").replace("'>", "")
                 func_as_str = ""
                 func_lenth = 0
+
 
                 remove_beginning = str(getattr(object, attribute)).replace("<bound method ", "")
                 replace_name_of_object = remove_beginning.replace(object_as_str, "")
@@ -94,31 +173,35 @@ class Log:
                 #print(replace_name_of_object)
                 
 
-
                 for key, value in enumerate(replace_name_of_object):
                     if value != " ":
                         func_as_str += value
                         func_lenth += 1
                     else:
                         break
-                #print(func_as_str)
-                if func_lenth+6 > default:
-                    default = 30
-                
-                print(f"self.{attribute} = {"self"+func_as_str+"()": >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >5}'}")
+
+
+                #print(f"func_as_str: {func_as_str}")
+                #print(f"func_lenth+6: {func_lenth+6}")
+                print(f"self.{attribute} = {"self"+func_as_str+"()": >{func_lenth+6}}{f'-> Type {str(type(getattr(object, attribute))): >{15}}'}")
+                #print()
                 continue
 
+            else:
+                #print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >{15}}'}")
+                print(f"self.{attribute} = {"": <{formatting_spacing}}{str(getattr(object, attribute))}{f'-> Type {str(type(getattr(object, attribute))): >{15}}'}")
             
-            #attribute.isdigit()
-            print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >5}'}")
 
 
+
+
+        print(f"\n\nfuncs:")
         funcs = []
         cl = list(object.__static_attributes__)
         for func in ll:
             if func not in cl:
                 funcs.append(func)
-        print(f"\nfuncs:\n{funcs}")
+        print(f"{funcs}\n\n")
 
 
     def json_file(self):
@@ -246,9 +329,9 @@ log1 = Log(t)
 #log1.object = t
 #log1.log_object()
 
-print(t.one)
-print(t.two)
-print(t.three)
+#print(t.one)
+#print(t.two0)
+#print(t.three)
 
 #print(log1.object.__dir__())
 #ll = []

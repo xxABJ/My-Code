@@ -12,9 +12,11 @@ class test:
         self.one = "one"
         self.two = 2
         self.three = 3.098
+        self.four_func = self.tt
     
     def tt(self):
-        pass
+        a = []
+        return a
     def tt1():
         pass
     def ar3(self):
@@ -38,7 +40,7 @@ class Log:
 
 
     def __init__(self, obj= None):
-        self.object = obj
+        self.object = self.object_extraction(obj)
         self.class_attributes = []
         #print(f"super().__init__(): {super().__init__()}")
         #for self_arg, value in super().__init__():
@@ -52,6 +54,71 @@ class Log:
         self.json_file()
         self.logfile_data = self.load_json()
         self.check_oject_in_logfile = self.check_object(obj)
+
+    # TODO: Check for cls. ?
+    # TODO: Other specific checks ?
+    def object_extraction(self, object):
+        
+        print(object.__dir__())
+        ll = []
+        for word in object.__dir__():
+            if not "__" in word:
+                ll.append(word)
+        print(f"\nattribute & funcs:\n{ll}\n")
+        #print(f"\natribute list:\n{list(object.)}")
+        #print(f"\natribute list:\n{list(object.__static_attributes__)}")
+        
+        
+        print(f"\natribute list:")
+        
+        default = 10
+        for attribute in list(object.__static_attributes__):
+            length = default-(len(attribute) + 5)
+            if length < default:
+                length = default
+            #print(length)
+            if callable(getattr(object, attribute)):
+                #print("callable")
+                #print(getattr(object, attribute))
+                #print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f' -> Type {str(type(getattr(object, attribute))): >5}'}")
+                
+                
+                object_as_str = str(type(object)).replace("<class '__main__.", "").replace("'>", "")
+                func_as_str = ""
+                func_lenth = 0
+
+                remove_beginning = str(getattr(object, attribute)).replace("<bound method ", "")
+                replace_name_of_object = remove_beginning.replace(object_as_str, "")
+                #replace_object_with_self = remove_beginning.replace(object_as_str, "self")
+                #print(remove_beginning)
+                #print(replace_name_of_object)
+                
+
+
+                for key, value in enumerate(replace_name_of_object):
+                    if value != " ":
+                        func_as_str += value
+                        func_lenth += 1
+                    else:
+                        break
+                #print(func_as_str)
+                if func_lenth+6 > default:
+                    default = 30
+                
+                print(f"self.{attribute} = {"self"+func_as_str+"()": >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >5}'}")
+                continue
+
+            
+            #attribute.isdigit()
+            print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >5}'}")
+
+
+        funcs = []
+        cl = list(object.__static_attributes__)
+        for func in ll:
+            if func not in cl:
+                funcs.append(func)
+        print(f"\nfuncs:\n{funcs}")
 
 
     def json_file(self):
@@ -175,26 +242,29 @@ class Log:
 #print(help(dir(test)))
 
 t = test()
-log1 = Log()
-log1.object = t
+log1 = Log(t)
+#log1.object = t
 #log1.log_object()
 
+print(t.one)
+print(t.two)
+print(t.three)
 
-print(log1.object.__dir__())
-ll = []
-for word in log1.object.__dir__():
-    if not "__" in word:
-        ll.append(word)
-print(f"\nattribute & funcs:\n{ll}")
-
-print(f"\natribute list:\n{list(log1.object.__static_attributes__)}")
-
-funcs = []
-cl = list(log1.object.__static_attributes__)
-for func in ll:
-    if func not in cl:
-        funcs.append(func)
-print(f"\nfuncs:\n{funcs}")
+#print(log1.object.__dir__())
+#ll = []
+#for word in log1.object.__dir__():
+#    if not "__" in word:
+#        ll.append(word)
+#print(f"\nattribute & funcs:\n{ll}")
+#
+#print(f"\natribute list:\n{list(log1.object.__static_attributes__)}")
+#
+#funcs = []
+#cl = list(log1.object.__static_attributes__)
+#for func in ll:
+#    if func not in cl:
+#        funcs.append(func)
+#print(f"\nfuncs:\n{funcs}")
 
 # TODO: extract attributes, funcs & class variables from the sorted log1.object.__dir__() list!
 

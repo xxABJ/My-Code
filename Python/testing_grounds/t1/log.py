@@ -13,9 +13,9 @@ class test:
         self.int = 2
         self.float= 33.021213123
         # TODO: fix callable() in the Log file, to accept multiple func states and make it return that it is a method and if it returns something or not @F
-        self.fanccall = self.tt
-        self.fanccall2 = self.tt1()
-        self.fanccall3 = self.ar3()
+        self.fanccall = self.tt()
+        self.fanccall2 = self.tt1
+        self.fanccall3 = self.ar3
     
     def tt(self):
         a = []
@@ -23,7 +23,7 @@ class test:
     def tt1(self):
         return
     def ar3(self):
-        return
+        pass
 
 
 class test2:
@@ -117,7 +117,7 @@ class Log:
                 pass
 
 
-        # Acheiving synamic formating spaces & printing back in terimal !
+        # Acheiving dynamic formating spaces & printing back in terimal !
         for attribute in list(object.__static_attributes__): 
             
             
@@ -155,6 +155,18 @@ class Log:
             #print(f"longest_value_length: {longest_value_length}")
             #print(f"value_length: {value_length}")
 
+            try:
+                if "()" not in str(getattr(object, attribute)):
+                    print("it's a called func")
+                #new_value = str(getattr(object, attribute)).replace("()", "")
+                #print(f"{str(getattr(object, attribute))}\n{new_value}")
+                #if callable(getattr(object, new_attribute)):
+                #    print("It's a called func")
+                #print(f"{getattr(object, attribute[:])}")
+                #print(f"test:\n{callable(getattr(object, attribute[:-2]))}")
+            except:
+                print("It's not a called func")
+
 
             # TODO: Try to add dynamic formatting spaces :') @F
             if callable(getattr(object, attribute)):
@@ -165,7 +177,7 @@ class Log:
                 func_as_str = ""
                 func_lenth = 0
 
-
+                #print(f"test: \nobject{str(type(object))}\n{object_as_str}\n{str(getattr(object, attribute))}")
                 remove_beginning = str(getattr(object, attribute)).replace("<bound method ", "")
                 replace_name_of_object = remove_beginning.replace(object_as_str, "")
                 #replace_object_with_self = remove_beginning.replace(object_as_str, "self")
@@ -189,8 +201,7 @@ class Log:
 
             else:
                 #print(f"self.{attribute} = {str(getattr(object, attribute)): >{length}}{f'  -> Type {str(type(getattr(object, attribute))): >{15}}'}")
-                print(f"self.{attribute} = {"": <{formatting_spacing}}{str(getattr(object, attribute))}{f'-> Type {str(type(getattr(object, attribute))): >{15}}'}")
-            
+                print(f"self.{attribute} = {"": <{formatting_spacing}}{str(getattr(object, attribute))}{f'-> Type {str(type(getattr(object, attribute))):.>20}'}")
 
 
 
@@ -327,7 +338,7 @@ class Log:
 t = test()
 log1 = Log(t)
 #log1.object = t
-#log1.log_object()
+#log1.log_object(t)
 
 #print(t.one)
 #print(t.two0)

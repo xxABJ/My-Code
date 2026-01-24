@@ -165,9 +165,11 @@ def create_summary_table(cls, obj):
     for attr_name in sorted(all_assignments.keys()):
         info = all_assignments[attr_name][0]  # First occurrence
         exists = attr_name in actual_attrs
-        value = repr(actual_attrs[attr_name])[:18] if exists else 'N/A'
-        exists_marker = '✅' if exists else '⚠️'
+        value = repr(actual_attrs[attr_name])[:] if exists else 'N/A'
+        exists_marker = '✅' if exists else '⚠️ '
         
+        print(f"value: {value}")
+
         type_display = {
             'direct_value': 'Direct Value',
             'function_call': 'Function Call',
@@ -201,7 +203,7 @@ def create_summary_table(cls, obj):
         print(f"\n{type_display}:")
         print("-" * 80)
         for attr_name, info, exists in items:
-            exists_marker = '✅' if exists else '⚠️'
+            exists_marker = '✅' if exists else '⚠️ '
             print(f"  {exists_marker} self.{attr_name:<18} = {info['expression']:<35} [{info['method']}]")
 
 

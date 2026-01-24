@@ -155,17 +155,17 @@ class Log:
             #print(f"longest_value_length: {longest_value_length}")
             #print(f"value_length: {value_length}")
 
-            try:
-                if "()" not in str(getattr(object, attribute)):
-                    print("it's a called func")
-                #new_value = str(getattr(object, attribute)).replace("()", "")
-                #print(f"{str(getattr(object, attribute))}\n{new_value}")
-                #if callable(getattr(object, new_attribute)):
-                #    print("It's a called func")
-                #print(f"{getattr(object, attribute[:])}")
-                #print(f"test:\n{callable(getattr(object, attribute[:-2]))}")
-            except:
-                print("It's not a called func")
+            #try:
+            #    if "()" not in str(getattr(object, attribute)):
+            #        print("it's a called func")
+            #    #new_value = str(getattr(object, attribute)).replace("()", "")
+            #    #print(f"{str(getattr(object, attribute))}\n{new_value}")
+            #    #if callable(getattr(object, new_attribute)):
+            #    #    print("It's a called func")
+            #    #print(f"{getattr(object, attribute[:])}")
+            #    #print(f"test:\n{callable(getattr(object, attribute[:-2]))}")
+            #except:
+            #    print("It's not a called func")
 
 
             # TODO: Try to add dynamic formatting spaces :') @F

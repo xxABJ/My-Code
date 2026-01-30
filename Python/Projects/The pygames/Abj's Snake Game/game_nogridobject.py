@@ -26,35 +26,6 @@ class Game:
     clock = pygame.time.Clock()
 
 
-    class Apple:
-
-
-        BODY_PART_INSERT_QUEUE = []
-
-        
-        def __init__(self):
-
-            self.apple_pos = self.spawn_apple()
-
-
-            self.apple_rect = pygame.Rect((self.apple_pos.x * Game.CELL_SIZE), ((self.apple_pos.y * Game.CELL_SIZE) - Game.SCORE_SURFACE_SIZE),
-                                          Game.CELL_SIZE - 0, Game.CELL_SIZE - 0)
-            
-
-        def spawn_apple(self):
-
-            apple_pos = pygame.Vector2(random.randint(1, Game.CELL_ROW - 1),
-                                       random.randint(1, Game.CELL_ROW - 1))
-            
-
-            return apple_pos
-
-
-        def draw(self, canvas):
-
-            pygame.draw.rect(canvas, Game.COLOURS['red'], self.apple_rect, 0, 40)
-
-
     class Snake:
 
 
@@ -64,9 +35,9 @@ class Game:
             
 
             self.snake_body_pos = [     # Starting size: 3
-                pygame.Vector2(10, 12), 
+                pygame.Vector2(10, 10), # Head
                 pygame.Vector2(10, 11),
-                pygame.Vector2(10, 10)  # Head
+                pygame.Vector2(10, 12)
             ]
 
 
@@ -92,11 +63,11 @@ class Game:
                 if not self.moving_direction == 'right':
 
                     whole_body = self.snake_body_pos[:]
-                    head_pos = whole_body[-1]; new_head_pos = pygame.Vector2(head_pos.x - 1, head_pos.y)
-                    whole_body.append(new_head_pos)
+                    head_pos = whole_body[0]; new_head_pos = pygame.Vector2(head_pos.x - 1, head_pos.y)
+                    whole_body.insert(0, new_head_pos)
 
 
-                    self.snake_body_pos = whole_body[1:]
+                    self.snake_body_pos = whole_body[:len(whole_body)-1]
                     self.moving_direction = "left"
 
 
@@ -105,11 +76,11 @@ class Game:
                 if not self.moving_direction == 'left':
 
                     whole_body = self.snake_body_pos[:]
-                    head_pos = whole_body[-1]; new_head_pos = pygame.Vector2(head_pos.x + 1, head_pos.y)
-                    whole_body.append(new_head_pos)
+                    head_pos = whole_body[0]; new_head_pos = pygame.Vector2(head_pos.x + 1, head_pos.y)
+                    whole_body.insert(0, new_head_pos)
 
 
-                    self.snake_body_pos = whole_body[1:]
+                    self.snake_body_pos = whole_body[:len(whole_body)-1]
                     self.moving_direction = "right"
 
 
@@ -118,11 +89,11 @@ class Game:
                 if not self.moving_direction == 'down':
 
                     whole_body = self.snake_body_pos[:]
-                    head_pos = whole_body[-1]; new_head_pos = pygame.Vector2(head_pos.x, head_pos.y - 1)
-                    whole_body.append(new_head_pos)
+                    head_pos = whole_body[0]; new_head_pos = pygame.Vector2(head_pos.x, head_pos.y - 1)
+                    whole_body.insert(0, new_head_pos)
 
 
-                    self.snake_body_pos = whole_body[1:]
+                    self.snake_body_pos = whole_body[:len(whole_body)-1]
                     self.moving_direction = "up"
 
 
@@ -131,18 +102,18 @@ class Game:
                 if not self.moving_direction == 'up':
 
                     whole_body = self.snake_body_pos[:]
-                    head_pos = whole_body[-1]; new_head_pos = pygame.Vector2(head_pos.x, head_pos.y + 1)
-                    whole_body.append(new_head_pos)
+                    head_pos = whole_body[0]; new_head_pos = pygame.Vector2(head_pos.x, head_pos.y + 1)
+                    whole_body.insert(0, new_head_pos)
 
 
-                    self.snake_body_pos = whole_body[1:]
+                    self.snake_body_pos = whole_body[:len(whole_body)-1]
                     self.moving_direction = "down"
 
 
             def default_moving():
 
                 whole_body = self.snake_body_pos[:]
-                head_pos = whole_body[-1]
+                head_pos = whole_body[0]
 
 
                 match self.moving_direction:
@@ -159,8 +130,8 @@ class Game:
                         new_head_pos = pygame.Vector2(head_pos.x, head_pos.y + 1)
 
 
-                whole_body.append(new_head_pos)
-                self.snake_body_pos = whole_body[1:]
+                whole_body.insert(0, new_head_pos)
+                self.snake_body_pos = whole_body[:len(whole_body)-1]
 
             
             match direction:
@@ -182,6 +153,44 @@ class Game:
                         
                 case 'default':
                     default_moving()
+    
+    
+    class Apple:
+
+
+        BODY_PART_INSERT_QUEUE = []
+
+        
+        def __init__(self, snake_obj):
+
+            self.snake = snake_obj
+
+
+            self.apple_pos = self.spawn_apple()
+
+
+            self.apple_rect = pygame.Rect((self.apple_pos.x * Game.CELL_SIZE), ((self.apple_pos.y * Game.CELL_SIZE) - Game.SCORE_SURFACE_SIZE),
+                                          Game.CELL_SIZE - 0, Game.CELL_SIZE - 0)
+            
+
+        def spawn_apple(self):
+
+            apple_pos = pygame.Vector2(random.randint(1, Game.CELL_ROW - 1),
+                                       random.randint(1, Game.CELL_ROW - 1))
+            
+
+            while apple_pos in self.snake.snake_body_pos:
+
+                apple_pos = pygame.Vector2(random.randint(1, Game.CELL_ROW - 1), 
+                                           random.randint(1, Game.CELL_ROW - 1))
+                
+
+            return apple_pos
+
+
+        def draw(self, canvas):
+
+            pygame.draw.rect(canvas, Game.COLOURS['red'], self.apple_rect, 0, 40)
 
 
     class GameLogic:
@@ -196,11 +205,7 @@ class Game:
 
             self.apple = apple_obj
             self.snake = snake_obj
-            
-            
             self.screen = screen
-            self.screen_width = self.screen.get_width()
-            self.screen_height = self.screen.get_height()
 
 
             self.game_logic_endgame_reason = ""
@@ -252,14 +257,14 @@ class Game:
 
         def wall_collision(self):
 
-            snake_head_pos = (self.snake.snake_body_pos[-1].x * Game.CELL_SIZE, self.snake.snake_body_pos[-1].y * Game.CELL_SIZE)
+            snake_head_pos = (self.snake.snake_body_pos[0].x * Game.CELL_SIZE, self.snake.snake_body_pos[0].y * Game.CELL_SIZE)
 
 
-            if (snake_head_pos[0] < 0) or (snake_head_pos[0] == self.screen_width):
+            if (snake_head_pos[0] < 0) or (snake_head_pos[0] == self.screen.get_width()):
                 return True
             
 
-            elif (snake_head_pos[1] < Game.SCORE_SURFACE_SIZE) or (snake_head_pos[1] == self.screen_height):
+            elif (snake_head_pos[1] < Game.SCORE_SURFACE_SIZE) or (snake_head_pos[1] == self.screen.get_height()):
                 return True
 
 
@@ -268,7 +273,7 @@ class Game:
 
         def self_collision(self):
 
-            snake_head_pos = (self.snake.snake_body_pos[-1].x, self.snake.snake_body_pos[-1].y)
+            snake_head_pos = (self.snake.snake_body_pos[0].x, self.snake.snake_body_pos[0].y)
 
 
             body_parts = []
@@ -287,7 +292,7 @@ class Game:
         def eat_collision(self):
             
             apple_pos = self.apple.apple_pos
-            snake_head_pos = (self.snake.snake_body_pos[-1].x, self.snake.snake_body_pos[-1].y)
+            snake_head_pos = (self.snake.snake_body_pos[0].x, self.snake.snake_body_pos[0].y)
 
 
             if apple_pos == snake_head_pos:
@@ -299,31 +304,33 @@ class Game:
 
         def eat_apple(self):
 
-            def eat_queue_inserter(lastbody, direction):
+            def eat_queue_inserter(apple_pos, direction):
 
                 match direction:
                     case 'left': 
-                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
-
+                        insert_body_part = pygame.Vector2(apple_pos.x + 1, apple_pos.y)
+                
                     case 'right':
-                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
-
+                        insert_body_part = pygame.Vector2(apple_pos.x - 1, apple_pos.y)
+                
                     case 'up':
-                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
-
+                        insert_body_part = pygame.Vector2(apple_pos.x, apple_pos.y + 1)
+                
                     case 'down':
-                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
+                        insert_body_part = pygame.Vector2(apple_pos.x, apple_pos.y - 1)
                     
                 
                 Game.GameLogic.APPLE_POSITIONS.append(self.apple.apple_pos)
                 Game.Apple.BODY_PART_INSERT_QUEUE.append(insert_body_part)
 
 
-            whole_body = self.snake.snake_body_pos[:]
-            last_body_part = whole_body[-1]
+            apple_pos = self.apple.apple_pos
+            direction = self.snake.moving_direction
 
 
-            eat_queue_inserter(last_body_part, self.snake.moving_direction)
+            eat_queue_inserter(apple_pos, direction)
+
+
             Game.GameLogic.SCORE += 1
 
 
@@ -340,13 +347,22 @@ class Game:
                     del Game.Apple.BODY_PART_INSERT_QUEUE[0]
 
 
-                    wholebody.insert(0, newbody)
+                    wholebody.append(newbody)
                     self.snake.snake_body_pos = wholebody
-                    print(f"\nnew bodypart added\n  in the game! ({Game.GameLogic.SCORE})")
+
+
+                    if len(Game.Apple.BODY_PART_INSERT_QUEUE) < 1:
+
+                        print(f"\nNew bodypart added\n  in the game! ({Game.GameLogic.SCORE})")
+                    
+
+                    else:
+                        
+                        print(f"\nNew bodypart added\n  in the game! ({(Game.GameLogic.SCORE) - (len(Game.Apple.BODY_PART_INSERT_QUEUE))})")
 
 
             whole_body = self.snake.snake_body_pos[:]
-            last_body_part = whole_body[0]
+            last_body_part = whole_body[-1]
 
 
             previous_apple_positions = Game.GameLogic.APPLE_POSITIONS
@@ -411,8 +427,8 @@ class Game:
         self.canvas = Game.CANVAS
         
 
-        self.apple = Game.Apple()
         self.snake = Game.Snake()
+        self.apple = Game.Apple(self.snake)
         
 
         self.game_logic = Game.GameLogic(self.apple, self.snake, self.screen)
@@ -445,18 +461,22 @@ class Game:
                     if event.type == pygame.KEYDOWN:
                     
                         if event.key == pygame.K_LEFT:
+
                             self.snake.snake_movements('left')
                     
 
                         if event.key == pygame.K_RIGHT:
+
                             self.snake.snake_movements('right')
                     
 
                         if event.key == pygame.K_UP:
+
                             self.snake.snake_movements('up')
                     
                     
                         if event.key == pygame.K_DOWN:
+
                             self.snake.snake_movements('down')
 
 
@@ -467,7 +487,7 @@ class Game:
                 if self.game_logic.eat_collision():
 
                     self.game_logic.eat_apple()
-                    self.apple = Game.Apple()
+                    self.apple = Game.Apple(self.snake)
 
 
                 elif self.game_logic.wall_collision():

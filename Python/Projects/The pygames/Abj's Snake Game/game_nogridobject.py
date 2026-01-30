@@ -28,6 +28,9 @@ class Game:
 
     class Apple:
 
+
+        BODY_PART_INSERT_QUEUE = []
+
         
         def __init__(self):
 
@@ -183,28 +186,31 @@ class Game:
 
     class GameLogic:
 
-
+        
         SCORE = 0
-        rect_placement_adjuster = 2
+        RECT_PLACEMENT_ADJUSTER = 2
+        APPLE_POSITIONS = []
 
 
         def __init__(self, apple_obj, snake_obj, screen):
 
-            self.apple_pos = apple_obj.apple_pos
-            self.snake_body_pos = snake_obj.snake_body_pos
+            self.apple = apple_obj
+            self.snake = snake_obj
             
             
             self.screen = screen
             self.screen_width = self.screen.get_width()
             self.screen_height = self.screen.get_height()
 
-            
+
+            self.game_logic_endgame_reason = ""
             self.stop = False
 
 
             self.score_font = pygame.font.Font(None, (Game.SCORE_SURFACE_SIZE - (Game.SCORE_SURFACE_SIZE//10)))
             self.end_font1 = pygame.font.Font(None, 80)
             self.end_font2 = pygame.font.Font(None, 50)
+            self.end_reason_font = pygame.font.Font(None, 35)
 
 
         def draw(self, canvas):
@@ -246,14 +252,14 @@ class Game:
 
         def wall_collision(self):
 
-            snake_head_pos = (self.snake_body_pos[-1].x * Game.CELL_SIZE, self.snake_body_pos[-1].y * Game.CELL_SIZE)
+            snake_head_pos = (self.snake.snake_body_pos[-1].x * Game.CELL_SIZE, self.snake.snake_body_pos[-1].y * Game.CELL_SIZE)
 
 
-            if (snake_head_pos[0]) < 0 or (snake_head_pos[0]) == self.screen_width:
+            if (snake_head_pos[0] < 0) or (snake_head_pos[0] == self.screen_width):
                 return True
             
 
-            elif snake_head_pos[1] < Game.SCORE_SURFACE_SIZE or snake_head_pos[1] == self.screen_height:
+            elif (snake_head_pos[1] < Game.SCORE_SURFACE_SIZE) or (snake_head_pos[1] == self.screen_height):
                 return True
 
 
@@ -261,13 +267,27 @@ class Game:
             
 
         def self_collision(self):
-            pass
 
+            snake_head_pos = (self.snake.snake_body_pos[-1].x, self.snake.snake_body_pos[-1].y)
+
+
+            body_parts = []
+            for body_part in self.snake.snake_body_pos:
+                body_part = (body_part.x, body_part.y)
+                body_parts.append(body_part)
+
+
+            if body_parts.count(snake_head_pos) != 1:
+                return True
+            
+
+            return False
+            
 
         def eat_collision(self):
             
-            apple_pos = self.apple_pos
-            snake_head_pos = (self.snake_body_pos[-1].x, self.snake_body_pos[-1].y)
+            apple_pos = self.apple.apple_pos
+            snake_head_pos = (self.snake.snake_body_pos[-1].x, self.snake.snake_body_pos[-1].y)
 
 
             if apple_pos == snake_head_pos:
@@ -277,32 +297,68 @@ class Game:
             return False
             
 
-        def eat_apple(self, snake_obj):
+        def eat_apple(self):
 
-            whole_body = self.snake_body_pos[:]
-            new_body = whole_body[-1]
+            def eat_queue_inserter(lastbody, direction):
+
+                match direction:
+                    case 'left': 
+                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
+
+                    case 'right':
+                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
+
+                    case 'up':
+                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
+
+                    case 'down':
+                        insert_body_part = pygame.Vector2(lastbody.x, lastbody.y)
+                    
+                
+                Game.GameLogic.APPLE_POSITIONS.append(self.apple.apple_pos)
+                Game.Apple.BODY_PART_INSERT_QUEUE.append(insert_body_part)
 
 
-            match snake_obj.moving_direction:
-                case 'left':
-                    new_body = pygame.Vector2(new_body.x - 1, new_body.y)
-
-                case 'right':
-                    new_body = pygame.Vector2(new_body.x + 1, new_body.y)
-
-                case 'up':
-                    new_body = pygame.Vector2(new_body.x, new_body.y - 1)
-
-                case 'down':
-                    new_body = pygame.Vector2(new_body.x, new_body.y + 1)
+            whole_body = self.snake.snake_body_pos[:]
+            last_body_part = whole_body[-1]
 
 
-            whole_body.append(new_body)
-            snake_obj.snake_body_pos = whole_body
+            eat_queue_inserter(last_body_part, self.snake.moving_direction)
             Game.GameLogic.SCORE += 1
 
 
-        def end_game(self, canvas):
+        def queue_check(self):
+
+            def snake_body_update(wholebody, lastbody, bodypart_insert_queue, apple_positions):
+
+                newbody = bodypart_queue[0]
+
+
+                if lastbody == apple_positions[0]:
+                    
+                    del Game.GameLogic.APPLE_POSITIONS[0]
+                    del Game.Apple.BODY_PART_INSERT_QUEUE[0]
+
+
+                    wholebody.insert(0, newbody)
+                    self.snake.snake_body_pos = wholebody
+                    print(f"\nnew bodypart added\n  in the game! ({Game.GameLogic.SCORE})")
+
+
+            whole_body = self.snake.snake_body_pos[:]
+            last_body_part = whole_body[0]
+
+
+            previous_apple_positions = Game.GameLogic.APPLE_POSITIONS
+            body_part_insert_queue = Game.Apple.BODY_PART_INSERT_QUEUE
+
+
+            if len(body_part_insert_queue) > 0:
+
+                snake_body_update(whole_body, last_body_part, body_part_insert_queue, previous_apple_positions)
+            
+
+        def end_game(self, canvas, reason = ""):
 
             self.screen.fill('darkblue')
             canvas.fill('darkblue')
@@ -310,12 +366,39 @@ class Game:
 
             end_text1 = "GAME OVER"
             end_text2 = f"Your score is: {str(Game.GameLogic.SCORE)}"
+            
+
             end_surface1 = self.end_font1.render(end_text1, True, Game.COLOURS['white'])
             end_surface2 = self.end_font2.render(end_text2, True, Game.COLOURS['white'])
 
 
-            canvas.blit(end_surface1, ((self.screen_width // 2) - (end_surface1.get_width() // 2), (self.screen_height // 2) - ((end_surface1.get_height() + Game.SCORE_SURFACE_SIZE) // 2) - (200)))
-            canvas.blit(end_surface2, ((self.screen_width // 2) - (end_surface2.get_width() // 2), (self.screen_height // 2) - ((end_surface2.get_height() + Game.SCORE_SURFACE_SIZE) // 2)))
+            canvas.blit(end_surface1, ((self.screen.get_width() // 2) - (end_surface1.get_width() // 2),
+                                       (self.screen.get_height() // 2) - ((end_surface1.get_height() + Game.SCORE_SURFACE_SIZE) // 2) - (200)))
+            
+            canvas.blit(end_surface2, ((self.screen.get_width() // 2) - (end_surface2.get_width() // 2),
+                                       (self.screen.get_height() // 2) - ((end_surface2.get_height() + Game.SCORE_SURFACE_SIZE) // 2)))
+            
+
+            match reason:
+                case "wall":
+                    end_reason = "You hit the wall :p"
+
+                    end_reason_surface = self.end_reason_font.render(end_reason, True, Game.COLOURS['white'])
+
+
+                    canvas.blit(end_reason_surface, ((self.screen.get_width() // 2) - (end_surface2.get_width() // 2) + (25), 
+                                                     (self.screen.get_height() // 2) - ((end_surface2.get_height() + Game.SCORE_SURFACE_SIZE) // 2) + (175)))
+
+                case "self":
+                    end_reason = "You hit yourself :p"
+
+                    end_reason_surface = self.end_reason_font.render(end_reason, True, Game.COLOURS['white'])
+
+
+                    canvas.blit(end_reason_surface, ((self.screen.get_width() // 2) - (end_surface2.get_width() // 2) + (25), 
+                                                     (self.screen.get_height() // 2) - ((end_surface2.get_height() + Game.SCORE_SURFACE_SIZE) // 2) + (175)))
+            
+            
             self.screen.blit(canvas, (0, Game.SCORE_SURFACE_SIZE))
             
 
@@ -360,38 +443,49 @@ class Game:
 
                     # Key inputs
                     if event.type == pygame.KEYDOWN:
-
-
+                    
                         if event.key == pygame.K_LEFT:
                             self.snake.snake_movements('left')
+                    
 
                         if event.key == pygame.K_RIGHT:
                             self.snake.snake_movements('right')
+                    
 
                         if event.key == pygame.K_UP:
                             self.snake.snake_movements('up')
-
+                    
+                    
                         if event.key == pygame.K_DOWN:
                             self.snake.snake_movements('down')
 
 
-                # Game mehcanics  
+                # Game mehcanics
+                self.game_logic.queue_check()                
+
+
                 if self.game_logic.eat_collision():
 
-                    self.game_logic.eat_apple(self.snake)
+                    self.game_logic.eat_apple()
                     self.apple = Game.Apple()
 
 
                 elif self.game_logic.wall_collision():
                     
+                    print("\nwall collision!")
+                    self.game_logic.game_logic_endgame_reason = "wall"
                     self.game_logic.stop = True
                     break
 
 
                 elif self.game_logic.self_collision():
-                    pass
-    
+                    
+                    print("\nself collision!")
+                    self.game_logic.game_logic_endgame_reason = "self"
+                    self.game_logic.stop = True
+                    break
 
+    
                 # Game rendering update
                 self.screen.fill('darkblue')
                 self.canvas.fill(Game.COLOURS['dark_green'])
@@ -420,7 +514,7 @@ class Game:
 
 
             # Game rendering update & Framerate cap
-            self.game_logic.end_game(self.canvas)
+            self.game_logic.end_game(self.canvas, self.game_logic.game_logic_endgame_reason)
             Game.clock.tick(60)
 
 

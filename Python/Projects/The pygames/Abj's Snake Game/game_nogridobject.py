@@ -331,7 +331,7 @@ class Game:
 
             def snake_body_update(wholebody, lastbody, bodypart_insert_queue, apple_positions):
 
-                newbody = bodypart_queue[0]
+                newbody = bodypart_insert_queue[0]
 
 
                 if lastbody == apple_positions[0]:

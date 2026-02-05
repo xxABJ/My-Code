@@ -1,4 +1,4 @@
-import pygame, sys, random, threading
+import pygame, sys, random
 
 class Game:
 
@@ -22,7 +22,7 @@ class Game:
     pygame.init()
     pygame.display.set_caption("Abj's Snake Game (w/ grid obj) :p")
     CANVAS = pygame.Surface((WIDTH, HEIGHT))
-    PLAYING = pygame.USEREVENT; p = pygame.time.set_timer(PLAYING, PLAYING_SPEED)
+    PLAYING = pygame.USEREVENT; pygame.time.set_timer(PLAYING, PLAYING_SPEED)
     clock = pygame.time.Clock()
 
 

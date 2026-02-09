@@ -16,7 +16,7 @@ class Game:
         self.canvas = Settings.CANVAS
         self.tick = pygame.time.set_timer(Settings.PLAYING_UE, Settings.PLAYING_SPEED)
         self.clock = pygame.time.Clock()
-       
+
 
         # Game variables
         self._game_state = ""
@@ -24,25 +24,25 @@ class Game:
 
 
         # Object assignments
-        self.grid = Grid()
-        self.snake = Snake()
-        self.apple = Apple()
+        self.grid = Objects.get_object(self, 'grid')
+        self.apple = Objects.get_object(self, 'apple')
+        self.snake = Objects.get_object(self, 'snake')
 
 
         # Collisions 
-        self.collisions = Collisions(self)
+        self.collisions = Objects.get_object(self, 'collisions')
 
 
         # Rendering
-        self.rendering = Rendering(self)
+        self.rendering = Objects.get_object(self, 'rendering')
 
 
         # Game logic
-        self.gamelogic = GameLogic(self)
+        self.gamelogic = Objects.get_object(self, 'gamelogic')
 
 
     def run(self):
-
+        
         while True:
                 
             for event in pygame.event.get():
@@ -63,9 +63,36 @@ class Game:
             self.rendering.update()
 
 
-    def restart(self):
+    def new_game(self):
+
+        # RESET: Gametick
+        self.tick = pygame.time.set_timer(Settings.PLAYING_UE, Settings.PLAYING_SPEED)
         
-        Game().run()
+        
+        # RESET: Game variables
+        self._game_state = ""
+        self._game_score = 0
+
+
+        # RESET: Object assignments
+        self.grid = Objects.get_object(self, 'grid')
+        self.apple = Objects.get_object(self, 'apple')
+        self.snake = Objects.get_object(self, 'snake')
+
+
+        # RESET: Collisions 
+        self.collisions = Objects.get_object(self, 'collisions')
+
+
+        # RESET: Rendering
+        self.rendering = Objects.get_object(self, 'rendering')
+
+
+        # RESET: Game logic
+        self.gamelogic = Objects.get_object(self, 'gamelogic')
+
+
+        self.set_game_state('start_game')
 
 
     def exit(self, event):

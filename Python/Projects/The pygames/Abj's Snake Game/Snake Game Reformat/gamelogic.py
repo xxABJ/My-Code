@@ -24,6 +24,9 @@ class GameLogic:
         }
 
 
+        self.reset_queue = False
+
+
         self.paused_moving_direction = ""
         self.paused = False
 
@@ -61,6 +64,7 @@ class GameLogic:
         def check_eat_queue():
 
             if not self.apple_positions:
+                
                 return
             
 
@@ -81,13 +85,14 @@ class GameLogic:
                     self.bodypart_insert_queue.pop(0)
 
 
-                    print("New body added!")
-                    print(f" in the game! ({self.game.get_game_score() - len(self.bodypart_insert_queue)})")
+                    print("\nNew body added!")
+                    print(f" in the game! ({self.game.get_game_score() - len(self.bodypart_insert_queue)})\n")
 
 
                 except Exception as e:
 
-                    print('Exception?: {e} how?')
+                    pass
+                    #print('Exception?: {e} how?')
                 
 
         if event.type == Settings.PLAYING_UE:
@@ -97,9 +102,10 @@ class GameLogic:
                 self.game.set_game_state('resume_game')
                 self.start_game()
 
+
             elif self.game.get_game_state() != "":
             
-                print(self.game.snake.moving_direction)
+                #print(self.game.snake.moving_direction)
                 self.move(self.game.snake.moving_direction)
 
 
@@ -125,8 +131,8 @@ class GameLogic:
             if event.type == pygame.KEYDOWN:
             
                 if event.key == pygame.K_r:
-                    print('r')
-                    self.game.set_game_state("restart_game")
+                    
+                    self.restart_game()
 
 
         elif event.type == pygame.KEYDOWN:
@@ -156,6 +162,7 @@ class GameLogic:
                 # Pause
                 if event.key == pygame.K_ESCAPE and not self.paused:
 
+                    print("- PAUSED -")
                     self.paused_moving_direction = direction
                     self.paused = True
 
@@ -168,6 +175,7 @@ class GameLogic:
                 # Unpause
                 if event.key == pygame.K_ESCAPE:
 
+                    print("- RESUMING -")
                     self.paused = False
 
 
@@ -198,7 +206,7 @@ class GameLogic:
 
         elif direction == 'collision':
             
-            pass
+            return
 
 
         else:
@@ -216,6 +224,8 @@ class GameLogic:
 
             self.game.snake.snake_body_pos = snake_full_body
             self.game.snake.moving_direction = direction
+            
+
             self.place_snake()
 
 
@@ -233,6 +243,12 @@ class GameLogic:
 
         self.game.set_game_state('resume_game')
 
+    
+    def restart_game(self):
+
+        print('- RESTARTING -')
+        self.game.set_game_state('restart_game')
+
 
     def end_game(self):
 
@@ -245,7 +261,7 @@ class GameLogic:
 
 
         random_snake_part = pygame.Vector2(random.randint(3, Settings.CELL_ROW - 3), 
-                                           random.randint(10, Settings.CELL_ROW - 3))
+                                        random.randint(10, Settings.CELL_ROW - 3))
         
 
         for part in range(3):
@@ -261,27 +277,22 @@ class GameLogic:
     def place_snake(self):
 
         for vector in self.game.snake.snake_body_pos:
-
-            try:
-
+            
+            if 0 <= vector.x < Settings.CELL_ROW and 0 <= vector.y < Settings.CELL_ROW:
+                
                 self.game.grid.grid[int(vector.x)][int(vector.y)] = Settings.GRIDCELL_SNAKE
-
-
-            except Exception as e:
-
-                print(f"Exception: {e} how?")
 
 
     def create_apple(self):
 
         apple_pos = pygame.Vector2(random.randint(1, Settings.CELL_ROW - 1),
-                                   random.randint(1, Settings.CELL_ROW - 1))
+                                random.randint(1, Settings.CELL_ROW - 1))
         
     
         while self.game.grid.grid[int(apple_pos.x)][int(apple_pos.y)] == Settings.GRIDCELL_SNAKE:
     
             apple_pos = pygame.Vector2(random.randint(1, Settings.CELL_ROW - 1), 
-                                       random.randint(1, Settings.CELL_ROW - 1))
+                                    random.randint(1, Settings.CELL_ROW - 1))
             
     
         self.game.apple.apple_pos = apple_pos

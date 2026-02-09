@@ -12,6 +12,9 @@ class Rendering:
         self.game = game
 
 
+        self.restart_render_done = False
+
+
         self.gamescore_font = pygame.font.Font(None, (Settings.SCORE_SURFACE_SIZE - (Settings.SCORE_SURFACE_SIZE//10)))
         self.start_font1 = pygame.font.Font(None, 80)
         self.start_font2 = pygame.font.Font(None, 50)
@@ -193,8 +196,7 @@ class Rendering:
                 pygame.time.delay(Settings.RESTARTING_SPEED*2)
 
 
-            self.game.set_game_state('start_game')
-            self.game.restart()
+            self.game.new_game()
 
 
         match self.game.get_game_state():

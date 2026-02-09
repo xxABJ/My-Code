@@ -72,10 +72,10 @@ class Settings:
     }
 
 
-from grid import *
-from snake import *
-from apple import *
-from collisions import *
-from rendering import *
-from gamelogic import *
-
+#from grid import *
+#from snake import *
+#from apple import *
+#from collisions import *
+#from rendering import *
+#from gamelogic import *
+from objects import *

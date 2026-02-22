@@ -1,3 +1,7 @@
+from right import Right
+from left import Left
+
+
 import pygame, random
 
 
@@ -12,15 +16,15 @@ class Maze:
         self.available_directions = ["l", "r", "u", "d"]
         self.random_direction = random.choice(self.available_directions)
         
-        
+        # These tuples are based on how grid is being iterated in / how it was created
         self.directions = {
-            'l': pygame.Vector2(-1, 0),
-            'r': pygame.Vector2(1, 0),
-            'u': pygame.Vector2(0, -1),
-            'd': pygame.Vector2(0, 1)
+            'l': (0, -1),
+            'r': (0, 1),
+            'u': (-1, 0),
+            'd': (1, 0)
         }
 
-
+        self.total_assignments = 0
         self.assignments = {
 
         }
@@ -32,395 +36,211 @@ class Maze:
             'leftside': 0,
             'rightside':0
         }
-        #self.topside_score = 0
-        #self.bottomside_score = 0
-        #self.leftside_score = 0
-        #self.rightside_score = 0
-
-
-
 
 
         self.grid = self.create_grid(self.size)
 
 
+        self.right = Right(self)
+        self.left = Left(self)
+
+
+        self.first_direction_completed = False
         self.maze_completed = False
-        self.maze = self.create_maze(self.grid[:])
+        self.maze = self.create_maze(self.grid[:], self.size)
 
 
-    def scanner(growx, gcoly, i_d, size):
-
-
-        #for rows in grid:
-        #
-        #    #if rows == 0 or rows == len(grid)-1:
-        #    #    continue
-        #
-        #    for col in rows:
-        #
-        #        #if col == 0 or col == len(rows)-1:
-        #        #    continue
-        #
-        #        if col == "S":
-        #            choices = ['down', 'right', 'left']
-        #
-        #            if random.choice(choices) == 'down':
-        #
-        #
-        #                #if not self.done:
-        #                x_start_point = grid[grid.index(rows)+1][rows.index(col)]
-        #                y_start_point = rows.index(col)
-        #                # logic for dynamic size setting + logic for alternative size setting when required
-        #                scangrid_size = (len(rows) - rows.index(col))
-        #                scanner(x_start_point, y_start_point, 'down', scangrid_size)
-        #
-        #
-        #            elif random.choice(choices) == 'right':
-        #                start_point = grid[grid.index(rows)][rows.index(col)-1]
-        #
-        #
-        #            elif random.choice(choices) == 'left':
-        #                start_point = grid[grid.index(rows)][rows.index(col)+1]
-
-
-        directions = ['l', 'r', 'u', 'd']
-        
-
-        row_marker = 0
-        col_marker = 0
-        for s_row in range(size):
-
-            for s_col in range(size):
-
-                try:
-
-                    d = random.choice(directions)
-
-                    # Start=down
-                    if i_d == 'down':
-                        
-                        x, y = 1, 0
-
-
-                        if d == 'l':
-
-                            if s_row + row_marker == 0 and s_col == 0:
-                                
-                                grid[x + s_row][y + s_col] = d
-                                continue
-
-
-                            else:
-
-                                if grid[x + s_row][y + s_col-1] != "|":
-
-                                    if grid[x + s_row][y + s_col-1] == 'l':
-                                        
-                                        grid[x + s_row][y + s_col-2] = d
-                                        continue
-
-
-                                    elif grid[x + s_row][y + s_col-1] == 'r' or grid[x + s_row][y + s_col-1] == 'u' or grid[x + s_row][y + s_col-1] == 'd':
-
-                                        continue
-
-
-                                else:
-
-                                    continue
-
-
-                        elif d == 'r':
-
-                            if s_row == 0 and s_col == 0:
-                                
-                                grid[x + s_row][y + s_col] = d
-                                continue
-
-
-                            else:
-
-                                if grid[x + s_row][y + s_col+1] != "|":
-
-                                    if grid[x + s_row][y + s_col-1] == 'r':
-                                        
-                                        grid[x + s_row][y + s_col] = d
-                                        continue
-
-
-                                    elif grid[x + s_row][y + s_col-1] == 'l' or grid[x + s_row][y + s_col-1] == 'u' or grid[x + s_row][y + s_col-1] == 'd':
-                                        
-                                        break
-
-
-                                elif grid[x + s_row][y + s_col+1] == "|":
-
-                                    while d == 'r' or d == 'l':
-
-                                        d = random.choice(directions)
-
-
-                                        if grid[x + s_row-1][y + s_col] == "|" and d == 'u':
-                                            
-                                            d = random.choice(directions)
-                                            continue
-                                        
-                                        
-                                        # intersection inevitable
-                                        # also WHAT ABOUT (S_ROW -2 == an assigned direction) when 'u' is a forced next assignment, because path got cornered :'(( !!!!
-                                        # or solution: go left until finish XD, then execute random walls w/ skipping pathing
-                                        elif grid[x + s_row+1][y + s_col] == "|" and d == 'd':
-                                            
-                                            d = random.choice(directions)
-                                            continue
-
-
-                                        continue
-                                    
-
-                                    grid[x + s_row][y + s_col] = d
-                                    continue
-
-
-                        elif d == 'u':
-
-                            if s_row + row_marker == 0 and s_col == 0:
-                                
-                                while d == 'u':
-                                    
-                                    d = random.choice(directions)
-                                    grid[x + s_row + row_marker][y + s_col] = d
-            
-                                continue
-
-
-                            else:
-
-                                if grid[x + s_row + row_marker][y + s_col-1] != "|":
-
-                                    if grid[x + s_row + row_marker][y + s_col-1] == 'r':
-                                        
-                                        grid[x + s_row + row_marker][y + s_col] = d
-                                        continue
-
-
-                                    elif grid[x + s_row + row_marker][y + s_col-1] == 'l':
-
-                                        if grid[x + s_row + row_marker][y + s_col-2] != "|":
-                                            
-                                            grid[x + s_row + row_marker][y + s_col-2] = d
-                                            continue
-
-                                    
-                                    elif grid[x + s_row + row_marker][y + s_col-1] == 'u':
-                                        
-                                        row_marker -= 1
-                                        
-                                        if grid[x + s_row + row_marker-1][y + s_col-1] != "|":
-                                        
-                                            grid[x + s_row + row_marker][y + s_col-1] == d
-                                            row_marker += 1
-                                            continue
-
-
-                                        elif grid[x + s_row + row_marker][y + s_col-1] != "|":
-                                            grid[x + s_row + row_marker][y + s_col-1] == d
-                                            continue
-
-
-                                        else:
-
-                                            while d == 'u':
-                                                
-                                                d = random.choice(directions)
-                                                if grid[x + s_row][y + s_col-1] == "|" and d == 'l':
-                                                    d = random.choice(directions)
-                                                    continue
-
-                                                elif grid[x + s_row][y + s_col+1] == "|" and d == 'r':
-                                                    d = random.choice(directions)
-                                                    continue
-                                            
-                                            grid[x + s_row + row_marker][y + s_col] = d
-
-                                            row_marker += 1
-                                            continue
-
-
-                                    elif grid[x + s_row + row_marker][y + s_col-1] == 'd':
-
-                                        continue
-
-
-                                else:
-
-                                    continue
-
-
-                        elif d == 'd':
-
-                            if s_row + row_marker == 0 and s_col == 0:
-
-                                grid[x + s_row + row_marker][y + s_col] = d
-                                continue
-
-
-                            else:
-
-                                if grid[x + s_row + row_marker][y + s_col-1] != "|":
-
-                                    if grid[x + s_row + row_marker][y + s_col-1] == 'r':
-                                        
-                                        grid[x + s_row + row_marker][y + s_col] = d
-                                        continue
-
-
-                                    elif grid[x + s_row + row_marker][y + s_col-1] == 'l':
-
-                                        if grid[x + s_row + row_marker][y + s_col-2] != "|":
-                                            
-                                            grid[x + s_row + row_marker][y + s_col-2] = d
-                                            continue
-
-                                    
-                                    elif grid[x + s_row + row_marker][y + s_col-1] == 'd':
-
-                                        row_marker += 1
-                                        
-                                        if grid[x + s_row + row_marker][y + s_col+2] != "|":
-                                        
-                                            grid[x + s_row + row_marker][y + s_col-1] == d
-                                            row_marker += 1
-                                            continue
-
-
-
-
-                    #Start=right
-                    elif i_d == 'right':
-
-                        x, y = 0, 1
-
-                        if d == 'l':
-
-
-                            continue
-
-
-                        elif d == 'r':
-
-
-                            continue
-
-
-                        elif d == 'u':
-
-
-                            continue
-
-
-                        elif d == 'd':
-
-
-                            continue
-
-
-                    
-                    
-                    #Start=left
-                    elif i_d == 'left':
-
-                        x, y = 0, -1
-
-                        if d == 'l':
-
-
-                            continue
-
-
-                        elif d == 'r':
-
-
-                            continue
-
-
-                        elif d == 'u':
-
-
-                            continue
-
-
-                        elif d == 'd':
-
-
-                            continue
-
-
-                except:
-                    continue
-
-                row_marker += 1
-
-
-    def score_assessment(self, choice) -> list:
+    def previous_assignment(self) -> list:
 
         if len(self.assignments) > 0:
 
             last_assignment_key = list(self.assignments.keys())[-1]
             last_assignment_value = list(self.assignments.values())[-1]
-            #pending_assignment = self.grid[last_assignment_value.x + self.directions[choice].x][last_assignment_value.y + self.directions[choice].y]
-            pending_assignment = (last_assignment_value.x + self.directions[choice].x, last_assignment_value.y + self.directions[choice].y)
+            previous_assignment = [last_assignment_key, (last_assignment_value[0], last_assignment_value[1])]
 
 
-            top_side = last_assignment_value.x
-            bottom_side = len(self.grid) - last_assignment_value.x
-            left_side = last_assignment_value.y
-            right_side = len(self.grid) - last_assignment_value.y
-
-
-            self.topside_score = top_side
-            self.bottomside_score = bottom_side
-            self.leftside_score = left_side
-            self.rightside_score = right_side
-
-            return pending_assignment
+            return previous_assignment
         
+
         return False
 
 
-    def create_maze(self, grid):
+    def log_assignments(self, direction, row= None, col= None, previous_pos= False):
+        
+        new_total_assignments = self.total_assignments + 1
 
-        while not self.maze_completed:
 
-            pending_assessment = self.score_assessment(self.random_direction)
+        if previous_pos:
+            
+            row = previous_pos[0]
+            col = previous_pos[1]
+
+            self.assignments[(new_total_assignments, direction)] = tuple(
+                
+                a + b for a, b in zip(
+                    
+                    ( row, col ),
+                    ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
+                    
+                    ))
+        
+        
+        else:
+            
+            
+            self.assignments[(new_total_assignments, direction)] = tuple(
+                
+                a + b for a, b in zip(
+                    
+                    ( row, col ),
+                    ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
+                    
+                    ))
+
+
+        self.total_assignments = new_total_assignments
+
+
+    def score_calculator(self, direction, row= None, col= None, state = ''):
+
+        # Accounting for maze border walls
+        if state == 'first':
+
+            size = self.size
+
+
+            if direction == 'd':
+
+                calculated_scores = {
+                    'topside': row - 1,
+                    'bottomside': (size - 2) - row - 1,
+                    'leftside': col - 1,
+                    'rightside': (size - 2) - col
+                }
             
 
+            elif direction == 'l':
+
+                calculated_scores = {
+                    'topside': row - 1,
+                    'bottomside': (size - 2) - row,
+                    'leftside': col - 2,
+                    'rightside': (size - 2) - col + 1
+                }
+            
+            
+            elif direction == 'r':
+
+                calculated_scores = {
+                    'topside': row - 1,
+                    'bottomside': (size - 2) - row,
+                    'leftside': col,
+                    'rightside': (size - 2) - col - 1
+                }
+
+
+            self.scores = calculated_scores
+
+
+        else:
+            
+            scores = self.scores
+
+
+            if direction == 'd':
+
+                new_topside_score = scores.get('topside') + 1
+                new_bottomside_score = scores.get('bottomside') - 1
+
+
+                self.scores['topside'] = new_topside_score
+                self.scores['bottomside'] = new_bottomside_score
+
+
+            elif direction == 'u':
+
+                new_topside_score = scores.get('topside') - 1
+                new_bottomside_score = scores.get('bottomside') + 1
+
+
+                self.scores['topside'] = new_topside_score
+                self.scores['bottomside'] = new_bottomside_score
+
+
+            elif direction == 'r':
+
+                new_rightside_score = scores.get('rightside') - 1
+                new_leftside_score = scores.get('leftside') + 1
+
+
+                self.scores['rightside'] = new_rightside_score
+                self.scores['leftside'] = new_leftside_score
+
+
+            elif direction == 'l':
+
+                new_rightside_score = scores.get('rightside') + 1
+                new_leftside_score = scores.get('leftside') - 1
+
+
+                self.scores['rightside'] = new_rightside_score
+                self.scores['leftside'] = new_leftside_score     
+
+
+    def change_starting(self, num):
+        
+        for row in range(self.size):
+            
+            if row == 0:
+                continue
+
+            for col in range(self.size):
+
+                if col == 0 or col == self.size - 1:
+                    continue
+
+                self.grid[row][col] = " "
+
+            break
+
+        self.grid[1][num] = "S"
+
+
+    def create_maze(self, grid, size):
+
+        while not self.first_direction_completed:
+
+            previous_assignment = self.previous_assignment()
+            
+
+            self.change_starting(self.size // 2) ### TESTING
             # Assigning the first direction
-            if pending_assessment == False:
+            if previous_assignment == False:
 
-                print(f"\n{"-"*20}\npending_assessment: {pending_assessment}\n")
+                print(f"\n{"-"*20}\nprevious_assignment: {previous_assignment}\n")
 
 
-                for row in range(len(grid)):
+                for row in range(size):
                     
                     # Break after assigning the first direction
                     if len(self.assignments) > 0:
                         
+                        self.first_direction_completed = True
                         break
 
                     
                     # Skip if at horizontal side-border
-                    if row == 0 or row == len(grid) - 1:
+                    if row == 0 or row == size - 1:
                         
                         print(f"row:{row} horizontal side-borders")
                         continue
                     
 
                     print("in")
-                    for col in range(len(grid)):
+                    for col in range(size):
 
                         # Skip if at vertical side-borders
-                        if col == 0 or col == len(grid) - 1:
+                        if col == 0 or col == size - 1:
                             
                             print(f"{" "*5}col:{col} vertical side-borders")
                             continue
@@ -443,7 +263,7 @@ class Maze:
                             if grid[row][col - 1] != "|" and grid[row][col + 1] != "|":
 
                                 #print('can both')
-                                available_directions = ("l", "r", "d")
+                                available_directions = ["l", "r", "d"]
 
 
                             else:
@@ -451,7 +271,7 @@ class Maze:
                                 # Cannot assign to the left
                                 if grid[row][col - 1] == "|":
                                     
-                                    available_directions = ("r", "d")
+                                    available_directions = ["r", "d"]
                                     #available_directions.pop(0)
                                     #print('can not left')
 
@@ -459,39 +279,117 @@ class Maze:
                                 # Cannot assign to the right
                                 elif grid[row][col + 1] == "|":
 
-                                    available_directions = ("l", "d")
+                                    available_directions = ["l", "d"]
                                     #available_directions.pop(1)
                                     #print('can not right')
 
 
                             # Starting point
-                            self.random_direction = random.choice(available_directions)
+                            #self.random_direction = random.choice(available_directions)
+                            self.random_direction = "d" ### TESTING
 
 
-                            # Assigning direction. The vectors ([pygame] .x, .y) below are reversed when indexing, due to the grid's iteration method.
-                            grid[row + int(self.directions[self.random_direction].y)][col + int(self.directions[self.random_direction].x)] = self.random_direction
+                            print(f"assigning: {self.random_direction}")
+                            # Assigning direction. (Opposites due to how it is iterated into)
+                            grid[row + self.directions[self.random_direction][0]][col + self.directions[self.random_direction][1]] = self.random_direction
 
 
                             # Logging assignments
-                            self.assignments[self.random_direction] = tuple(
-                               
-                                a + b for a, b in zip(
-                                    ( row, col ),
-                                    ( (row + int(self.directions[self.random_direction].y) - row, (col + int(self.directions[self.random_direction].x) - col)) )
-                                    
-                                ))
-                            
+                            self.log_assignments(
+
+                                direction= self.random_direction,
+                                row= row,
+                                col= col,
+
+                            )
+
+
+                            # Updating scores
+                            print("\n", "-"*10)
+                            for key, value in self.scores.items():
+                                print(key, value)
+                            self.score_calculator(self.random_direction, row= row, col= col, state= 'first')
+                            print()
+                            for key, value in self.scores.items():
+                                print(key, value)
+                            print("-"*10)
 
                             break
 
 
-                break
-            #else:
-                #self.maze_completed = true
+        #self.random_direction = random.choice(self.available_directions)
+        self.random_direction = "l" ### TESTING
+        
+        
+        # Unable to go 'u' after first direction has been assigned
+        while self.random_direction == 'u' and len(self.assignments == 1):
+    
+            self.random_direction = random.choice(self.available_directions)
+            continue
 
 
+        print(f"\ndirection: {self.random_direction}\n")
+
+        ### TESTING
+        if self.previous_assignment()[0][1] == 'r':
+            print('cant go opposite directions')
+        else:
+            self.left.check()
+
+
+        print()
         self.print_assignments()
         return grid
+
+
+
+    def valid_direction(self, random_direction, previous_assignment):
+        
+        previous_direction = previous_assignment[0][1]
+        previous_pos = previous_assignment[1]
+
+
+        while True:
+
+            if previous_direction == "l":
+                
+                if random_direction == "l" and self.scores.get('leftside') > 0:
+                    
+                    break
+                
+
+                else:
+
+                    if random_direction == "l":
+
+                        if self.scores.get('leftside') == 0:
+                        
+                            available_directions = ['u', 'd']
+                            self.random_direction = random.choice(available_directions)
+                            break
+
+
+                    elif random_direction == "r":
+
+                            available_directions = ['l', 'u', 'd']
+                            self.random_direction = random.choice(available_directions)
+                            break
+
+
+                    else:
+
+                        break
+
+
+            elif previous_assignment == "r":
+                break
+
+            elif previous_assignment == "d":
+                break
+
+            elif previous_assignment == "u":
+                break
+
 
 
     def create_grid(self, size):
@@ -572,6 +470,9 @@ class Maze:
 
 
             print()
+        
+
+        print()
 
 
 #Maze(20).print_grid()

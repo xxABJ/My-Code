@@ -213,7 +213,7 @@ class Maze:
             previous_assignment = self.previous_assignment()
             
 
-            self.change_starting(self.size // 2)
+            self.change_starting(self.size // 2) ### TESTING
             # Assigning the first direction
             if previous_assignment == False:
 
@@ -286,7 +286,7 @@ class Maze:
 
                             # Starting point
                             #self.random_direction = random.choice(available_directions)
-                            self.random_direction = "d"
+                            self.random_direction = "d" ### TESTING
 
 
                             print(f"assigning: {self.random_direction}")
@@ -318,7 +318,7 @@ class Maze:
 
 
         #self.random_direction = random.choice(self.available_directions)
-        self.random_direction = "l"
+        self.random_direction = "l" ### TESTING
         
         
         # Unable to go 'u' after first direction has been assigned
@@ -329,6 +329,8 @@ class Maze:
 
 
         print(f"\ndirection: {self.random_direction}\n")
+
+        ### TESTING
         if self.previous_assignment()[0][1] == 'r':
             print('cant go opposite directions')
         else:
@@ -338,6 +340,7 @@ class Maze:
         print()
         self.print_assignments()
         return grid
+
 
 
     def valid_direction(self, random_direction, previous_assignment):

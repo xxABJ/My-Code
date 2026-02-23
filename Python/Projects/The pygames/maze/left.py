@@ -1,5 +1,57 @@
+import random
+
+
 class Left:
 
+
+    class assigner:
+
+        def __init__(self, left_factory, num =False):
+
+            self.left_factory = left_factory
+
+
+            if num:
+
+                self.amount_of_moves = num
+
+        
+        def assign(self):
+
+            grid = self.left_factory.maze.grid[:]
+            previous_assignment = self.left_factory.maze.previous_assignment()
+            previous_pos = previous_assignment[1]
+
+
+            for assignments in range(1, 1 + (self.amount_of_moves)):
+
+                grid[previous_pos[0]][previous_pos[1] - assignments] = "l"
+                
+                
+                updated_previous_pos = (
+                    previous_pos[0],
+                    previous_pos[1] - (assignments - 1)
+                )
+                
+
+                self.left_factory.maze.log_assignments(
+
+                    direction= "l",
+                    previous_pos= updated_previous_pos
+
+                )
+
+
+                self.left_factory.maze.score_calculator(
+
+                    direction= "l",
+                    state= ""
+
+                )
+                #print(assignments)
+
+
+            self.left_factory.maze.grid = grid
 
     class l1:
 
@@ -145,11 +197,7 @@ class Left:
         self.alternative_directions = ["u", "d"]
 
 
-        self.assignment = {
-            1: Left.l1(self),
-            2: Left.l2(self),
-            3: Left.l3(self)
-        }
+        self.left_assigner = None
 
 
     def check(self):
@@ -159,20 +207,17 @@ class Left:
 
         if score >= 3:
             
-            self.assign(3)
-            print('   l3 - assigned')
+            num = random.randint(1, 3)
 
 
         elif score == 2:
             
-            self.assign(2)
-            print('  l2 - assigned')
+            num = random.randint(1, 2)
 
 
         elif score == 1:
             
-            self.assign(1)
-            print(' l1 - assigned')
+            num = 1
 
 
         else:
@@ -180,9 +225,16 @@ class Left:
             return self.alternative_directions
 
 
+        self.left_assigner = Left.assigner(self, num)
+        print(f"{" "*num}{num} left moves - assigned")
+        self.assign(num)
+        self.left_assigner = None
+
+
+
     def assign(self, num):
         
-        return self.assignment.get(num).assign()
+        return self.left_assigner.assign()
     
 
     

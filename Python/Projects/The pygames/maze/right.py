@@ -1,4 +1,58 @@
+import random
+
+
 class Right:
+
+
+    class assigner:
+
+        def __init__(self, right_factory, num = False):
+
+            self.right_factory = right_factory
+
+
+            if num:
+
+                self.amount_of_moves = num
+
+        
+        def assign(self):
+
+            grid = self.right_factory.maze.grid[:]
+            previous_assignment = self.right_factory.maze.previous_assignment()
+            previous_pos = previous_assignment[1]
+
+
+            for assignments in range(1, 1 + (self.amount_of_moves)):
+
+                grid[previous_pos[0]][previous_pos[1] + assignments] = "r"
+                
+                
+                updated_previous_pos = (
+                    previous_pos[0],
+                    previous_pos[1] + (assignments - 1)
+                )
+                
+
+                self.right_factory.maze.log_assignments(
+
+                    direction= "r",
+                    previous_pos= updated_previous_pos
+
+                )
+
+
+                self.right_factory.maze.score_calculator(
+
+                    direction= "r",
+                    state= ""
+
+                )
+                #print(assignments)
+
+
+            self.right_factory.maze.grid = grid
+
 
 
     class r1:
@@ -145,11 +199,7 @@ class Right:
         self.alternative_directions = ["u", "d"]
 
 
-        self.assignment = {
-            1: Right.r1(self),
-            2: Right.r2(self),
-            3: Right.r3(self)
-        }
+        self.right_assigner = None
 
 
     def check(self):
@@ -159,30 +209,39 @@ class Right:
 
         if score >= 3:
             
-            self.assign(3)
-            print('   r3 - assigned')
+            num = random.randint(1, 3)
 
 
         elif score == 2:
             
-            self.assign(2)
-            print('  r2 - assigned')
+            num = random.randint(1, 2)
 
 
         elif score == 1:
             
-            self.assign(1)
-            print(' r1 - assigned')
+            num = 1
 
 
-        else:
+        elif score == 0:
             
             return self.alternative_directions
 
 
+        self.right_assigner = Right.assigner(self, num)
+        print(f"{" "*num}{num} right moves - assigned")
+        self.assign(num)
+        self.right_assigner = None
+
+        
+        return False
+
+
+
+
     def assign(self, num):
         
-        return self.assignment.get(num).assign()
+        #return self.assignment.get(num).assign()
+        return self.right_assigner.assign()
     
 
     

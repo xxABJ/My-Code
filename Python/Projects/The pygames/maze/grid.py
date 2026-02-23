@@ -103,6 +103,15 @@ class Maze:
 
     def score_calculator(self, direction, row= None, col= None, state = ''):
 
+
+        # Printing old scores
+        print()
+        print("-"*20)
+        print(f"-- OLD")
+        print(f"-- Assignment No.{self.total_assignments - 1}")
+        self.print_scores()
+
+
         # Accounting for maze border walls
         if state == 'first':
 
@@ -112,7 +121,7 @@ class Maze:
             if direction == 'd':
 
                 calculated_scores = {
-                    'topside': row - 1,
+                    'topside': row,
                     'bottomside': (size - 2) - row - 1,
                     'leftside': col - 1,
                     'rightside': (size - 2) - col
@@ -184,7 +193,14 @@ class Maze:
 
 
                 self.scores['rightside'] = new_rightside_score
-                self.scores['leftside'] = new_leftside_score     
+                self.scores['leftside'] = new_leftside_score   
+
+
+        # Printing new scores
+        print(f"-- NEW")
+        print(f"-- Assignment No.{self.total_assignments}")
+        self.print_scores()
+        print()
 
 
     def change_starting(self, num):
@@ -214,6 +230,7 @@ class Maze:
             
 
             self.change_starting(self.size // 2) ### TESTING
+            #self.change_starting(self.size - 2) ### TESTING
             # Assigning the first direction
             if previous_assignment == False:
 
@@ -285,11 +302,11 @@ class Maze:
 
 
                             # Starting point
-                            #self.random_direction = random.choice(available_directions)
-                            self.random_direction = "d" ### TESTING
+                            self.random_direction = random.choice(available_directions)
+                            #self.random_direction = "d" ### TESTING
 
 
-                            print(f"assigning: {self.random_direction}")
+                            print(f"\nassigning: {self.random_direction}\n")
                             # Assigning direction. (Opposites due to how it is iterated into)
                             grid[row + self.directions[self.random_direction][0]][col + self.directions[self.random_direction][1]] = self.random_direction
 
@@ -305,14 +322,8 @@ class Maze:
 
 
                             # Updating scores
-                            print("\n", "-"*10)
-                            for key, value in self.scores.items():
-                                print(key, value)
+                            print(" • FIRST ASSIGNMENT")
                             self.score_calculator(self.random_direction, row= row, col= col, state= 'first')
-                            print()
-                            for key, value in self.scores.items():
-                                print(key, value)
-                            print("-"*10)
 
                             break
 
@@ -334,7 +345,8 @@ class Maze:
         if self.previous_assignment()[0][1] == 'r':
             print('cant go opposite directions')
         else:
-            self.left.check()
+            a = self.left.check()
+            print(a)
 
 
         print()
@@ -446,6 +458,14 @@ class Maze:
         
         
         print()
+
+
+    def print_scores(self):
+        print("-"*20)
+        for key, value in self.scores.items():
+            print(key, value)
+        print("-"*20)
+
 
 
     def print_grid(self):

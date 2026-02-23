@@ -1,5 +1,7 @@
 from right import Right
 from left import Left
+from up import Up
+from down import Down
 
 
 import pygame, random
@@ -43,6 +45,8 @@ class Maze:
 
         self.right = Right(self)
         self.left = Left(self)
+        self.up = Up(self)
+        self.down = Down(self)
 
 
         self.first_direction_completed = False
@@ -103,7 +107,6 @@ class Maze:
 
     def score_calculator(self, direction, row= None, col= None, state = ''):
 
-
         # Printing old scores
         print()
         print("-"*20)
@@ -121,30 +124,36 @@ class Maze:
             if direction == 'd':
 
                 calculated_scores = {
+
                     'topside': row,
                     'bottomside': (size - 2) - row - 1,
                     'leftside': col - 1,
                     'rightside': (size - 2) - col
+                
                 }
             
 
             elif direction == 'l':
 
                 calculated_scores = {
+                    
                     'topside': row - 1,
                     'bottomside': (size - 2) - row,
                     'leftside': col - 2,
                     'rightside': (size - 2) - col + 1
+                
                 }
             
             
             elif direction == 'r':
 
                 calculated_scores = {
+
                     'topside': row - 1,
                     'bottomside': (size - 2) - row,
                     'leftside': col,
                     'rightside': (size - 2) - col - 1
+                
                 }
 
 
@@ -203,24 +212,6 @@ class Maze:
         print()
 
 
-    def change_starting(self, num):
-        
-        for row in range(self.size):
-            
-            if row == 0:
-                continue
-
-            for col in range(self.size):
-
-                if col == 0 or col == self.size - 1:
-                    continue
-
-                self.grid[row][col] = " "
-
-            break
-
-        self.grid[1][num] = "S"
-
 
     def create_maze(self, grid, size):
 
@@ -228,9 +219,9 @@ class Maze:
 
             previous_assignment = self.previous_assignment()
             
-
-            self.change_starting(self.size // 2) ### TESTING
+            self.change_starting(1, self.size // 2) ### TESTING
             #self.change_starting(self.size - 2) ### TESTING
+
             # Assigning the first direction
             if previous_assignment == False:
 
@@ -247,6 +238,7 @@ class Maze:
 
                     
                     # Skip if at horizontal side-border
+                    #if row < 5 or row == size - 1:
                     if row == 0 or row == size - 1:
                         
                         print(f"row:{row} horizontal side-borders")
@@ -279,8 +271,8 @@ class Maze:
                             # Can assign any direction opposite the starting area (exclude 'u' direction, if "S" is at top / exclude 'd' direction, if "S" is at bottom) @Maze().create_grid()
                             if grid[row][col - 1] != "|" and grid[row][col + 1] != "|":
 
-                                #print('can both')
                                 available_directions = ["l", "r", "d"]
+                                #print('can both')
 
 
                             else:
@@ -289,7 +281,6 @@ class Maze:
                                 if grid[row][col - 1] == "|":
                                     
                                     available_directions = ["r", "d"]
-                                    #available_directions.pop(0)
                                     #print('can not left')
 
 
@@ -297,7 +288,6 @@ class Maze:
                                 elif grid[row][col + 1] == "|":
 
                                     available_directions = ["l", "d"]
-                                    #available_directions.pop(1)
                                     #print('can not right')
 
 
@@ -306,9 +296,9 @@ class Maze:
                             #self.random_direction = "d" ### TESTING
 
 
-                            print(f"\nassigning: {self.random_direction}\n")
                             # Assigning direction. (Opposites due to how it is iterated into)
-                            grid[row + self.directions[self.random_direction][0]][col + self.directions[self.random_direction][1]] = self.random_direction
+                            print(f"\nassigning: {self.random_direction}\n")
+                            grid[ row + self.directions[self.random_direction][0] ][ col + self.directions[self.random_direction][1] ] = self.random_direction
 
 
                             # Logging assignments
@@ -325,33 +315,54 @@ class Maze:
                             print(" • FIRST ASSIGNMENT")
                             self.score_calculator(self.random_direction, row= row, col= col, state= 'first')
 
+
                             break
 
 
         #self.random_direction = random.choice(self.available_directions)
-        self.random_direction = "l" ### TESTING
         
         
         # Unable to go 'u' after first direction has been assigned
-        while self.random_direction == 'u' and len(self.assignments == 1):
+        while self.random_direction == 'u' and len(self.assignments) == 1:
     
             self.random_direction = random.choice(self.available_directions)
             continue
 
 
+        self.random_direction = "u" ### TESTING
+        ### TESTING
         print(f"\ndirection: {self.random_direction}\n")
 
-        ### TESTING
-        if self.previous_assignment()[0][1] == 'r':
+        if self.previous_assignment()[0][1] == 'd':
             print('cant go opposite directions')
         else:
-            a = self.left.check()
+            a = self.up.check()
             print(a)
 
 
         print()
         self.print_assignments()
         return grid
+
+
+
+    def change_starting(self, row, col):
+        
+        for rows in range(self.size):
+            
+            if rows == 0:
+                continue
+
+            for cols in range(self.size):
+
+                if cols == 0 or cols == self.size - 1:
+                    continue
+
+                self.grid[rows][cols] = " "
+
+            break
+
+        self.grid[row][col] = "S"
 
 
 
@@ -401,7 +412,6 @@ class Maze:
 
             elif previous_assignment == "u":
                 break
-
 
 
     def create_grid(self, size):
@@ -465,7 +475,6 @@ class Maze:
         for key, value in self.scores.items():
             print(key, value)
         print("-"*20)
-
 
 
     def print_grid(self):

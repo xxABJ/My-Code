@@ -1,14 +1,14 @@
 import random
 
 
-class Right:
+class Down:
 
 
     class assigner:
 
-        def __init__(self, right_factory, num = False):
+        def __init__(self,down_factory, num =False):
 
-            self.right_factory = right_factory
+            self.down_factory = down_factory
 
 
             if num:
@@ -18,42 +18,42 @@ class Right:
         
         def assign(self):
 
-            grid = self.right_factory.maze.grid[:]
-            previous_assignment = self.right_factory.maze.previous_assignment()
+            grid = self.down_factory.maze.grid[:]
+            previous_assignment = self.down_factory.maze.previous_assignment()
             previous_pos = previous_assignment[1]
 
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                grid[previous_pos[0]][previous_pos[1] + assignments] = "r"
+                grid[previous_pos[0] + assignments][previous_pos[1]] = "d"
                 
                 
                 updated_previous_pos = (
 
-                    previous_pos[0],
-                    previous_pos[1] + (assignments - 1)
-                
+                    previous_pos[0] + (assignments + 1),
+                    previous_pos[1]
+
                 )
                 
 
-                self.right_factory.maze.log_assignments(
+                self.down_factory.maze.log_assignments(
 
-                    direction= "r",
+                    direction= "u",
                     previous_pos= updated_previous_pos
 
                 )
 
 
-                self.right_factory.maze.score_calculator(
+                self.down_factory.maze.score_calculator(
 
-                    direction= "r",
+                    direction= "u",
                     state= ""
 
                 )
                 #print(assignments)
 
 
-            self.right_factory.maze.grid = grid
+            self.down_factory.maze.grid = grid
 
 
     def __init__(self, maze):
@@ -62,15 +62,15 @@ class Right:
 
 
         self.direction = ""
-        self.alternative_directions = ["u", "d"]
+        self.alternative_directions = ["l", "r"]
 
 
-        self.right_assigner = None
+        self.down_assigner = None
 
 
     def check(self):
         
-        score = self.maze.scores.get('rightside')
+        score = self.maze.scores.get('bottomside')
 
 
         if score >= 3:
@@ -93,19 +93,17 @@ class Right:
             return self.alternative_directions
 
 
-        self.right_assigner = Right.assigner(self, num)
-        print(f"{" "*num}{num} right moves - assigned")
+        self.down_assigner = Down.assigner(self, num)
+        print(f"{" "*num}{num} Down moves - assigned")
         self.assign()
 
 
-        self.right_assigner = None
+        self.down_assigner = None
         return False
+
 
 
     def assign(self):
         
-        #return self.assignment.get(num).assign()
-        return self.right_assigner.assign()
-    
-
+        return self.down_assigner.assign()
     

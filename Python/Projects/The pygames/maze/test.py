@@ -1,3 +1,5 @@
+import random
+
 a, b, c, d = 0, 3, 4, 9
 
 l = [a,b,c,d]
@@ -103,3 +105,17 @@ t.print_total()
 print()
 for _ in range(1, 4):
     print(_)
+
+
+
+ran = ["r", "l"]
+
+print(random.choice(ran))
+
+
+arrows = {
+    "l": "←",
+    "r": "→",
+    "u": "↑",
+    "d": "↓"
+}

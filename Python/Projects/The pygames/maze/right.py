@@ -25,7 +25,7 @@ class Right:
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                grid[previous_pos[0]][previous_pos[1] + assignments] = "r"
+                grid[previous_pos[0]][previous_pos[1] + assignments] = "→"
                 
                 
                 updated_previous_pos = (
@@ -104,8 +104,6 @@ class Right:
 
     def assign(self):
         
-        #return self.assignment.get(num).assign()
         return self.right_assigner.assign()
     
 
-    

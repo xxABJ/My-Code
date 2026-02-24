@@ -25,12 +25,12 @@ class Down:
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                grid[previous_pos[0] + assignments][previous_pos[1]] = "d"
+                grid[previous_pos[0] + assignments][previous_pos[1]] = "↓"
                 
                 
                 updated_previous_pos = (
 
-                    previous_pos[0] + (assignments + 1),
+                    previous_pos[0] + (assignments - 1),
                     previous_pos[1]
 
                 )
@@ -38,7 +38,7 @@ class Down:
 
                 self.down_factory.maze.log_assignments(
 
-                    direction= "u",
+                    direction= "d",
                     previous_pos= updated_previous_pos
 
                 )
@@ -46,7 +46,7 @@ class Down:
 
                 self.down_factory.maze.score_calculator(
 
-                    direction= "u",
+                    direction= "d",
                     state= ""
 
                 )
@@ -100,7 +100,6 @@ class Down:
 
         self.down_assigner = None
         return False
-
 
 
     def assign(self):

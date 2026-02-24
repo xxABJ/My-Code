@@ -25,7 +25,7 @@ class Up:
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                grid[previous_pos[0] - assignments][previous_pos[1]] = "u"
+                grid[previous_pos[0] - assignments][previous_pos[1]] = "↑"
                 
                 
                 updated_previous_pos = (
@@ -108,39 +108,59 @@ class Up:
 
         self.up_assigner = None
         return False
+    
+
+    def check2(self):
+        
+        #previous_assignment = self.up_factory.maze.previous_assignment()
+        #score = self.maze.scores.get('topside')
+        previous_direction = self.up_factory.maze.previous_assignment()[0][1]
+
+        while self.invalid:
+            directions = self.get_cell_info2(previous_direction)
+
+        self.assignment(directions)
+
+        
+        
+        #if score >= 3 and previous_assignment[0][1] != "d":
+        #    
+        #    num = random.randint(1, 3)
+        #
+        #
+        #elif score == 2:
+        #    
+        #    num = random.randint(1, 2)
+        #
+        #
+        #elif score == 1:
+        #    
+        #    num = 1
+        #
+        #
+        #else:
+        #    
+        #    # Opposite directions
+        #    if previous_assignment[0][1] == "d":
+        #
+        #        return
+        #
+        #    # Side-wall detection
+        #    elif score == 0:
+        #        
+        #        return self.alternative_directions
 
 
-    def opposite_alternative_directions(self):
+        self.up_assigner = Up.assigner(self, num)
+        print(f"{" "*num}{num} Up moves - assigned")
+        self.assign()
 
-        scores = self.maze.scores
+
+        self.up_assigner = None
+        return False
 
 
     def assign(self):
         
         return self.up_assigner.assign()
-    
 
-    # return a 3x3 grid info where center cell is row & col and returns list of validated directions - for now just uses scores
-    def cell_info(self, previous_direction, row, col):
-
-        scores = self.maze.scores
-        
-        leftside = scores.get("leftside")
-        rightside = scores.get("rightside")
-        topside = scores.get("topside")
-        bottomside = scores.get("bottomside")
-
-        if previous_direction == "d":
-            pass
-
-        elif previous_direction == "u":
-            pass
-
-        elif previous_direction == "l":
-            pass
-
-        elif previous_direction == "r":
-            pass
-
-
-        return

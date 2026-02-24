@@ -1,7 +1,4 @@
-from right import Right
-from left import Left
-from up import Up
-from down import Down
+from assignment import *
 
 
 import pygame, random
@@ -13,6 +10,15 @@ class Maze:
     def __init__(self, size):
         
         self.size = size
+
+        self.arrows = {
+
+           "l": "←",
+           "r": "→",
+           "u": "↑",
+           "d": "↓"
+
+        }
 
 
         self.available_directions = ["l", "r", "u", "d"]
@@ -27,6 +33,8 @@ class Maze:
         }
 
         self.total_assignments = 0
+        
+        
         self.assignments = {
 
         }
@@ -42,11 +50,11 @@ class Maze:
 
         self.grid = self.create_grid(self.size)
 
-
-        self.right = Right(self)
-        self.left = Left(self)
-        self.up = Up(self)
-        self.down = Down(self)
+        self.assignment = Assignment(self)
+        #self.right = Right(self)
+        #self.left = Left(self)
+        #self.up = Up(self)
+        #self.down = Down(self)
 
 
         self.first_direction_completed = False
@@ -298,7 +306,7 @@ class Maze:
 
                             # Assigning direction. (Opposites due to how it is iterated into)
                             print(f"\nassigning: {self.random_direction}\n")
-                            grid[ row + self.directions[self.random_direction][0] ][ col + self.directions[self.random_direction][1] ] = self.random_direction
+                            grid[ row + self.directions[self.random_direction][0] ][ col + self.directions[self.random_direction][1] ] = self.arrows.get(self.random_direction)
 
 
                             # Logging assignments
@@ -322,22 +330,29 @@ class Maze:
         #self.random_direction = random.choice(self.available_directions)
         
         
-        # Unable to go 'u' after first direction has been assigned
+        #TEMP Unable to go 'u' after first direction has been assigned
         while self.random_direction == 'u' and len(self.assignments) == 1:
     
             self.random_direction = random.choice(self.available_directions)
             continue
 
 
-        self.random_direction = "u" ### TESTING
+        
+
+
+
+        #self.random_direction = "u" ### TESTING
         ### TESTING
         print(f"\ndirection: {self.random_direction}\n")
+        for _ in range(5):
 
-        if self.previous_assignment()[0][1] == 'd':
-            print('cant go opposite directions')
-        else:
-            a = self.up.check()
-            print(a)
+            previous_assignment = self.previous_assignment()
+
+            confirmed_directions = self.assignment.validate_direction(previous_assignment)
+
+            self.assignment.assign(confirmed_directions)
+
+            #print(f"----\nSUCCESS No.{_+1}\n    {confirmed_directions}\n----\n")
 
 
         print()
@@ -363,55 +378,6 @@ class Maze:
             break
 
         self.grid[row][col] = "S"
-
-
-
-    def valid_direction(self, random_direction, previous_assignment):
-        
-        previous_direction = previous_assignment[0][1]
-        previous_pos = previous_assignment[1]
-
-
-        while True:
-
-            if previous_direction == "l":
-                
-                if random_direction == "l" and self.scores.get('leftside') > 0:
-                    
-                    break
-                
-
-                else:
-
-                    if random_direction == "l":
-
-                        if self.scores.get('leftside') == 0:
-                        
-                            available_directions = ['u', 'd']
-                            self.random_direction = random.choice(available_directions)
-                            break
-
-
-                    elif random_direction == "r":
-
-                            available_directions = ['l', 'u', 'd']
-                            self.random_direction = random.choice(available_directions)
-                            break
-
-
-                    else:
-
-                        break
-
-
-            elif previous_assignment == "r":
-                break
-
-            elif previous_assignment == "d":
-                break
-
-            elif previous_assignment == "u":
-                break
 
 
     def create_grid(self, size):

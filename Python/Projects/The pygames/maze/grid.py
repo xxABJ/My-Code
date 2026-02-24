@@ -35,9 +35,7 @@ class Maze:
         self.total_assignments = 0
         
         
-        self.assignments = {
-
-        }
+        self.assignments = {}
 
 
         self.scores = {
@@ -50,7 +48,7 @@ class Maze:
 
         self.grid = self.create_grid(self.size)
 
-        self.assignment = Assignment(self)
+        self.assignor = Assignment(self)
         #self.right = Right(self)
         #self.left = Left(self)
         #self.up = Up(self)
@@ -59,7 +57,25 @@ class Maze:
 
         self.first_direction_completed = False
         self.maze_completed = False
-        self.maze = self.create_maze(self.grid[:], self.size)
+        self.maze = self.create_maze(self.size)
+        
+
+    def reset_all(self):
+
+        self.available_directions = ["l", "r", "u", "d"]
+        self.random_direction = random.choice(self.available_directions)
+        self.total_assignments = 0
+        self.assignments = {}
+        self.scores = {
+            'topside': 0,
+            'bottomside': 0,
+            'leftside': 0,
+            'rightside':0
+        }
+        self.grid = self.create_grid(self.size)
+        self.assignor = Assignment(self)
+        self.first_direction_completed = False
+        return
 
 
     def previous_assignment(self) -> list:
@@ -77,6 +93,9 @@ class Maze:
         return False
 
 
+    #TODO: ADD SPECIAL LOGIC FOR ASSIGNMENT AFTER CHANGING DIRECTION
+    # (AFTER THE ASIIGNMENT [i.e → > ↓ ] = Normally it's logger = (0, 1) for concurring same direction, but for changing directions ..
+    # It should be: *ADDITIONAL additional_logger = logger(i.e for → > ↓) = (1, 0)
     def log_assignments(self, direction, row= None, col= None, previous_pos= False):
         
         new_total_assignments = self.total_assignments + 1
@@ -86,6 +105,10 @@ class Maze:
             
             row = previous_pos[0]
             col = previous_pos[1]
+
+
+            print("logger:", (row, col))
+            print("logger2:", ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col ))
 
             self.assignments[(new_total_assignments, direction)] = tuple(
                 
@@ -116,11 +139,11 @@ class Maze:
     def score_calculator(self, direction, row= None, col= None, state = ''):
 
         # Printing old scores
-        print()
-        print("-"*20)
-        print(f"-- OLD")
-        print(f"-- Assignment No.{self.total_assignments - 1}")
-        self.print_scores()
+        #print()
+        #print("-"*20)
+        #print(f"-- OLD")
+        #print(f"-- Assignment No.{self.total_assignments - 1}")
+        #self.print_scores()
 
 
         # Accounting for maze border walls
@@ -214,14 +237,20 @@ class Maze:
 
 
         # Printing new scores
-        print(f"-- NEW")
-        print(f"-- Assignment No.{self.total_assignments}")
-        self.print_scores()
-        print()
+        #print(f"-- NEW")
+        #print(f"-- Assignment No.{self.total_assignments}")
+        #self.print_scores()
+        #print()
 
 
 
-    def create_maze(self, grid, size):
+    def create_maze(self, size):
+
+        grid = self.grid
+
+        #while True:
+
+            #grid = self.create_grid(self.size)
 
         while not self.first_direction_completed:
 
@@ -327,9 +356,9 @@ class Maze:
                             break
 
 
-        #self.random_direction = random.choice(self.available_directions)
-        
-        
+            #self.random_direction = random.choice(self.available_directions)
+            
+            
         #TEMP Unable to go 'u' after first direction has been assigned
         while self.random_direction == 'u' and len(self.assignments) == 1:
     
@@ -337,22 +366,73 @@ class Maze:
             continue
 
 
-        
-
-
-
         #self.random_direction = "u" ### TESTING
         ### TESTING
-        print(f"\ndirection: {self.random_direction}\n")
+        print(f"\n • LOOPING ASSIGNMENTS\n")
+
         for _ in range(5):
-
+        
             previous_assignment = self.previous_assignment()
+        
+            confirmed_directions = self.assignor.validate_direction(previous_assignment)
+            confirmed_directions = random.choice(["r", "d"])
+        
+            if self.assignor.assign(confirmed_directions, previous_assignment, _) == False:
+                print(f"\nINVALID SUCCESS No.{_+1}\n    {confirmed_directions}\n{"*"*20}\n")
 
-            confirmed_directions = self.assignment.validate_direction(previous_assignment)
+        
+            else:
+                print(f"SUCCESS No.{_+1}\n    {confirmed_directions}\n{"-"*20}\n")
+            #self.print_assignments()
+            #self.print_grid()
 
-            self.assignment.assign(confirmed_directions)
 
-            #print(f"----\nSUCCESS No.{_+1}\n    {confirmed_directions}\n----\n")
+
+        #num_of_assignments = 1
+        #num_of_tries = 0
+        #while not self.assignor.at_bottom:
+        #
+        #    previous_assignment = self.previous_assignment()
+        #
+        #    confirmed_directions = self.assignor.validate_direction(previous_assignment)
+        #    
+        #    while self.assignor.assign(confirmed_directions, previous_assignment, num_of_assignments) == False:
+        #
+        #        if num_of_tries > 100 or num_of_assignments > 1000:
+        #            break
+        #
+        #        num_of_tries +=1
+        #        self.assignor.assign(confirmed_directions, previous_assignment, num_of_assignments)
+        #
+        #        continue
+        #
+        #
+        #    num_of_assignments += 1
+        #
+        #    if num_of_tries > 100:
+        #        #self.reset_all()
+        #        break
+        #
+        #
+        #    elif num_of_assignments > 1000:
+        #        #self.reset_all()
+        #        break
+        #
+        #
+        #if len(self.assignments) > 500 or num_of_tries > 100 or num_of_assignments > 1000 or self.assignor.at_bottom != True:
+        #    print(f"{"\n"*10}RESET{"\n"*10}")
+        #    self.reset_all()
+        #    continue
+        #
+        #else:
+        #
+        #    break
+
+        
+        self.maze_completed = True
+        print(f"self.maze_completed: {self.maze_completed}")
+
+
 
 
         print()
@@ -471,5 +551,6 @@ class Maze:
 
 
 #Maze(20).print_grid()
-Maze(30).print_maze()
+Maze(20).print_maze()
+#Maze(50).print_maze()
 

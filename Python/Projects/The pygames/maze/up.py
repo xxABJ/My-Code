@@ -6,17 +6,20 @@ class Up:
 
     class assigner:
 
-        def __init__(self, up_factory, num =False):
+        def __init__(self, up_factory, num= False):
 
             self.up_factory = up_factory
 
 
-            if num:
+            if num >= 0:
 
                 self.amount_of_moves = num
 
         
         def assign(self):
+
+            if self.amount_of_moves == 0:
+                return False
 
             grid = self.up_factory.maze.grid[:]
             previous_assignment = self.up_factory.maze.previous_assignment()
@@ -25,7 +28,15 @@ class Up:
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                grid[previous_pos[0] - assignments][previous_pos[1]] = "↑"
+
+                if grid[previous_pos[0] - assignments][previous_pos[1]] == "S":
+
+                    pass
+
+
+                else:
+
+                    grid[previous_pos[0] - assignments][previous_pos[1]] = self.up_factory.maze.arrows.get("u")
                 
                 
                 updated_previous_pos = (

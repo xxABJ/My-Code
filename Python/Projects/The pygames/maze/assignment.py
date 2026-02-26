@@ -333,16 +333,16 @@ class Assignment:
 
 
             case "r":
-
+            
                 border_distance = score.get(self.converted.get("r"))
-
+            
                 grid = self.maze.grid[:]
                 rightside = self.maze.scores.get("rightside")
                 
                 for r_distance in range(1, rightside + 1):
-
+            
                     if grid[previous_pos[0]][previous_pos[1] + r_distance] == self.maze.arrows.get("r"):
-
+            
                         print(f"last   : {last_direction}")
                         last_direction = (r_distance - 1)
                         print(f"last   : {last_direction}")

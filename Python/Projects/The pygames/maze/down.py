@@ -28,6 +28,9 @@ class Down:
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
+
+                print("latest assignment: ", self.down_factory.maze.assignments.get(list(self.down_factory.maze.assignments.keys())[-1]))
+
                 previous_assignment = self.down_factory.maze.previous_assignment()
                 previous_pos = previous_assignment[1]
                 current_selected_cell = (previous_pos[0], previous_pos[1])
@@ -50,13 +53,13 @@ class Down:
                         #case "↓":
                         case "d":
 
-                            print(f"DOWN prev d: {previous_pos}")
+                            print(f"d\nDOWN prev d: {previous_pos}")
 
 
                             if len(self.down_factory.maze.assignments) == 1:
                                 current_selected_cell = (previous_pos[0] + 1, previous_pos[1])
 
-                            
+                                print("DOWN CLASS inserting in grid:", self.down_factory.maze.arrows.get("d"))
                                 grid[current_selected_cell[0]][current_selected_cell[1]] = self.down_factory.maze.arrows.get("d")
 
 
@@ -72,6 +75,7 @@ class Down:
 
                             else:
 
+                                print("DOWN CLASS inserting in grid:", self.down_factory.maze.arrows.get("d"))
                                 grid[previous_pos[0]][previous_pos[1]] = self.down_factory.maze.arrows.get("d")
 
 
@@ -85,18 +89,26 @@ class Down:
                                 print(f"  FINAL POS (DOWN prev d):\n  {updated_previous_pos}")
 
 
+                            self.down_factory.maze.log_assignments(
+
+                                direction= "d",
+                                previous_pos= updated_previous_pos
+
+                            )
+
+
                         #case self.down_factory.maze.arrows.get("r"):
                         #case "→":
                         case "r":
 
-                            print(f"DOWN prev r: {previous_pos}")
+                            print(f"\nDOWN prev r: {previous_pos}")
                             
 
                             if len(self.down_factory.maze.assignments) == 1:
                                 current_selected_cell = (previous_pos[0], previous_pos[1] + 1)
 
-                            
-                                grid[current_selected_cell[0]][current_selected_cell[1]] = self.down_factory.maze.arrows.get("d")
+                                print("DOWN CLASS inserting in grid:", self.down_factory.maze.arrows.get("r"))
+                                grid[current_selected_cell[0]][current_selected_cell[1]] = self.down_factory.maze.arrows.get("r")
 
 
                                 # pre = r
@@ -111,7 +123,8 @@ class Down:
 
                             elif len(self.down_factory.maze.assignments) != 1:
 
-                                grid[previous_pos[0]][previous_pos[1]] = self.down_factory.maze.arrows.get("d")
+                                print("DOWN CLASS inserting in grid:", self.down_factory.maze.arrows.get("r"))
+                                grid[previous_pos[0]][previous_pos[1]] = self.down_factory.maze.arrows.get("r")
 
 
                                 # pre = r
@@ -123,6 +136,15 @@ class Down:
 
                                 print(f"  FINAL POS (DOWN prev r):\n  {updated_previous_pos}")
 
+                            
+
+                            self.down_factory.maze.log_assignments(
+
+                                    direction= "d",
+                                    previous_pos= updated_previous_pos,
+                                    changing_directions = "r>d"
+
+                                )
 
 
                         #case self.down_factory.maze.arrows.get("l"):
@@ -166,12 +188,12 @@ class Down:
 
                 
 
-                self.down_factory.maze.log_assignments(
-
-                    direction= "d",
-                    previous_pos= updated_previous_pos
-
-                )
+                #self.down_factory.maze.log_assignments(
+                #
+                #    direction= "d",
+                #    previous_pos= updated_previous_pos
+                #
+                #)
 
 
                 self.down_factory.maze.score_calculator(
@@ -181,6 +203,8 @@ class Down:
 
                 )
                 #print(assignments)
+
+            self.down_factory.maze.print_grid()
 
 
             self.down_factory.maze.grid = grid

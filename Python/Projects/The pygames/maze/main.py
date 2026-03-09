@@ -1,4 +1,4 @@
-from grid import Grid
+from maze import Grid
 
 
 import pygame, sys

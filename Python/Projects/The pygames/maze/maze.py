@@ -1,4 +1,5 @@
 from assignment import *
+from scanner import *
 
 
 import pygame, random
@@ -51,21 +52,27 @@ class Maze:
         }
 
 
+        self.scanner = Scanner(self)
         self.assignor = Assignment(self)
 
 
         self.grid = self.create_grid(self.size)
         self.first_assignment_and_direction_completed = self.set_first_assingment_and_direction(
 
+            # Custom Starting point (tuple)
             tuple_pos= False,
+
+            # Direction specifier (str)
             direction= False,
+
+            # Console printing (bool)
             print_console = False
 
         )
 
 
         self.maze_completed = False
-        #self.maze = self.create_maze(self.size)
+        self.maze = self.create_maze(self.size)
         
 
 
@@ -215,18 +222,19 @@ class Maze:
 
 
 
-    def score_calculator(self, direction, row= None, col= None, state = ''):
+    def score_calculator(self, direction= str, row= int, col= int, state= bool, print_console= bool) -> None:
 
         # Printing old scores
-        #print()
-        #print("-"*20)
-        #print(f"-- OLD")
-        #print(f"-- Assignment No.{self.total_assignments - 1}")
-        #self.print_scores()
+        if print_console:
+            print()
+            print("-"*20)
+            print(f"-- OLD")
+            print(f"-- Assignment No.{self.total_assignments - 1}")
+            self.print_scores()
 
 
         # (Row, Col) is from self.set_first_assignment()
-        if state == 'first':
+        if state:
 
             size = self.size
 
@@ -328,15 +336,16 @@ class Maze:
 
 
         # Printing new scores
-        #print(f"-- NEW")
-        #print(f"-- Assignment No.{self.total_assignments}")
-        #self.print_scores()
-        #print()
+        if print_console:
+            print(f"-- NEW")
+            print(f"-- Assignment No.{self.total_assignments}")
+            self.print_scores()
+            print()
 
 
 
 
-    def set_first_assingment_and_direction(self, tuple_pos = False, direction = False, print_console = False):
+    def set_first_assingment_and_direction(self, tuple_pos= tuple | bool, direction= str | bool, print_console= bool) -> bool:
 
         def first_assignment(custom_start, custom_direction):
 
@@ -510,25 +519,24 @@ class Maze:
         COL = int
 
 
-        if tuple_pos:
-
-            Conditions = (True, False)
-
-
-        if direction:
-
-            Conditions = (False, True)
-
-
         if tuple_pos and direction:
 
             Conditions = (True, True)
 
+
+        elif tuple_pos:
+
+            Conditions = (True, False)
+
+
+        elif direction:
+
+            Conditions = (False, True)
+
         
-        if not tuple_pos and not direction:
+        else:
 
             Conditions = (False, False)
-
 
 
         size, grid, AVAILABLE_DIRECTIONS, ROW, COL = first_assignment(Conditions[0], Conditions[1])
@@ -537,6 +545,7 @@ class Maze:
 
         # Old Score
         if print_console:
+
             print(f"\n• OLD SCORE FOR: {self.random_direction}")
             self.print_scores()
 
@@ -544,21 +553,35 @@ class Maze:
         # Updating scores
         if print_console:
             print(f"\n• UPDATING SCORE FOR: {self.random_direction}")
-        self.score_calculator(self.random_direction, row= ROW, col= COL, state= 'first')
+
+        self.score_calculator(
+
+            direction= self.random_direction,
+            row= ROW,
+            col= COL,
+            state= True,
+            print_console= False
+
+        )
+
         if print_console:
             self.print_scores()
 
 
         # Assigning direction.
         if print_console:
+
             print(f"\n• ASSIGNING: {self.random_direction}")
+
         grid[ ROW + self.directions[self.random_direction][0] ][ COL + self.directions[self.random_direction][1] ] = self.arrows.get(self.random_direction)
 
 
 
         # Logging assignments
         if print_console:
+
             print(f"\n• LOGGING: {self.random_direction}  > > >  ", end="")
+
         self.log_assignments(
 
             direction= self.random_direction,
@@ -566,23 +589,20 @@ class Maze:
             col= COL,
 
         )
-        if print_console:
-            print("DONE!")
 
+        if print_console:
+
+            print("DONE!")
 
 
         # Last assignment log
         if print_console:
-            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}")
 
-        
-        if print_console:
+            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}")
             print(f"\n{"♦"*50}\n")
         
         
-        
-        Complete = True
-        return Complete
+        return True
 
 
 
@@ -602,7 +622,7 @@ class Maze:
         ### TESTING
         print(f"\n • LOOPING ASSIGNMENTS\n")
 
-        for _ in range(5):
+        for _ in range(50):
         
             previous_assignment = self.previous_assignment()
         
@@ -632,7 +652,7 @@ class Maze:
 
 
 
-    def change_starting(self, row, col):
+    def change_starting(self, row= int, col= int) -> None:
         
         for rows in range(self.size):
             
@@ -765,6 +785,7 @@ class Maze:
 #Maze(20).print_grid()
 #a.set_first_assingment_and_direction((4, 10))
 #Maze(50).print_maze()
-a = Maze(25)
-a.print_grid()
+#a = Maze(25)
+#a.print_grid()
+Maze(30).print_maze()
 

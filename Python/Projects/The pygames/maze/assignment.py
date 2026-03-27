@@ -306,7 +306,8 @@ class Assignment:
                 return ["l", "r", "u"]
 
 
-
+    # TODO: WTF IS THIS MESS, DELETE!
+    # OR REMAKE USING C1, C2, C3 CONCEPTS
     def _get_amount_of_assignments(self, chosen_direction, previous_pos):
 
         score = self.maze.scores
@@ -329,7 +330,6 @@ class Assignment:
                         last_direction = (l_distance - 1)
                         print(f"last   : {last_direction}")
                         break
-
 
 
             case "r":

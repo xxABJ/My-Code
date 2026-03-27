@@ -11,6 +11,7 @@ class Up:
             self.up_factory = up_factory
 
 
+
             if num >= 0:
 
                 self.amount_of_moves = num
@@ -122,53 +123,54 @@ class Up:
     
 
     def check2(self):
-        
+
+        pass
+
         #previous_assignment = self.up_factory.maze.previous_assignment()
         #score = self.maze.scores.get('topside')
-        previous_direction = self.up_factory.maze.previous_assignment()[0][1]
+        #previous_direction = self.up_factory.maze.previous_assignment()[0][1]
 
-        while self.invalid:
-            directions = self.get_cell_info2(previous_direction)
+        #while self.invalid:
+        #    directions = self.get_cell_info2(previous_direction)
 
-        self.assignment(directions)
+        #self.assignment(directions)
 
-        
         
         #if score >= 3 and previous_assignment[0][1] != "d":
         #    
         #    num = random.randint(1, 3)
-        #
-        #
+        
+        
         #elif score == 2:
         #    
         #    num = random.randint(1, 2)
-        #
-        #
+        
+        
         #elif score == 1:
         #    
         #    num = 1
-        #
-        #
+        
+        
         #else:
         #    
         #    # Opposite directions
         #    if previous_assignment[0][1] == "d":
-        #
+        
         #        return
-        #
+        
         #    # Side-wall detection
         #    elif score == 0:
         #        
         #        return self.alternative_directions
 
 
-        self.up_assigner = Up.assigner(self, num)
-        print(f"{" "*num}{num} Up moves - assigned")
-        self.assign()
+        #self.up_assigner = Up.assigner(self, num)
+        #print(f"{" "*num}{num} Up moves - assigned")
+        #self.assign()
 
 
-        self.up_assigner = None
-        return False
+        #self.up_assigner = None
+        #return False
 
 
     def assign(self):

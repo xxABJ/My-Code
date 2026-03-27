@@ -18,14 +18,14 @@ print(f"list: {list(sorted(d.values()))}")
 
 biggest = list(reversed(sorted(d.values())))
 
-print(f"reversed: {biggest}")
-print(f"biggest two: {biggest[:2]}\n")
+#print(f"reversed: {biggest}")
+#print(f"biggest two: {biggest[:2]}\n")
 
 
-full_list = list(d.keys())
-print(f"full_list: {full_list}")
-popped_value = full_list.pop(full_list.index('b'))
-print(f"filtered_list: {full_list}")
+#full_list = list(d.keys())
+#print(f"full_list: {full_list}")
+#popped_value = full_list.pop(full_list.index('b'))
+#print(f"filtered_list: {full_list}")
 
 print(d.get('t'))
 
@@ -70,6 +70,29 @@ class testing:
         pass
 
 
+class a:
+
+    class b:
+        
+        
+        
+        
+        class c:
+            pass
+
+        
+        
+        
+        
+        class d:
+            pass
+       
+
+        
+    class c:
+        pass
+
+
     def __init__(self):
 
         #self.A = testing.a(self)
@@ -81,7 +104,8 @@ class testing:
             1: testing.a(self)
         }
 
-
+        self.total_assignments = 0
+        self.assignments = {}
     def assign(self, num):
 
         return self.assignment.get(num).adding()
@@ -106,11 +130,11 @@ print()
 for _ in range(1, 4):
     print(_)
 
-
-
 ran = ["r", "l"]
 
+
 print(random.choice(ran))
+
 
 
 arrows = {
@@ -119,3 +143,19 @@ arrows = {
     "u": "↑",
     "d": "↓"
 }
+
+round = 0
+while round < 5:
+    print("neovim!")
+    round += 1
+
+
+
+print("******************************************")
+print("And I Am using . . .")
+print("Vim Motions :p")
+print("But I have to try to")
+print("type without looking !")
+print("And use the Vim Motions without looking :D")
+print("******************************************")
+

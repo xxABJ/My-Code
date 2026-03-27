@@ -75,7 +75,7 @@ class Scanner:
                 ))
         
         
-        # New score is accounted for in "accounted_coordinates"
+        # New score is calculated already due to the logic for the variable "accounted_coordinates"
         available_cellcheck_amount = self.maze.scores.get(self.translator.get(pending_direction))
         pending_assignment = ( pending_direction, available_cellcheck_amount )
         
@@ -84,6 +84,7 @@ class Scanner:
         COL = accounted_coordinates[1]
 
 
+        #TODO: figure out if both row & col can be true or not
         if row:
 
             if pending_direction == "u":

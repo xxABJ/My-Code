@@ -113,9 +113,9 @@ class Maze:
 
 
 
-    #TODO: ADD SPECIAL LOGIC FOR ASSIGNMENT AFTER CHANGING DIRECTION
     # (AFTER THE ASIIGNMENT [i.e → > ↓ ] = Normally it's logger = (0, 1) for concurring same direction, but for changing directions ..
     # It should be: *ADDITIONAL additional_logger = logger(i.e for → > ↓) = (1, 0)
+    #TODO: SEPERATE FACTORING AND LOGING
     def log_assignments(self, direction, row= None, col= None, previous_pos= False, changing_directions = False):
         
         new_total_assignments = self.total_assignments + 1
@@ -552,7 +552,9 @@ class Maze:
 
         # Updating scores
         if print_console:
+
             print(f"\n• UPDATING SCORE FOR: {self.random_direction}")
+
 
         self.score_calculator(
 
@@ -564,7 +566,9 @@ class Maze:
 
         )
 
+
         if print_console:
+
             self.print_scores()
 
 
@@ -576,11 +580,11 @@ class Maze:
         grid[ ROW + self.directions[self.random_direction][0] ][ COL + self.directions[self.random_direction][1] ] = self.arrows.get(self.random_direction)
 
 
-
         # Logging assignments
         if print_console:
 
             print(f"\n• LOGGING: {self.random_direction}  > > >  ", end="")
+
 
         self.log_assignments(
 
@@ -589,6 +593,7 @@ class Maze:
             col= COL,
 
         )
+
 
         if print_console:
 
@@ -622,19 +627,24 @@ class Maze:
         ### TESTING
         print(f"\n • LOOPING ASSIGNMENTS\n")
 
-        for _ in range(50):
+        for _ in range(5):
         
             previous_assignment = self.previous_assignment()
         
             confirmed_directions = self.assignor.validate_direction(previous_assignment)
             confirmed_directions = random.choice(["r", "d"])
         
+            # This is not stable, remake
             if self.assignor.assign(confirmed_directions, previous_assignment, _) == False:
+
                 print(f"\nINVALID SUCCESS No.{_+1}\n    {confirmed_directions}\n{"*"*20}\n")
 
         
             else:
+
                 print(f"SUCCESS No.{_+1}\n    {confirmed_directions}\n{"-"*20}\n")
+            
+            
             #self.print_assignments()
             #self.print_grid()
 
@@ -649,6 +659,10 @@ class Maze:
         self.print_assignments()
         return grid
 
+
+
+    def single_grid_assigning(self, grid, row, col):
+        pass
 
 
 
@@ -710,6 +724,7 @@ class Maze:
 
         
         return grid
+
 
 
     def print_assignments(self):

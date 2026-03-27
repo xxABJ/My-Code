@@ -16,6 +16,10 @@ class Right:
                 self.amount_of_moves = num
 
 
+        def _factoring(self, direction= str, print_console= bool) -> None:
+            pass
+
+
         def assign(self):
 
             print(self.amount_of_moves)

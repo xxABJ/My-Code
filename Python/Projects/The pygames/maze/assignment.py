@@ -220,7 +220,6 @@ class Assignment:
                 return ["r", "u", "d"]
 
     
-
         elif previous_direction == "d":
             
             # Always check main side first

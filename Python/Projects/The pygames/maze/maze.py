@@ -57,6 +57,11 @@ class Maze:
 
 
         self.grid = self.create_grid(self.size)
+
+
+        self.selected_cell_info = []
+
+
         self.first_assignment_and_direction_completed = self.set_first_assingment_and_direction(
 
             # Custom Starting point (tuple)
@@ -66,7 +71,7 @@ class Maze:
             direction= False,
 
             # Console printing (bool)
-            print_console = False
+            print_console = True
 
         )
 
@@ -234,6 +239,7 @@ class Maze:
 
 
         # (Row, Col) is from self.set_first_assignment()
+        # (Row, Col) are the pos of 'S'
         if state:
 
             size = self.size
@@ -243,7 +249,7 @@ class Maze:
 
                 calculated_scores = {
 
-                    'topside': row - 1,
+                    'topside': row,
                     'bottomside': (size - 2) - row - 1,
                     'leftside': col - 1,
                     'rightside': (size - 2) - col
@@ -256,7 +262,7 @@ class Maze:
                 calculated_scores = {
 
                     'topside': row - 2,
-                    'bottomside': (size - 2) - row,
+                    'bottomside': (size - 2) - row + 1,
                     'leftside': col - 1,
                     'rightside': (size - 2) - col
                 
@@ -270,7 +276,7 @@ class Maze:
                     'topside': row - 1,
                     'bottomside': (size - 2) - row,
                     'leftside': col - 2,
-                    'rightside': (size - 2) - col
+                    'rightside': (size - 2) - col + 1
                 
                 }
             
@@ -281,7 +287,7 @@ class Maze:
 
                     'topside': row - 1,
                     'bottomside': (size - 2) - row,
-                    'leftside': col - 1,
+                    'leftside': col,
                     'rightside': (size - 2) - col - 1
                 
                 }
@@ -404,6 +410,7 @@ class Maze:
 
                 return available_directions
 
+
             if print_console:
                 print()
 
@@ -434,7 +441,7 @@ class Maze:
                     print("~ self.set_first_assignment()")
 
 
-                # Locator
+                # Starting-point Locator
                 for row in range(size):
 
                     # Skip if at horizontal side-border
@@ -458,7 +465,7 @@ class Maze:
                             continue
 
 
-                        # Skip if not at the starting point
+                        # Skip if not at the state point
                         elif grid[row][col] != "S":
                             
                             #print(f"{" "*5}col:{col} not 'S'")
@@ -469,7 +476,7 @@ class Maze:
 
                             #print(f"row:{row}")
                             #print(f"{" "*5}col:{col} found 'S'")
-                            pass
+                            #pass
 
 
                             ROW = row
@@ -479,7 +486,7 @@ class Maze:
 
                 
                 if print_console:
-                    print(f"~ 'S' at: (ROW: {ROW}, COL: {COL})")
+                    print(f"\n~ Located state point\n  'S' at: (ROW: {ROW}, COL: {COL})")
 
 
             # Starting direction
@@ -498,18 +505,19 @@ class Maze:
 
 
                 if print_console:
-                    print(f"~ AVAILABLE_DIRECTIONS: {AVAILABLE_DIRECTIONS}")
+                    print(f"\n~ AVAILABLE_DIRECTIONS: {AVAILABLE_DIRECTIONS}")
 
 
             if print_console:
                 print()
             
-            
+
             return size, grid, AVAILABLE_DIRECTIONS, ROW, COL
 
 
         if print_console:
-            print(f"\n{"♦"*50}")
+            print(f"\n{"♦"*50}\n{"♦"*12} FIRST ASSIGNMENT PRINTING {"♦"*11}\n{"♦"*50}")
+            print(f"tuple_pos: {tuple_pos}\ndirection: {direction}\nprint_console: {print_console}\n")
 
 
         size = self.size
@@ -603,7 +611,8 @@ class Maze:
         # Last assignment log
         if print_console:
 
-            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}")
+            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}\n")
+            self.print_grid()
             print(f"\n{"♦"*50}\n")
         
         
@@ -627,7 +636,7 @@ class Maze:
         ### TESTING
         print(f"\n • LOOPING ASSIGNMENTS\n")
 
-        for _ in range(5):
+        for _ in range(3):
         
             previous_assignment = self.previous_assignment()
         
@@ -661,8 +670,9 @@ class Maze:
 
 
 
-    def single_grid_assigning(self, grid, row, col):
-        pass
+    def selected_cell_info(self, grid, row, col):
+
+        return [(row, col), grid[row][col]]
 
 
 

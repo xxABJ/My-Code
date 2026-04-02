@@ -1,14 +1,24 @@
-• USE selected_cell_info() in maze.py
-• Check in assignment.py
-• Check self.assignor.assign
-• Fix right.py (Right, Right.assigner.assign) and finalize before implementing on all directions
-• Fix printing in general to make it useful without random debuging prints, only useful ones
+• USE self._chosen_cell_info and self._selected_cell_info in maze.py
 
-◘ After solid assignments and logging logics, figure out how the maze will be generated:
+• Check in assignment.py
+
+• Check self.assignor.assign
+
+• Fix right.py (Right, Right.assigner.assign) and finalize before implementing on all directions
+
+• Fix printing in general to make it useful without random debuging prints, only useful ones 
+☻☻ DONE:
+- r (prev r) movements!
+-
+
+
+• After solid assignments and logging logics, figure out how the maze will be generated:
 - scanner 3x3?
 - last direction value? (Need to be fixed first)
 - Or a cached set of moves - limited? or unlimited in range? - to undo/recap when self locked
 -
 
+
 • Remove unwanted code
-• Refactor ?
+
+• Refactor (mazelogic.py, assignment.py, etc)?

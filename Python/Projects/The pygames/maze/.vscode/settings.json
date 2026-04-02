@@ -1,3 +1,4 @@
 {
-    "powershell.buttons.showPanelMovementButtons": false
+    "powershell.buttons.showPanelMovementButtons": false,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }

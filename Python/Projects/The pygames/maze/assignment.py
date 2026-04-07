@@ -49,8 +49,6 @@ class Assignment:
             return Down(self)
 
 
-
-
     def validate_direction(self):
 
         previous_direction = self.maze.previous_assignment()[0][1]
@@ -60,6 +58,8 @@ class Assignment:
 
 
         return confirmed_directions
+
+
 
     # 1 brute force complete, with at_bottom indicator, all paths logging
     def _get_valid_directions(self, previous_direction):
@@ -307,7 +307,6 @@ class Assignment:
 
 
 
-
     # TODO: WTF IS THIS MESS, DELETE!
     # OR REMAKE USING C1, C2, C3 CONCEPTS
     def _get_amount_of_assignments(self, chosen_direction, previous_pos):
@@ -435,6 +434,8 @@ class Assignment:
         return amount_of_assignments
 
 
+
+
     def assign(self, confirmed_directions, index):
 
         print(f"╔{"═"*5} assignment.py.Assignment.assign()")
@@ -520,147 +521,4 @@ class Assignment:
 
 
         print(f"╔═════ assignment.Assignment.assign() Assignment No.{index+1}\n╚═          direction: {chosen_direction}\n")
-
-
-
-
-
-    # 2 return a 3x3 grid info where center cell is row & col and returns list of validated directions - for now just uses scores
-
-    # also can make it contain more logic, such as does not intersect, rewind to cause of intersection direction, check for specific score to move specifically, right paths logging only
-    def get_cell_info(self, previous_direction, row, col):
-        
-        def c_topleft(scores) -> bool:
-            
-            topside = scores.get("topside")
-            leftside = scores.get("leftside")
-
-            if topside == 0 and leftside == 0:
-            
-                return True
-            
-            else:
-
-                return False
-            
-
-        def c_topright(scores) -> bool:
-            
-            topside = scores.get("topside")
-            rightside = scores.get("rightside")
-
-            if topside == 0 and rightside == 0:
-            
-                return True
-            
-            else:
-
-                return False
-            
-            
-        def c_bottomleft(scores) -> bool:
-            
-            bottomside = scores.get("bottomside")
-            leftside = scores.get("leftside")
-
-            if bottomside == 0 and leftside == 0:
-            
-                return True
-            
-            else:
-
-                return False
-            
-            
-        def c_bottomright(scores) -> bool:
-            
-            bottomside = scores.get("bottomside")
-            rightside = scores.get("rightside")
-
-            if bottomside == 0 and rightside == 0:
-            
-                return True
-            
-            else:
-
-                return False
-
-
-        scores = self.maze.scores
-        
-
-        leftside = scores.get("leftside")
-        rightside = scores.get("rightside")
-        topside = scores.get("topside")
-        bottomside = scores.get("bottomside")
-
-
-        if previous_direction == "l":
-            
-            pass
-
-
-        elif previous_direction == "r":
-            
-            pass
-    
-
-        elif previous_direction == "d":
-            
-            if leftside == 0:
-
-                if c_bottomleft:
-                    
-                    self.at_bottom  = True
-                    return ["r"]
-                
-
-                else:
-
-                    return ["r", "d"]
-            
-
-            elif rightside == 0:
-
-                if c_bottomright:
-                    
-                    self.at_bottom  = True
-                    return ["l"]
-                
-
-                else:
-
-                    return ["l", "d"]
-                
-            
-            else:
-
-                return ["l", "r", "d"]
-
-
-        elif previous_direction == "u":
-            
-            if topside == 0:
-
-                if c_topleft:
-
-                    return ["r"]
-                
-
-                elif c_topright:
-
-                    return ["l"]
-                
-
-                else:
-
-                    return ["l", "r"]
-                
-            else:
-
-                return ["l", "r", "u"]
-
-
-        return
-
 

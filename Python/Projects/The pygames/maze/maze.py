@@ -1,5 +1,7 @@
+from factoring import *
 from assignment import *
 from scanner import *
+
 
 
 import pygame, random
@@ -51,7 +53,7 @@ class Maze:
 
         }
 
-
+        self.factoring = Factoring()
         self.scanner = Scanner(self)
         self.assignor = Assignment(self)
 
@@ -81,165 +83,265 @@ class Maze:
         self.maze = self.create_maze(self.size)
 
 
-    def choose_selected_cell(self, row, col):
+    def pick_selected_cell(self, row, col):
 
         self._chosen_cell_pos = (row, col)
 
+    def get_chosen_cell_pos(self):
+
+        return self._chosen_cell_pos
+    
 
     def set_selected_cell_info(self, direction):
 
         self._selected_cell_info = [self._chosen_cell_pos, direction]
 
+    def get_selected_cell_info(self):
 
-    def get_chosen_cell_pos(self):
-
-        return self._chosen_cell_pos
-
+        return self._selected_cell_info
 
 
-
-    # (AFTER THE ASIIGNMENT [i.e → > ↓ ] = Normally it's logger = (0, 1) for concurring same direction, but for changing directions ..
-    # It should be: *ADDITIONAL additional_logger = logger(i.e for → > ↓) = (1, 0)
     #TODO: SEPERATE FACTORING AND LOGING
-    def log_assignments(self, direction, row= None, col= None, previous_pos= False, changing_directions = False, print_console: bool = False) -> None:
+    def log_assignments(
+            
+            self,
+            current_direction: str,
+            row: int,
+            col: int,
+            previous_pos: tuple= False,
+            factoring_value: tuple= None,
+            factored_direction_data: str | bool= False,
+            print_console: bool= False
+
+        ) -> None:
         
-        if print_console and (previous_pos or changing_directions):
-            print("│")
-            print(f"├{"─"*10}  LOGGING (self.log_assignments)")
-        else:
-            print(f"\n┌{'─'*10}  LOGGING (self.log_assignments)")
-
-
         new_total_assignments = self.total_assignments + 1
 
 
-        if changing_directions:
-            
-            row = previous_pos[0]
-            col = previous_pos[1]
+        # Logging the assignments
+        if print_console:
+
+            # Accounting for all assignments
+            if previous_pos:
+
+                row = previous_pos[0]
+                col = previous_pos[1]
 
 
-            if changing_directions == "r>d":
-
-                direction1 = "r"
-                direction2 = "d"
-
-                print("2  r>d  logger:", (row, col))
-                print("2  r>d  logger2:", ( row + (self.directions[direction1][0]) - row, col + (self.directions[direction1][1]) - col ))
-
-
-                self.assignments[(new_total_assignments, direction2)] = tuple(
-                    
-                    a + b for a, b in zip(
-                        
-                        ( row, col ),
-                        ( row + self.directions[direction1][0] - row, col + self.directions[direction1][1] - col )
-                        
-                        ))
-        
-            elif changing_directions == "d>r":
-                
-                direction1 = "d"
-                direction2 = "r"
-
-                print("  2  d>r   before logger edit:", (row, col))
-                print("  2  d>r   logger edit:", ( row + self.directions[direction1][0] - row, col + self.directions[direction1][1] - col ))
-
-                self.assignments[(new_total_assignments, direction2)] = tuple(
-                    
-                    a + b for a, b in zip(
-                        
-                        ( row, col ),
-                        ( row + self.directions[direction1][0] - row, col + self.directions[direction1][1] - col )
-                        
-                        ))
-                
-                print("  2  d>r   after logger edit:", tuple(
-                    
-                    a + b for a, b in zip(
-                        
-                        ( row, col ),
-                        ( row + self.directions[direction1][0] - row, col + self.directions[direction1][1] - col )
-                        
-                        )))
-
-
-
-        elif not changing_directions and previous_pos:
-            
-            row = previous_pos[0]
-            col = previous_pos[1]
-
-
-            if print_console:
                 print("│")
-                print(f"│ logger (no changing_directions):")
-                print(f"│   direction: {direction}")
-                print(f"│   previous_pos: {previous_pos}")
-                print(f"│   row: {row}")
-                print(f"│   col: {col}")
-                print("│ ")
-                print("│ before logger edit:", (row, col))
-                print("│ logger edit:", ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col ))
-                print("│ after logger edit:", tuple(
-
-                    a + b for a, b in zip(
-
-                        ( row, col ),
-                        ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
-
-                        )))
-
-
-            self.assignments[(new_total_assignments, direction)] = tuple(
-                
-                a + b for a, b in zip(
-                    
-                    ( row, col ),
-                    ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
-                    
-                    ))
-
-        
-        # First assignment log
-        else:
-            
-
-            if print_console:
+                print(f"├{"─"*10}  LOGGING (self.log_assignments)")
                 print("│")
-                print(f"│ logger (no changing_directions):")
-                print(f"│   direction: {direction}")
-                print(f"│   previous_pos: (no previous_pos)")
-                print(f"│   row: {row}")
-                print(f"│   col: {col}")
-                print("│ ")
-                print("│ before logger edit:", (row, col))
-                print("│ logger edit:", ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col ))
-                print("│ after logger edit:", tuple(
-                
-                a + b for a, b in zip(
-                    
-                    ( row, col ),
-                    ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
-                    
-                    )))
 
 
-            self.assignments[(new_total_assignments, direction)] = tuple(
+                # SAFETY MEASURES, Shouldn't be required, due to available arguments in function
+                if not factoring_value:
+
+                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in self.log_assignments() function, calculating factoring value . . .\n\n\n")
+
+
+                    if factored_direction_data:
+
+                        if len(factored_direction_data) != 1:
+
+                            previous_direction = factored_direction_data[-1]
+
+
+                        else:
+
+                            previous_direction = factored_direction_data
+
+
+                    else:
+
+                        previous_direction = self.previous_assignment()[0][1]
+
+
+                        # Accounting for changed directrion logged key
+                        if len(previous_direction) != 1:
+
+                            # TODO: CHECK if order is correct
+                            previous_direction = previous_direction[-1]
+
+
+                    # Getting the factored condition and value
+                    factored_direction_data, factoring_value = self.factoring.check_condition(
+
+                            previous_direction= previous_direction,
+                            current_direction= current_direction,
+                            print_console= print_console
+
+                    )
+
+
+            # Accounting for first assignment log where no previous_pos and factoring_value arguments available
+            else:
+
+                # SAFETY MEASURES
+                if not factoring_value:
+
+                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in self.log_assignments() function, calculating factoring value . . .\n\n\n")
+
+
+                    if factored_direction_data:
+
+                        previous_direction = factored_direction_data
+
+
+                    else:
+
+                        # This should = FALSE, due to the self.assignments being empty
+                        previous_direction = self.previous_assignment()[0][1]
+
+
+                    # Getting the factored condition and value
+                    factored_direction_data, factoring_value = self.factoring.check_condition(
+
+                            previous_direction= previous_direction,
+                            current_direction= current_direction,
+                            print_console= print_console
+
+                    )
+
+
+            print(f"│ logger:")
+            print(f"│   direction: {current_direction}")     
+            print(f"│   row: {row}")
+            print(f"│   col: {col}")
+            print(f"│   previous_pos: {previous_pos}")
+            print(f"│   factoring_value: {factoring_value}")
+
+
+            if factored_direction_data:
                 
-                a + b for a, b in zip(
-                    
-                    ( row, col ),
-                    ( row + self.directions[direction][0] - row, col + self.directions[direction][1] - col )
-                    
-                    ))
+                print(f"│   factored_direction_data: {factored_direction_data}")
             
-        if print_console and (previous_pos or changing_directions):
+            
+            else:
+                
+                print(f"│   No factored_direction_data, factored_direction_data: {factored_direction_data}")
+
+
             print("│")
-            print(f"├{'─'*30}┘")
+
+
+            # Debugging before and after factoring in required calculations
+            print(f"│ before logger edit: {(row, col)}")
+            print(f"│ logger edit: {(factoring_value[0], factoring_value[1])}")
+            print("│ after logger edit:", tuple(
+
+                a + b for a, b in zip(
+
+                    ( row, col ),
+                    ( factoring_value[0], factoring_value[1] )
+
+            )))
+            print("│")
+
+
+            # Adding new data log to the global variable
+            self.assignments[(new_total_assignments, factored_direction_data)] = tuple(
+                
+                a + b for a, b in zip(
+                    
+                    ( row , col ),
+                    ( factoring_value[0] , factoring_value[1] )
+                    
+            ))
+
+
+            if previous_pos:
+
+                print(f"├{'─'*30}┘")
+
+
+            else:
+
+                print(f"└{'─'*30}┘")
+            
+
         else:
-            print("│")
-            print(f"└{'─'*30}┘")
+
+            # Accounting for all assignments
+            if previous_pos:
+
+                row = previous_pos[0]
+                col = previous_pos[1]
+
+
+                # SAFETY MEASURES, Shouldn't be required, due to available arguments in function
+                if not factoring_value:
+
+                    if factored_direction_data:
+
+                        if len(factored_direction_data) != 1:
+
+                            previous_direction = factored_direction_data[-1]
+
+
+                        else:
+
+                            previous_direction = factored_direction_data
+
+
+                    else:
+
+                        previous_direction = self.previous_assignment()[0][1]
+
+
+                        # Accounting for changed directrion logged key
+                        if len(previous_direction) != 1:
+
+                            # TODO: CHECK if order is correct
+                            previous_direction = previous_direction[-1]
+
+
+                    # Getting the factored condition and value
+                    factored_direction_data, factoring_value = self.factoring.check_condition(
+
+                            previous_direction= previous_direction,
+                            current_direction= current_direction,
+                            print_console= print_console
+
+                    )
+
+
+            # Accounting for first assignment log where no previous_pos and factoring_value arguments available
+            else:
+
+                # SAFETY MEASURES
+                if not factoring_value:
+
+
+                    if factored_direction_data:
+
+                        previous_direction = factored_direction_data
+
+
+                    else:
+
+                        # This should = FALSE, due to the self.assignments being empty
+                        previous_direction = self.previous_assignment()[0][1]
+
+
+                    # Getting the factored condition and value
+                    factored_direction_data, factoring_value = self.factoring.check_condition(
+
+                            previous_direction= previous_direction,
+                            current_direction= current_direction,
+                            print_console= print_console
+
+                    )
+
+
+            # Adding new data log to the global variable
+            self.assignments[(new_total_assignments, factored_direction_data)] = tuple(
+                
+                a + b for a, b in zip(
+                    
+                    ( row, col ),
+                    ( factoring_value[0], factoring_value[1] )
+                    
+            ))
 
 
         self.total_assignments = new_total_assignments
@@ -395,8 +497,8 @@ class Maze:
                 #print(f"├{'─'*30}")
 
 
-
-    def set_first_assingment_and_direction(self, tuple_pos= tuple | bool, direction= str | bool, print_console= bool) -> bool:
+    #@@@@@  TODO: USE self._chosen_cell_pos and self._selected_cell_info 
+    def set_first_assingment_and_direction(self, tuple_pos: tuple | bool= False, direction: str | bool= False, print_console: bool= False) -> None:
 
         def first_assignment(custom_start, custom_direction):
 
@@ -537,7 +639,7 @@ class Maze:
             # Starting direction
             if custom_direction == True:
             
-                self.random_direction = direction
+                RANDOM_VALID_DIRECTION = direction
 
 
                 if print_console:
@@ -546,7 +648,7 @@ class Maze:
 
             elif custom_direction == False:
 
-                self.random_direction = random.choice(AVAILABLE_DIRECTIONS)
+                RANDOM_VALID_DIRECTION = random.choice(AVAILABLE_DIRECTIONS)
 
 
                 if print_console:
@@ -557,89 +659,169 @@ class Maze:
                 print()
             
 
-            return size, grid, AVAILABLE_DIRECTIONS, ROW, COL
+            return size, grid, RANDOM_VALID_DIRECTION, ROW, COL
+
+
+            size = self.size
+            grid = self.grid
 
 
         if print_console:
+
             print(f"\n{"♦"*50}\n{"♦"*12} FIRST ASSIGNMENT PRINTING {"♦"*11}\n{"♦"*50}")
             print(f"tuple_pos: {tuple_pos}\ndirection: {direction}\nprint_console: {print_console}\n")
 
 
-        size = self.size
-        grid = self.grid
-        AVAILABLE_DIRECTIONS = str
-        ROW = int
-        COL = int
+            # Determining conditions for first assignment
+            if tuple_pos and direction:
+
+                Conditions = (True, True)
 
 
-        if tuple_pos and direction:
+            elif tuple_pos:
 
-            Conditions = (True, True)
-
-
-        elif tuple_pos:
-
-            Conditions = (True, False)
+                Conditions = (True, False)
 
 
-        elif direction:
+            elif direction:
 
-            Conditions = (False, True)
+                Conditions = (False, True)
 
-        
+            
+            else:
+
+                Conditions = (False, False)
+
+
+            size, grid, RANDOM_VALID_DIRECTION, ROW, COL = first_assignment(Conditions[0], Conditions[1])
+
+
+            # All of these should be = FALSE, due to the self.assignments being empty
+            previous_assignment = self.previous_assignment()
+            previous_direction = previous_assignment[0][1]
+            previous_pos = previous_assignment[1]
+            print(f"previous_direction: {previous_direction}")
+            print(f"previous_pos: {previous_pos}")
+
+
+            # Getting the factored condition and value
+            factored_direction_data, factoring_value = self.factoring.check_condition(
+
+                previous_direction= previous_direction,
+                current_direction= RANDOM_VALID_DIRECTION,
+                print_console= print_console
+
+            )
+
+
+            # Calculating scores for the first assignment
+            print(f"\n• CALCULATING SCORES for the first assignment: {factored_direction_data}")
+            self.score_calculator(
+
+                direction= factored_direction_data,
+                row= ROW,
+                col= COL,
+                state= True,
+                print_console= print_console
+
+            )
+
+
+            # Assigning direction.
+            print(f"\n• ASSIGNING: {factored_direction_data}")
+            grid[ ROW + factoring_value[0] ][ COL + factoring_value[1] ] = self.arrows.get(factored_direction_data)
+
+
+
+            # Logging assignments
+            print(f"\n• LOGGING: {factored_direction_data}\n")
+            self.log_assignments(
+
+                current_direction= RANDOM_VALID_DIRECTION,
+                row= ROW,
+                col= COL,
+                previous_pos= previous_pos,
+                factoring_value= factoring_value,
+                factored_direction_data= factored_direction_data,
+                print_console= print_console
+
+            )
+            print("DONE!\n")
+
+
+            # Last assignment log
+            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}\n")
+            
+
+            self.print_grid()
+
+
+            print(f"\n{"♦"*50}\n{"♦"*50}\n{"♦"*50}\n")
+
         else:
 
-            Conditions = (False, False)
+            # Determining conditions for first assignment
+            if tuple_pos and direction:
+
+                Conditions = (True, True)
 
 
-        size, grid, AVAILABLE_DIRECTIONS, ROW, COL = first_assignment(Conditions[0], Conditions[1])
+            elif tuple_pos:
+
+                Conditions = (True, False)
 
 
-        # Calculating scores for the first assignment
-        self.score_calculator(
+            elif direction:
 
-            direction= self.random_direction,
-            row= ROW,
-            col= COL,
-            state= True,
-            print_console= print_console
+                Conditions = (False, True)
 
-        )
+            
+            else:
+
+                Conditions = (False, False)
 
 
-        # Assigning direction.
-        if print_console:
-
-            print(f"\n• ASSIGNING: {self.random_direction}")
-
-        grid[ ROW + self.directions[self.random_direction][0] ][ COL + self.directions[self.random_direction][1] ] = self.arrows.get(self.random_direction)
+            size, grid, RANDOM_VALID_DIRECTION, ROW, COL = first_assignment(tuple_pos, direction)
 
 
-        # Logging assignments
-        if print_console:
+            # Getting the factored condition and value
+            factored_direction_data, factoring_value = self.factoring.check_condition(
 
-            print(f"\n• LOGGING: {self.random_direction}")
+                previous_direction= False,
+                current_direction= RANDOM_VALID_DIRECTION,
+                print_console= print_console
 
-
-        self.log_assignments(
-
-            direction= self.random_direction,
-            row= ROW,
-            col= COL,
-            print_console= print_console
-
-        )
+            )
 
 
-        # Last assignment log
-        if print_console:
+            # Calculating scores for the first assignment
+            self.score_calculator(
 
-            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}\n")
-            self.print_grid()
-            print(f"\n{"♦"*50}\n{"♦"*50}\n{"♦"*50}\n")
-        
-        
-        return True
+                direction= factored_direction_data,
+                row= ROW,
+                col= COL,
+                state= True,
+                print_console= print_console
+
+            )
+
+
+            # Assigning direction.
+            grid[ ROW + factoring_value[0] ][ COL + factoring_value[1] ] = self.arrows.get(factored_direction_data)
+
+
+            # Logging assignments
+            self.log_assignments(
+
+                current_direction= RANDOM_VALID_DIRECTION,
+                row= ROW,
+                col= COL,
+                factored_direction_data= None,
+                previous_pos= False,
+                factoring_value= factoring_value,
+                print_console= print_console
+
+            )
 
 
 

@@ -1,24 +1,24 @@
 • USE self._chosen_cell_info and self._selected_cell_info in maze.py
 
-• Check in assignment.py
-
-• Check self.assignor.assign
-
-• Fix right.py (Right, Right.assigner.assign) and finalize before implementing on all directions
+• Fix assignment logics (assignment.py, right.py(90%), left.py, up.py, down.py)
+• @@@@ FIX assignment.py.__get_amount_of_assignments
 
 • Fix printing in general to make it useful without random debuging prints, only useful ones 
 ☻☻ DONE:
-- r (prev r) movements!
--
+- r (prev r) movements! <- check
+
 
 • Cache system (a, b, ):
-a- static total cache_assignments = 5, to produce this system, some logic has to be impelemted that would chaange the surrounding assignments with a block-radius to allow for the system to know when it should stop looping through the choosen number of assignments. 
+a- static total cache_assignments = 5, to produce this system, some logic has to be implemented that would change the surrounding assignments with a block-radius to allow for the system to know when it should stop looping through the choosen number of assignments. 
 -  raduis can be two types of blocks (to account for the randomly generated walls in between)
 - i.e. RED for one cell away from assignment, ORANGE for two cells away from assignment, GREEN for >= 3 away from assignments.
 
 b- From a , it should make it easier for the cache system to jump back to specific locations (cache_assignments) to soft-unlock by:
 - change directions
 - or go even further back
+
+
+
 
 
 • After solid assignments and logging logics, figure out how the maze will be generated:
@@ -30,4 +30,6 @@ b- From a , it should make it easier for the cache system to jump back to specif
 
 • Remove unwanted code
 
-• Refactor (mazelogic.py, assignment.py, etc)?
+
+• Refactor ( mazelogic.py -> [translations?, objects?, etc] )?
+

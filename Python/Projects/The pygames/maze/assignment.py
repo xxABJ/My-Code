@@ -9,9 +9,10 @@ import random
 class Assignment:
 
 
-    def __init__(self, maze):
+    def __init__(self, maze, print_console: bool= False):
 
         self.maze = maze
+        self.print_console = print_console
 
 
         self.converted = {
@@ -311,11 +312,13 @@ class Assignment:
     # OR REMAKE USING C1, C2, C3 CONCEPTS
     def _get_amount_of_assignments(self, chosen_direction, previous_pos):
 
-        print(f"╠{'═'*7}")
-        print(f"╠═══ assignment.py.Assignment._get_amount_of_assignments()")
-
         score = self.maze.scores
-        last_direction = -1
+        #last_direction = -1
+        
+        if self.print_console:
+            print(f"╠{'═'*7}")
+            print(f"╠═══ assignment.py.Assignment._get_amount_of_assignments()")
+
 
 
         match chosen_direction:
@@ -323,17 +326,17 @@ class Assignment:
 
                 border_distance = score.get(self.converted.get("l"))
 
-                grid = self.maze.grid[:]
-                leftside = self.maze.scores.get("leftside")
+                # grid = self.maze.grid[:]
+                # leftside = self.maze.scores.get("leftside")
                 
-                for l_distance in range(1, leftside + 1):
+                # for l_distance in range(1, leftside + 1):
 
-                    if grid[previous_pos[0]][previous_pos[1] - l_distance] == self.maze.arrows.get("l"):
+                #     if grid[previous_pos[0]][previous_pos[1] - l_distance] == self.maze.arrows.get("l"):
 
-                        print(f"last   : {last_direction}")
-                        last_direction = (l_distance - 1)
-                        print(f"last   : {last_direction}")
-                        break
+                #         print(f"last   : {last_direction}")
+                #         last_direction = (l_distance - 1)
+                #         print(f"last   : {last_direction}")
+                #         break
 
 
             case "r":
@@ -357,26 +360,26 @@ class Assignment:
 
                 border_distance = score.get(self.converted.get("u"))
 
-                grid = self.maze.grid[:]
-                topside = self.maze.scores.get("topside")
+                # grid = self.maze.grid[:]
+                # topside = self.maze.scores.get("topside")
                 
-                for u_distance in range(1, topside + 1):
+                # for u_distance in range(1, topside + 1):
 
-                    if grid[previous_pos[0] - u_distance][previous_pos[1]] == self.maze.arrows.get("u"):
+                #     if grid[previous_pos[0] - u_distance][previous_pos[1]] == self.maze.arrows.get("u"):
 
-                        print(f"last   : {last_direction}")
-                        last_direction = (u_distance - 1)
-                        print(f"last   : {last_direction}")
-                        break
+                #         print(f"last   : {last_direction}")
+                #         last_direction = (u_distance - 1)
+                #         print(f"last   : {last_direction}")
+                #         break
 
 
             case "d":
 
                 border_distance = score.get(self.converted.get("d"))
 
-                grid = self.maze.grid[:]
-                bottomside = self.maze.scores.get("bottomside")
-                print(f"bottomside: {bottomside}")
+                # grid = self.maze.grid[:]
+                # bottomside = self.maze.scores.get("bottomside")
+                # print(f"bottomside: {bottomside}")
                 
                 #for d_distance in range(1, bottomside + 1):
                 #
@@ -392,7 +395,8 @@ class Assignment:
                 #        break
 
 
-        print(f"║   border_distance: {border_distance}")
+        if self.print_console:
+            print(f"║   border_distance: {border_distance}")
         #print(f"last_direction: {last_direction}")
 
 
@@ -421,7 +425,8 @@ class Assignment:
         #@TODO: LOGIC FOR CHANGING DIRECTION REQUIRED
         else:
 
-            print("║   BORDER_DIS == 1 ?")
+            if self.print_console:
+                print("║   BORDER_DIS == 1 ?")
             amount_of_assignments = 0
 
         
@@ -430,95 +435,191 @@ class Assignment:
         #    print("CLOSE TO OLDER ASSIGNMENT !!!!!")
         #    amount_of_assignments = 0
 
-        print(f"╠{'═'*7}")
+
+            if self.print_console:
+                print(f"╠{'═'*7}")
+
         return amount_of_assignments
 
 
 
 
-    def assign(self, confirmed_directions, index):
+    def assign(
+            
+            self,
+            confirmed_directions,
+            index,
+            
+        ) -> tuple[bool, str]:
 
-        print(f"╔{"═"*5} assignment.py.Assignment.assign()")
-        print("║")
-
-
-        chosen_direction = random.choice(confirmed_directions)
-        print(f"╠ chosen_direction: {chosen_direction}")
-        print("║")
-        previous_pos = self.maze.previous_assignment()[1]
-
-
-        # TODO: Last direction concept (cache?, recalling?)
-        amount_of_assignments = self._get_amount_of_assignments(chosen_direction, previous_pos)
+        assignment_state = None
 
 
+        if self.print_console:
+                
 
-        print("║")
-        print(f"╠ amount_of_assignments: {amount_of_assignments}")
-        print("║")
-
-        match chosen_direction:
-            case "l":
-
-                LEFT = self._get_assignments("l")
-
-                LEFT.left_assigner = LEFT.assigner(self, amount_of_assignments)
-                print(f"{" "*amount_of_assignments}{amount_of_assignments} Left moves - assigned")
-
-                if LEFT.assign() == False:
-                    return False
-
-                LEFT.left_assigner = None
+            print(f"╔{"═"*5} assignment.py.Assignment.assign()")
+            print("║")
 
 
-            case "r":
-
-                RIGHT = self._get_assignments("r")
-
-                RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments)
-                print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Right moves - assigned")
-
-                print("║")
-                print(f"╚{"═"*20}╝\n")
-
-                if RIGHT.assign(print_console= True) == False:
-                    print("│")
-                    print(f"│ RIGHT ASSIGNMENT FAILED")
-                    print(f"│ Amount of assignments: {amount_of_assignments}")
-                    print("│")
-                    print(f"└{'─'*20}┘\n")
-                    return False
+            chosen_direction = random.choice(confirmed_directions)
+            print(f"╠ chosen_direction: {chosen_direction}")
+            print("║")
+            previous_pos = self.maze.previous_assignment()[1]
 
 
-                RIGHT.right_assigner = None
-
-
-            case "u":
-
-                UP = self._get_assignments("u")
-
-                UP.up_assigner = UP.assigner(self, amount_of_assignments)
-                print(f"{" "*amount_of_assignments}{amount_of_assignments} Up moves - assigned")
-
-                if UP.assign() == False:
-                    return False
-
-                UP.up_assigner = None
-
-
-            case "d":
-
-                DOWN = self._get_assignments("d")
-
-                DOWN.down_assigner = DOWN.assigner(self, amount_of_assignments)
-                print(f"{" "*amount_of_assignments}{amount_of_assignments} Down moves - assigned")
-
-                if DOWN.assign() == False:
-                    return False
-
-                DOWN.down_assigner = None
+            # TODO: Last direction concept (cache?, recalling?)
+            amount_of_assignments = self._get_amount_of_assignments(
+                
+                chosen_direction= chosen_direction,
+                previous_pos= previous_pos
+                
+                )
 
 
 
-        print(f"╔═════ assignment.Assignment.assign() Assignment No.{index+1}\n╚═          direction: {chosen_direction}\n")
+            print("║")
+            print(f"╠ amount_of_assignments: {amount_of_assignments}")
+            print("║")
 
+            match chosen_direction:
+                case "u":
+
+                    UP = self._get_assignments("u")
+
+                    UP.up_assigner = UP.assigner(self, amount_of_assignments)
+                    print(f"{" "*amount_of_assignments}{amount_of_assignments} Up moves - assigned")
+
+                    if UP.assign() == False:
+                        return False
+
+                    UP.up_assigner = None
+
+
+                case "d":
+
+                    DOWN = self._get_assignments("d")
+
+                    DOWN.down_assigner = DOWN.assigner(self, amount_of_assignments)
+                    print(f"{" "*amount_of_assignments}{amount_of_assignments} Down moves - assigned")
+
+                    if DOWN.assign() == False:
+                        return False
+
+                    DOWN.down_assigner = None
+
+
+                case "r":
+
+                    RIGHT = self._get_assignments("r")
+
+
+                    RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments, self.print_console)
+                    print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Right moves - assigned")
+
+
+                    print("║")
+                    print(f"╚{"═"*20}╝\n")
+
+
+                    if RIGHT.assign() == False:
+
+                        print("│")
+                        print(f"│ RIGHT ASSIGNMENT FAILED")
+                        print(f"│ Amount of assignments: {amount_of_assignments}")
+                        print("│")
+                        print(f"└{'─'*20}┘\n")
+                        assignment_state = False
+                        return assignment_state, chosen_direction
+                    
+
+                    else:
+
+                        assignment_state = True
+
+
+                    RIGHT.right_assigner = None
+
+
+                case "l":
+
+                    LEFT = self._get_assignments("l")
+
+
+                    LEFT.left_assigner = LEFT.assigner(self, amount_of_assignments, self.print_console)
+                    print(f"{" "*amount_of_assignments}{amount_of_assignments} Left moves - assigned")
+
+
+                    if LEFT.assign() == False:
+                        assignment_state = False
+                        return assignment_state, chosen_direction
+                    
+                    else:
+                        assignment_state = True
+
+
+                    LEFT.left_assigner = None
+
+
+            print(f"╔═════ assignment.Assignment.assign() Assignment No.{index+1}\n╚═          direction: {chosen_direction}\n")
+
+
+            return assignment_state, chosen_direction
+    
+
+        else:
+
+            chosen_direction = random.choice(confirmed_directions)
+            previous_pos = self.maze.previous_assignment()[1]
+
+
+            #TODO: Last direction concept (cache?, recalling?)
+            amount_of_assignments = self._get_amount_of_assignments(
+                
+                chosen_direction= chosen_direction,
+                previous_pos= previous_pos
+                
+                )
+
+
+            match chosen_direction:
+                case "u":
+
+                    pass
+
+
+                case "d":
+
+                    pass
+
+
+                case "r":
+
+                    RIGHT = self._get_assignments("r")
+
+
+                    RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments, self.print_console)
+
+
+                    if RIGHT.assign() == False:
+
+                        assignment_state = False
+
+
+                        return assignment_state, chosen_direction
+                    
+
+                    else:
+
+                        assignment_state = True
+
+
+                    RIGHT.right_assigner = None
+
+
+                case "l":
+
+                    pass
+
+
+            return assignment_state, chosen_direction

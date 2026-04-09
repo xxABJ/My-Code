@@ -88,7 +88,14 @@ class Factoring:
 
 
     @classmethod
-    def check_condition(cls, previous_direction: str | bool= False, current_direction: str= None, print_console: bool= False) -> str | tuple:
+    def check_condition(
+        
+            cls,
+            previous_direction: str | bool= False,
+            current_direction: str= None,
+            print_console: bool= False
+            
+        ) -> str | tuple:
         
         def _required_factor(condition: str, print_console: bool= False) -> tuple:
 
@@ -134,12 +141,17 @@ class Factoring:
             print(f"Result: ", end="")
 
 
-            if factored_direction_data != 1:
+            if len(factored_direction_data) > 1:
 
                 for char in factored_direction_data:
+
                     if char == ">":
+
                         print("->", end=" ")
+
+
                     else:
+                        
                         print(char, end=" ")
             
 

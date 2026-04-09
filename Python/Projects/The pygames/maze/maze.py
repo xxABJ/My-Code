@@ -10,9 +10,10 @@ import pygame, random
 class Maze:
 
 
-    def __init__(self, size):
+    def __init__(self, size, print_console: bool= False):
         
         self.size = size
+        self.print_console = print_console
 
 
         #self.available_directions = ["l", "r", "u", "d"]
@@ -34,8 +35,8 @@ class Maze:
 
             'topside': 0,
             'bottomside': 0,
-            'leftside': 0,
-            'rightside':0
+            'rightside':0,
+            'leftside': 0
 
         }
 
@@ -55,7 +56,7 @@ class Maze:
 
         self.factoring = Factoring()
         self.scanner = Scanner(self)
-        self.assignor = Assignment(self)
+        self.assignor = Assignment(self, self.print_console)
 
 
         self.grid = self.create_grid(self.size)
@@ -74,13 +75,13 @@ class Maze:
             direction= "r",
 
             # Console printing (bool)
-            print_console = True
+            print_console = self.print_console
 
         )
 
 
         self.maze_completed = False
-        self.maze = self.create_maze(self.size)
+        self.maze = self.create_maze()
 
 
     def pick_selected_cell(self, row, col):
@@ -101,13 +102,14 @@ class Maze:
         return self._selected_cell_info
 
 
-    #TODO: SEPERATE FACTORING AND LOGING
+
+
     def log_assignments(
             
             self,
             current_direction: str,
-            row: int,
-            col: int,
+            starting_row: int= None,
+            starting_col: int= None,
             previous_pos: tuple= False,
             factoring_value: tuple= None,
             factored_direction_data: str | bool= False,
@@ -124,8 +126,8 @@ class Maze:
             # Accounting for all assignments
             if previous_pos:
 
-                row = previous_pos[0]
-                col = previous_pos[1]
+                starting_row = previous_pos[0]
+                starting_col = previous_pos[1]
 
 
                 print("│")
@@ -176,6 +178,10 @@ class Maze:
             # Accounting for first assignment log where no previous_pos and factoring_value arguments available
             else:
 
+                print(f"┌{"─"*10}  LOGGING (self.log_assignments)")
+                print("│")
+
+
                 # SAFETY MEASURES
                 if not factoring_value:
 
@@ -205,8 +211,8 @@ class Maze:
 
             print(f"│ logger:")
             print(f"│   direction: {current_direction}")     
-            print(f"│   row: {row}")
-            print(f"│   col: {col}")
+            print(f"│   row: {starting_row}")
+            print(f"│   col: {starting_col}")
             print(f"│   previous_pos: {previous_pos}")
             print(f"│   factoring_value: {factoring_value}")
 
@@ -225,17 +231,44 @@ class Maze:
 
 
             # Debugging before and after factoring in required calculations
-            print(f"│ before logger edit: {(row, col)}")
+            print(f"│ before logger edit: {(starting_row, starting_col)}")
             print(f"│ logger edit: {(factoring_value[0], factoring_value[1])}")
             print("│ after logger edit:", tuple(
 
                 a + b for a, b in zip(
 
-                    ( row, col ),
+                    ( starting_row, starting_col ),
                     ( factoring_value[0], factoring_value[1] )
 
             )))
             print("│")
+
+
+            # Conditioning type of factored_direction_data for logging
+            match factored_direction_data:
+
+                case "r>r":
+
+                    factored_direction_data = "r"
+
+
+                case "l>l":
+
+                    factored_direction_data = "l"
+
+                case "u>u":
+
+
+                    factored_direction_data = "u"
+
+                case "d>d":
+
+                    factored_direction_data = "d"
+
+
+                case _:
+                    
+                    pass
 
 
             # Adding new data log to the global variable
@@ -243,7 +276,7 @@ class Maze:
                 
                 a + b for a, b in zip(
                     
-                    ( row , col ),
+                    ( starting_row , starting_col ),
                     ( factoring_value[0] , factoring_value[1] )
                     
             ))
@@ -261,11 +294,11 @@ class Maze:
 
         else:
 
-            # Accounting for all assignments
+            # Accounting for all assignments logging
             if previous_pos:
 
-                row = previous_pos[0]
-                col = previous_pos[1]
+                starting_row = previous_pos[0]
+                starting_col = previous_pos[1]
 
 
                 # SAFETY MEASURES, Shouldn't be required, due to available arguments in function
@@ -305,7 +338,7 @@ class Maze:
                     )
 
 
-            # Accounting for first assignment log where no previous_pos and factoring_value arguments available
+            # Accounting for first assignment logging where no previous_pos argument is available
             else:
 
                 # SAFETY MEASURES
@@ -333,12 +366,39 @@ class Maze:
                     )
 
 
+            # Conditioning type of factored_direction_data for logging
+            match factored_direction_data:
+
+                case "r>r":
+
+                    factored_direction_data = "r"
+
+
+                case "l>l":
+
+                    factored_direction_data = "l"
+
+                case "u>u":
+
+
+                    factored_direction_data = "u"
+
+                case "d>d":
+
+                    factored_direction_data = "d"
+
+
+                case _:
+
+                    pass
+
+
             # Adding new data log to the global variable
             self.assignments[(new_total_assignments, factored_direction_data)] = tuple(
                 
                 a + b for a, b in zip(
                     
-                    ( row, col ),
+                    ( starting_row, starting_col ),
                     ( factoring_value[0], factoring_value[1] )
                     
             ))
@@ -348,15 +408,27 @@ class Maze:
 
 
 
-    def score_calculator(self, direction= str, row= int, col= int, state= bool, print_console= bool) -> None:
+
+    def score_calculator(
+            
+            self,
+            direction: str,
+            starting_row: int= None,
+            starting_col: int= None,
+            state: str = None,
+            print_console: bool= False
+            
+        ) -> None:
+
+        size = self.size
 
 
-        # (Row, Col) is from self.set_first_assignment()
-        # (Row, Col) are the pos of 'S'
-        if state:
+        if print_console:
 
-            # Printing old scores
-            if print_console:
+            # (Row, Col) is from self.set_first_assignment()
+            if state == "first_assignment":
+
+                # Printing old scores
                 print(f"┌{'─'*10}  CALCULATING SCORES (self.score_calculator)")
                 print("│")
                 print(f"│ OLD")
@@ -364,61 +436,60 @@ class Maze:
                 print("│")
                 self.print_scores()
 
-            size = self.size
 
+                # (Row, Col) are the pos of 'S'
+                if direction == 'd':
 
-            if direction == 'd':
+                    calculated_scores = {
 
-                calculated_scores = {
-
-                    'topside': row,
-                    'bottomside': (size - 2) - row - 1,
-                    'leftside': col - 1,
-                    'rightside': (size - 2) - col
-                
-                }
-
-
-            elif direction == 'u':
-
-                calculated_scores = {
-
-                    'topside': row - 2,
-                    'bottomside': (size - 2) - row + 1,
-                    'leftside': col - 1,
-                    'rightside': (size - 2) - col
-                
-                }
-            
-
-            elif direction == 'l':
-
-                calculated_scores = {
+                        'topside': starting_row,
+                        'bottomside': (size - 2) - starting_row - 1,
+                        'rightside': (size - 2) - starting_col,
+                        'leftside': starting_col - 1
                     
-                    'topside': row - 1,
-                    'bottomside': (size - 2) - row,
-                    'leftside': col - 2,
-                    'rightside': (size - 2) - col + 1
+                    }
+
+
+                elif direction == 'u':
+
+                    calculated_scores = {
+
+                        'topside': starting_row - 2,
+                        'bottomside': (size - 2) - starting_row + 1,
+                        'rightside': (size - 2) - starting_col,
+                        'leftside': starting_col - 1
+                    
+                    }
                 
-                }
-            
-            
-            elif direction == 'r':
 
-                calculated_scores = {
+                elif direction == 'l':
 
-                    'topside': row - 1,
-                    'bottomside': (size - 2) - row,
-                    'leftside': col,
-                    'rightside': (size - 2) - col - 1
+                    calculated_scores = {
+                        
+                        'topside': starting_row - 1,
+                        'bottomside': (size - 2) - starting_row,
+                        'rightside': (size - 2) - starting_col + 1,
+                        'leftside': starting_col - 2
+                    
+                    }
                 
-                }
+                
+                elif direction == 'r':
+
+                    calculated_scores = {
+
+                        'topside': starting_row - 1,
+                        'bottomside': (size - 2) - starting_row,
+                        'rightside': (size - 2) - starting_col - 1,
+                        'leftside': starting_col
+                    
+                    }
 
 
-            self.scores = calculated_scores
+                self.scores = calculated_scores
 
-            # Printing new scores
-            if print_console:
+
+                # Printing new scores
                 print("│")
                 print("│")
                 print(f"│ NEW")
@@ -429,10 +500,9 @@ class Maze:
                 print(f"└{'─'*30}┘")
 
 
-        else:
-            
-            # Printing old scores
-            if print_console:
+            else:
+                
+                # Printing old scores
                 print("│")
                 print(f"├{'─'*10}  CALCULATING SCORES (self.score_calculator)")
                 print("│")
@@ -442,51 +512,50 @@ class Maze:
                 self.print_scores()
 
 
-            scores = self.scores
+                scores = self.scores
 
 
-            if direction == 'd':
+                if direction == 'd':
 
-                new_topside_score = scores.get('topside') + 1
-                new_bottomside_score = scores.get('bottomside') - 1
-
-
-                self.scores['topside'] = new_topside_score
-                self.scores['bottomside'] = new_bottomside_score
+                    new_topside_score = scores.get('topside') + 1
+                    new_bottomside_score = scores.get('bottomside') - 1
 
 
-            elif direction == 'u':
-
-                new_topside_score = scores.get('topside') - 1
-                new_bottomside_score = scores.get('bottomside') + 1
+                    self.scores['topside'] = new_topside_score
+                    self.scores['bottomside'] = new_bottomside_score
 
 
-                self.scores['topside'] = new_topside_score
-                self.scores['bottomside'] = new_bottomside_score
+                elif direction == 'u':
+
+                    new_topside_score = scores.get('topside') - 1
+                    new_bottomside_score = scores.get('bottomside') + 1
 
 
-            elif direction == 'r':
-
-                new_rightside_score = scores.get('rightside') - 1
-                new_leftside_score = scores.get('leftside') + 1
+                    self.scores['topside'] = new_topside_score
+                    self.scores['bottomside'] = new_bottomside_score
 
 
-                self.scores['rightside'] = new_rightside_score
-                self.scores['leftside'] = new_leftside_score
+                elif direction == 'r':
+
+                    new_rightside_score = scores.get('rightside') - 1
+                    new_leftside_score = scores.get('leftside') + 1
 
 
-            elif direction == 'l':
-
-                new_rightside_score = scores.get('rightside') + 1
-                new_leftside_score = scores.get('leftside') - 1
+                    self.scores['rightside'] = new_rightside_score
+                    self.scores['leftside'] = new_leftside_score
 
 
-                self.scores['rightside'] = new_rightside_score
-                self.scores['leftside'] = new_leftside_score   
+                elif direction == 'l':
+
+                    new_rightside_score = scores.get('rightside') + 1
+                    new_leftside_score = scores.get('leftside') - 1
 
 
-            # Printing new scores
-            if print_console:
+                    self.scores['rightside'] = new_rightside_score
+                    self.scores['leftside'] = new_leftside_score   
+
+
+                # Printing new scores
                 print("│")
                 print("│")
                 print(f"│ NEW")
@@ -497,8 +566,118 @@ class Maze:
                 #print(f"├{'─'*30}")
 
 
+        else:
+
+            # (Row, Col) is from self.set_first_assignment()
+            if state == "first_assignment":
+
+                # (Row, Col) are the pos of 'S'
+                if direction == 'd':
+
+                    calculated_scores = {
+
+                        'topside': starting_row,
+                        'bottomside': (size - 2) - starting_row - 1,
+                        'rightside': (size - 2) - starting_col,
+                        'leftside': starting_col - 1
+                    
+                    }
+
+
+                elif direction == 'u':
+
+                    calculated_scores = {
+
+                        'topside': starting_row - 2,
+                        'bottomside': (size - 2) - starting_row + 1,
+                        'rightside': (size - 2) - starting_col,
+                        'leftside': starting_col - 1
+                    
+                    }
+                
+
+                elif direction == 'l':
+
+                    calculated_scores = {
+                        
+                        'topside': starting_row - 1,
+                        'bottomside': (size - 2) - starting_row,
+                        'rightside': (size - 2) - starting_col + 1,
+                        'leftside': starting_col - 2
+                    
+                    }
+                
+                
+                elif direction == 'r':
+
+                    calculated_scores = {
+
+                        'topside': starting_row - 1,
+                        'bottomside': (size - 2) - starting_row,
+                        'rightside': (size - 2) - starting_col - 1,
+                        'leftside': starting_col
+                    
+                    }
+
+
+                self.scores = calculated_scores
+
+
+            else:
+
+                scores = self.scores
+
+
+                if direction == 'd':
+
+                    new_topside_score = scores.get('topside') + 1
+                    new_bottomside_score = scores.get('bottomside') - 1
+
+
+                    self.scores['topside'] = new_topside_score
+                    self.scores['bottomside'] = new_bottomside_score
+
+
+                elif direction == 'u':
+
+                    new_topside_score = scores.get('topside') - 1
+                    new_bottomside_score = scores.get('bottomside') + 1
+
+
+                    self.scores['topside'] = new_topside_score
+                    self.scores['bottomside'] = new_bottomside_score
+
+
+                elif direction == 'r':
+
+                    new_rightside_score = scores.get('rightside') - 1
+                    new_leftside_score = scores.get('leftside') + 1
+
+
+                    self.scores['rightside'] = new_rightside_score
+                    self.scores['leftside'] = new_leftside_score
+
+
+                elif direction == 'l':
+
+                    new_rightside_score = scores.get('rightside') + 1
+                    new_leftside_score = scores.get('leftside') - 1
+
+
+                    self.scores['rightside'] = new_rightside_score
+                    self.scores['leftside'] = new_leftside_score   
+
+
+
     #@@@@@  TODO: USE self._chosen_cell_pos and self._selected_cell_info 
-    def set_first_assingment_and_direction(self, tuple_pos: tuple | bool= False, direction: str | bool= False, print_console: bool= False) -> None:
+    def set_first_assingment_and_direction(
+            
+            self,
+            tuple_pos: tuple | bool= False,
+            direction: str | bool= False,
+            print_console: bool= False
+            
+        ) -> None:
 
         def first_assignment(custom_start, custom_direction):
 
@@ -560,7 +739,6 @@ class Maze:
 
             if print_console:
                 print()
-
 
 
             # Starting Assignment
@@ -643,7 +821,7 @@ class Maze:
 
 
                 if print_console:
-                    print(f"~ Selected direction: {direction}")
+                    print(f"~ Selected direction: {RANDOM_VALID_DIRECTION}")
 
 
             elif custom_direction == False:
@@ -653,6 +831,7 @@ class Maze:
 
                 if print_console:
                     print(f"\n~ AVAILABLE_DIRECTIONS: {AVAILABLE_DIRECTIONS}")
+                    print(f"~ RANDOMLY SELECTED DIRECTION: {RANDOM_VALID_DIRECTION}")
 
 
             if print_console:
@@ -662,8 +841,8 @@ class Maze:
             return size, grid, RANDOM_VALID_DIRECTION, ROW, COL
 
 
-            size = self.size
-            grid = self.grid
+        size = self.size
+        grid = self.grid
 
 
         if print_console:
@@ -698,8 +877,19 @@ class Maze:
 
             # All of these should be = FALSE, due to the self.assignments being empty
             previous_assignment = self.previous_assignment()
-            previous_direction = previous_assignment[0][1]
-            previous_pos = previous_assignment[1]
+
+            try:
+                
+                previous_direction = previous_assignment[0][1]
+                previous_pos = previous_assignment[1]
+            
+
+            except:
+                
+                previous_direction = False
+                previous_pos = False
+
+
             print(f"previous_direction: {previous_direction}")
             print(f"previous_pos: {previous_pos}")
 
@@ -714,23 +904,24 @@ class Maze:
             )
 
 
-            # Calculating scores for the first assignment
-            print(f"\n• CALCULATING SCORES for the first assignment: {factored_direction_data}")
-            self.score_calculator(
+            # Choosing a cell
+            self.pick_selected_cell(
 
-                direction= factored_direction_data,
-                row= ROW,
-                col= COL,
-                state= True,
-                print_console= print_console
+                ROW + factoring_value[0],
+                COL + factoring_value[1]
 
             )
+            chosen_row, chosen_col = self.get_chosen_cell_pos()
+
+
+            # Setting selected cell info
+            self.set_selected_cell_info(RANDOM_VALID_DIRECTION)
 
 
             # Assigning direction.
-            print(f"\n• ASSIGNING: {factored_direction_data}")
-            grid[ ROW + factoring_value[0] ][ COL + factoring_value[1] ] = self.arrows.get(factored_direction_data)
-
+            print(f"\n• ASSIGNING: {factored_direction_data}", end=" ")
+            grid[ chosen_row ][ chosen_col ] = self.arrows.get(factored_direction_data)
+            print("✅ >> DONE!\n")
 
 
             # Logging assignments
@@ -738,15 +929,29 @@ class Maze:
             self.log_assignments(
 
                 current_direction= RANDOM_VALID_DIRECTION,
-                row= ROW,
-                col= COL,
+                starting_row= ROW,
+                starting_col= COL,
                 previous_pos= previous_pos,
                 factoring_value= factoring_value,
                 factored_direction_data= factored_direction_data,
                 print_console= print_console
 
             )
-            print("DONE!\n")
+            print("✅ >> DONE!\n")
+
+
+            # Calculating scores for the first assignment
+            print(f"\n• CALCULATING SCORE FOR: {factored_direction_data}\n")
+            self.score_calculator(
+
+                direction= factored_direction_data,
+                starting_row= ROW,
+                starting_col= COL,
+                state= "first_assignment",
+                print_console= print_console
+
+            )
+            print("✅ >> DONE!\n")
 
 
             # Last assignment log
@@ -757,6 +962,7 @@ class Maze:
 
 
             print(f"\n{"♦"*50}\n{"♦"*50}\n{"♦"*50}\n")
+
 
         else:
 
@@ -781,26 +987,30 @@ class Maze:
                 Conditions = (False, False)
 
 
-            size, grid, RANDOM_VALID_DIRECTION, ROW, COL = first_assignment(tuple_pos, direction)
+            size, grid, RANDOM_VALID_DIRECTION, ROW, COL = first_assignment(Conditions[0], Conditions[1])
+
+
+            # All of these should be = FALSE, due to no assignments has been logged yet.
+            previous_assignment = self.previous_assignment()
+
+            try:
+                
+                previous_direction = previous_assignment[0][1]
+                previous_pos = previous_assignment[1]
+            
+
+            except:
+                
+                previous_direction = False
+                previous_pos = False
+
 
 
             # Getting the factored condition and value
             factored_direction_data, factoring_value = self.factoring.check_condition(
 
-                previous_direction= False,
+                previous_direction= previous_direction,
                 current_direction= RANDOM_VALID_DIRECTION,
-                print_console= print_console
-
-            )
-
-
-            # Calculating scores for the first assignment
-            self.score_calculator(
-
-                direction= factored_direction_data,
-                row= ROW,
-                col= COL,
-                state= True,
                 print_console= print_console
 
             )
@@ -814,11 +1024,23 @@ class Maze:
             self.log_assignments(
 
                 current_direction= RANDOM_VALID_DIRECTION,
-                row= ROW,
-                col= COL,
-                factored_direction_data= None,
-                previous_pos= False,
+                starting_row= ROW,
+                starting_col= COL,
+                previous_pos= previous_pos,
                 factoring_value= factoring_value,
+                factored_direction_data= factored_direction_data,
+                print_console= print_console
+
+            )
+
+
+            # Calculating scores for the first assignment
+            self.score_calculator(
+
+                direction= factored_direction_data,
+                starting_row= ROW,
+                starting_col= COL,
+                state= "first_assignment",
                 print_console= print_console
 
             )
@@ -826,19 +1048,22 @@ class Maze:
 
 
 
-    def create_maze(self, size):
+
+    def create_maze(self):
 
         grid = self.grid
             
-        #TEMP Unable to go 'u' after first direction has been assigned
-        while self.random_direction == 'u' and len(self.assignments) == 1:
+        # #TEMP Unable to go 'u' after first direction has been assigned
+        # while self.random_direction == 'u' and len(self.assignments) == 1:
     
-            self.random_direction = random.choice(self.available_directions)
-            continue
+        #     self.random_direction = random.choice(self.available_directions)
+        #     continue
 
 
         ### TESTING
-        print(f"\n ☻ LOOPING ASSIGNMENTS\n")
+        if self.print_console:
+            print(f"\n ☻ LOOPING ASSIGNMENTS\n")
+
 
         for _ in range(5):
         
@@ -846,23 +1071,31 @@ class Maze:
             # TESTING
             confirmed_directions = random.choice(["r"])
         
+
             # This is not stable, remake
-            if self.assignor.assign(confirmed_directions, _) == False:
-
-                print(f"{"*"*5}\nINVALID assignment No.{_+1}\n    {confirmed_directions}\n{"*"*5}\n")
-
-        
-            else:
-
-                print(f"{"-"*5}\nSUCCESSFUL assignment No.{_+1}\n    {confirmed_directions}\n{"-"*5}\n")
+            assignment_state, final_direction = self.assignor.assign(
+                
+                confirmed_directions= confirmed_directions,
+                index= _,
+                
+                )
             
-            
-            #self.print_assignments()
-            #self.print_grid()
+            if self.print_console:
 
-        
+                if assignment_state == False:
+
+                    print(f"{"*"*5}\nINVALID assignment No.{_+1}\n\nassignment_state:  {assignment_state}\nfinal_direction:   {final_direction}\n{"*"*5}\n")
+
+            
+                else:
+
+                    print(f"{"-"*5}\nSUCCESSFUL assignment No.{_+1}\n\nassignment_state:  {assignment_state}\nfinal_direction:   {final_direction}\n{"-"*5}\n")
+            
+
+
         self.maze_completed = True
-        print(f"self.maze_completed: {self.maze_completed}")
+        if self.print_console:
+            print(f"self.maze_completed: {self.maze_completed}")
 
 
 
@@ -870,6 +1103,8 @@ class Maze:
         print()
         self.print_assignments()
         return grid
+
+
 
 
 
@@ -1047,5 +1282,5 @@ class Maze:
 #Maze(50).print_maze()
 #a = Maze(25)
 #a.print_grid()
-Maze(30).print_maze()
+Maze(30, False).print_maze()
 

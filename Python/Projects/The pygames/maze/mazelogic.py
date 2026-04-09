@@ -9,10 +9,10 @@ class MazeLogic:
         # These tuples are based on how grid is being iterated in / how it was created
         self.directions = {
 
-            'l': (0, -1),
-            'r': (0, 1),
             'u': (-1, 0),
-            'd': (1, 0)
+            'd': (1, 0),
+            'l': (0, -1),
+            'r': (0, 1)
 
         }
 
@@ -21,18 +21,28 @@ class MazeLogic:
 
             'topside': 0,
             'bottomside': 0,
-            'leftside': 0,
-            'rightside':0
+            'rightside':0,
+            'leftside': 0
 
         }
 
 
         self.arrows = {
 
-           "l": "←",
-           "r": "→",
            "u": "↑",
-           "d": "↓"
+           "d": "↓",
+           "r": "→",
+           "l": "←"
+
+        }
+
+
+        self.score_direction_translated = {
+
+            "u": "topside",
+            "d": "bottomside",
+            "r": "rightside",
+            "l": "leftside"
 
         }
 

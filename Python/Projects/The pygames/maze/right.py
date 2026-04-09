@@ -6,9 +6,10 @@ class Right:
 
     class assigner:
 
-        def __init__(self, right_factory, num: int= 0):
+        def __init__(self, right_factory, num: int= 0, print_console: bool= False):
 
             self.right_factory = right_factory
+            self.print_console = print_console
 
 
             if num >= 0:
@@ -17,12 +18,12 @@ class Right:
 
 
 
-        def assign(self, print_console: bool= False) -> None | bool:
+        def assign(self) -> None | bool:
 
             # Invalid number of moves -> False
             if self.amount_of_moves == 0:
 
-                if print_console:
+                if self.print_console:
 
                     print(f"┌─── right.py.Right.assigner.assign()")
                     print("│")
@@ -71,7 +72,7 @@ class Right:
 
                 else:
 
-                    if print_console:
+                    if self.print_console:
 
                         if assignments == 1:
 
@@ -101,7 +102,7 @@ class Right:
 
                                 previous_direction= previous_direction,
                                 current_direction= current_direction,
-                                print_console= print_console
+                                print_console= self.print_console
 
                         )                
                         
@@ -128,8 +129,8 @@ class Right:
                         chosen_row, chosen_col = self.right_factory.maze.get_chosen_cell_pos()
 
 
-                        print(f" >> ✅ chosen_row :{chosen_row}", end= " ")
-                        print(f" >> ✅ chosen_col :{chosen_col}\n")
+                        print(f" >> ✅ chosen_row: {chosen_row}", end= " ")
+                        print(f" >> ✅ chosen_col: {chosen_col}")
                         print("│")
 
 
@@ -202,15 +203,55 @@ class Right:
 
 
                         # Assigning the arrow to the chosen cell
-                        grid[chosen_row][chosen_col] = self.right_factory.maze.arrows.get(current_direction)
+                        grid[ chosen_row ][ chosen_col ] = self.right_factory.maze.arrows.get(current_direction)
 
 
-                        print("✅ >> DONE!\n")
+                        print("✅ >> DONE!")
                         print("│")
 
 
                         print(f"│ self.right_factory.maze.get_selected_cell_info(): {self.right_factory.maze.get_selected_cell_info()}")
                         print("│")
+
+
+                        # Logging the assignment
+                        self.right_factory.maze.log_assignments(
+
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
+
+                        )          
+
+
+                        # Calculating the score after the assignment
+                        self.right_factory.maze.score_calculator(
+
+                            direction= current_direction,
+                            state= "",
+                            print_console= self.print_console
+
+                        )
+
+
+                        if assignments != self.amount_of_moves:
+
+                            print(f"├{'─'*30}┘")
+
+
+                        else:
+
+                            print(f"└{'─'*30}┘")
+
+
+                        # Printing grid progression
+                        self.right_factory.maze.print_grid()
+
+
+                        # Setting the updated grid to the maze
+                        self.right_factory.maze.grid = grid
 
 
                     else:
@@ -220,7 +261,7 @@ class Right:
 
                                 previous_direction= previous_direction,
                                 current_direction= current_direction,
-                                print_console= print_console
+                                print_console= self.print_console
 
                         )       
 
@@ -240,50 +281,33 @@ class Right:
 
 
                         # Assigning the arrow to the chosen cell
-                        grid[chosen_row][chosen_col] = self.right_factory.maze.arrows.get(current_direction)
+                        grid[ chosen_row ][ chosen_col ] = self.right_factory.maze.arrows.get(current_direction)
 
                     
-                    # Logging the assignment
-                    self.right_factory.maze.log_assignments(
+                        # Logging the assignment
+                        self.right_factory.maze.log_assignments(
 
-                        current_direction= current_direction,
-                        row= None,
-                        col= None,
-                        previous_pos= previous_pos,
-                        factored_direction_data= factored_direction_data,
-                        factoring_value= factoring_value,
-                        print_console= print_console
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
 
-                    )          
+                        )          
 
 
-                #@@@@@@@@@@
-                # Calculating the score after the assignment
-                self.right_factory.maze.score_calculator(
+                        # Calculating the score after the assignment
+                        self.right_factory.maze.score_calculator(
 
-                    direction= current_direction,
-                    state= "",
-                    print_console= print_console
+                            direction= current_direction,
+                            state= "",
+                            print_console= self.print_console
 
-                )
-
-
-                if assignments != self.amount_of_moves:
-
-                    print(f"├{'─'*30}┘")
+                        )
 
 
-                else:
-
-                    print(f"└{'─'*30}┘")
-
-
-
-            self.right_factory.maze.print_grid()
-
-
-            # Setting the updated grid to the maze
-            self.right_factory.maze.grid = grid
+                        # Setting the updated grid to the maze
+                        self.right_factory.maze.grid = grid
 
 
 
@@ -300,8 +324,8 @@ class Right:
 
 
 
-    def assign(self, print_console: bool = False):
+    def assign(self):
         
-        return self.right_assigner.assign(print_console)
+        return self.right_assigner.assign()
     
 

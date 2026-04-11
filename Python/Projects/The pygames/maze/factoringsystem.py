@@ -1,4 +1,5 @@
-class Factoring:
+class FactoringSystem:
+
 
     changing_directions = {
 
@@ -172,3 +173,5 @@ class Factoring:
 
 
         return factored_direction_data, factoring_value,
+
+

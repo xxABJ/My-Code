@@ -6,7 +6,7 @@ from left import *
 import random    
 
 
-class Assignment:
+class AssignSystem:
 
 
     def __init__(self, maze, print_console: bool= False):
@@ -28,7 +28,7 @@ class Assignment:
         self.at_bottom = False
         
 
-    def _get_assignments(self, direction):
+    def _get_assignments(self, direction) -> object:
 
         if direction == "l":
 
@@ -474,7 +474,7 @@ class Assignment:
                 chosen_direction= chosen_direction,
                 previous_pos= previous_pos
                 
-                )
+            )
 
 
 
@@ -579,7 +579,7 @@ class Assignment:
                 chosen_direction= chosen_direction,
                 previous_pos= previous_pos
                 
-                )
+            )
 
 
             match chosen_direction:

@@ -7,6 +7,9 @@
 ☻☻ DONE:
 - r (prev r) movements! <- check
 
+• USE MazeEngine() !
+
+
 
 • Cache system (a, b, ):
 a- static total cache_assignments = 5, to produce this system, some logic has to be implemented that would change the surrounding assignments with a block-radius to allow for the system to know when it should stop looping through the choosen number of assignments. 
@@ -31,5 +34,5 @@ b- From a , it should make it easier for the cache system to jump back to specif
 • Remove unwanted code
 
 
-• Refactor ( mazelogic.py -> [translations?, objects?, etc] )?
+• Reformat ( mazelogic.py -> [translations?, objects?, etc] )?
 

@@ -6,7 +6,14 @@ class Right:
 
     class assigner:
 
-        def __init__(self, right_factory, num: int= 0, print_console: bool= False):
+        def __init__(
+                
+                self,
+                right_factory,
+                num: int= 0,
+                print_console: bool= False
+                
+            ) -> None:
 
             self.right_factory = right_factory
             self.print_console = print_console
@@ -310,7 +317,7 @@ class Right:
                         self.right_factory.maze.grid = grid
 
 
-
+    # Maybe useful for cache system designing
     def __init__(self, maze):
         
         self.maze = maze

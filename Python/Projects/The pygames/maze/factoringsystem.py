@@ -101,8 +101,9 @@ class FactoringSystem:
         def _required_factor(condition: str, print_console: bool= False) -> tuple:
 
                 if print_console:
-                    print(f"Checking condition\n")
-                    print(f"   *   *   ✅ condition  {condition}  met")
+                    print("├ Checking condition")
+                    print(f"├ ✅ condition  {condition}  met")
+                    print("│")
 
 
                 return cls.factoring_in.get(condition)
@@ -123,23 +124,32 @@ class FactoringSystem:
 
         if print_console:
 
-            print()
-            print(f"Calculating factoring value\n")
+            if not previous_direction:
+
+                print("┌──────────  Calculating factoring value (@MazeEngine.factoringSystem.check_condition)")
+                print("│")
+
+
+            else: 
+            
+                print("├──────────  Calculating factoring value (@MazeEngine.factoringSystem.check_condition)")
+                print("│")
+
 
             if previous_direction:
 
-                print(f"inserting_previous_direction: {list(inserting_previous_direction.keys())[0]}")
+                print(f"│ inserting_previous_direction: {list(inserting_previous_direction.keys())[0]}")
 
 
             else:
 
-                print("No previous direction")
+                print("│ No previous direction")
 
 
-            print(f"inserting_current_direction: {current_direction}")
+            print(f"│ inserting_current_direction: {current_direction}")
 
             
-            print(f"Result: ", end="")
+            print(f"│ Result: ", end="")
 
 
             if len(factored_direction_data) > 1:
@@ -154,6 +164,8 @@ class FactoringSystem:
                     else:
                         
                         print(char, end=" ")
+
+                print()
             
 
             else:
@@ -161,7 +173,7 @@ class FactoringSystem:
                 print(factored_direction_data)
 
 
-            print("\n")
+            print("│")
 
 
         factoring_value = _required_factor(
@@ -170,6 +182,17 @@ class FactoringSystem:
             print_console= print_console
 
         )
+
+
+        if print_console:
+
+            if not previous_direction:
+
+                print(f"└{'─'*30}┘")
+
+            else:
+
+                print(f"├{'─'*30}┘")
 
 
         return factored_direction_data, factoring_value,

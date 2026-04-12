@@ -9,71 +9,37 @@ import random
 class AssignSystem:
 
 
-    def __init__(self, maze, print_console: bool= False):
+    def __init__(self, object_mazeEWngine):
 
-        self.maze = maze
-        self.print_console = print_console
+        self.mazeEngine = object_mazeEWngine
+        self.print_console = self.mazeEngine.print_console
 
 
-        self.converted = {
-
-            "l": "leftside",
-            "r": "rightside",
-            "u": "topside",
-            "d": "bottomside",
-
-        }
+        self.arrows = self.mazeEngine.arrows
+        self.score_direction_translated = self.mazeEngine.score_direction_translated
         
 
         self.at_bottom = False
         
 
-    def _get_assignments(self, direction) -> object:
-
-        if direction == "l":
-
-            return Left(self)
-
-
-        elif direction == "r":
-
-            return Right(self)
-
-
-        elif direction == "u":
-
-            return Up(self)
-
-
-        elif direction == "d":
-
-            return Down(self)
-
-
-    def validate_direction(self):
-
-        previous_direction = self.maze.previous_assignment()[0][1]
-
-
-        confirmed_directions = self._get_valid_directions(previous_direction)
-
-
-        return confirmed_directions
 
 
 
-    # 1 brute force complete, with at_bottom indicator, all paths logging
+    # brute force complete, with at_bottom indicator, all paths logging
+    # 1.1
     def _get_valid_directions(self, previous_direction):
         
         def c_topleft(scores) -> bool:
             
-            topside = scores.get("topside")
-            leftside = scores.get("leftside")
+            topside = scores.get(self.score_direction_translated.get("u"))
+            leftside = scores.get(self.score_direction_translated.get("l"))
+
 
             if topside == 0 and leftside == 0:
             
                 return True
             
+
             else:
 
                 return False
@@ -81,13 +47,15 @@ class AssignSystem:
 
         def c_topright(scores) -> bool:
             
-            topside = scores.get("topside")
-            rightside = scores.get("rightside")
+            topside = scores.get(self.score_direction_translated.get("u"))
+            rightside = scores.get(self.score_direction_translated.get("r"))
+
 
             if topside == 0 and rightside == 0:
             
                 return True
             
+
             else:
 
                 return False
@@ -95,13 +63,15 @@ class AssignSystem:
             
         def c_bottomleft(scores) -> bool:
             
-            bottomside = scores.get("bottomside")
-            leftside = scores.get("leftside")
+            bottomside = scores.get(self.score_direction_translated.get("d"))
+            leftside = scores.get(self.score_direction_translated.get("l"))
+
 
             if bottomside == 0 and leftside == 0:
             
                 return True
             
+
             else:
 
                 return False
@@ -109,25 +79,29 @@ class AssignSystem:
             
         def c_bottomright(scores) -> bool:
             
-            bottomside = scores.get("bottomside")
-            rightside = scores.get("rightside")
+            bottomside = scores.get(self.score_direction_translated.get("d"))
+            rightside = scores.get(self.score_direction_translated.get("r"))
+
 
             if bottomside == 0 and rightside == 0:
             
                 return True
+            
             
             else:
 
                 return False
 
 
-        scores = self.maze.scores
+
+
+        scores = self.mazeEngine.get_scores()
         
 
-        leftside = scores.get("leftside")
-        rightside = scores.get("rightside")
-        topside = scores.get("topside")
-        bottomside = scores.get("bottomside")
+        leftside = scores.get(self.score_direction_translated.get("l"))
+        rightside = scores.get(self.score_direction_translated.get("r"))
+        topside = scores.get(self.score_direction_translated.get("u"))
+        bottomside = scores.get(self.score_direction_translated.get("d"))
 
 
         if previous_direction == "l":
@@ -135,13 +109,13 @@ class AssignSystem:
             # Always check main border_distance first
             if leftside == 0:
 
-                if c_topleft:
+                if c_topleft(scores):
 
                     return ["d"]
                 
 
                 # w/brute force method (go to "F" when at_bottom == True), this shouldn't be possible
-                elif c_bottomleft:
+                elif c_bottomleft(scores):
 
                     self.at_bottom = True
                     return ["u"]
@@ -166,7 +140,7 @@ class AssignSystem:
                 return ["l", "u"]
             
 
-            # checking leftside is not required
+            # checking rightside is not required
 
 
             else:
@@ -183,13 +157,13 @@ class AssignSystem:
             # Always check main side first
             if rightside == 0:
 
-                if c_topright:
+                if c_topright(scores):
 
                     return ["d"]
                 
 
                 # w/brute force method (go to "F" when at_bottom == True), this shouldn't be possible
-                elif c_bottomright:
+                elif c_bottomright(scores):
 
                     self.at_bottom = True
                     return ["u"]
@@ -230,12 +204,12 @@ class AssignSystem:
                 self.at_bottom = True
 
 
-                if c_bottomleft:
+                if c_bottomleft(scores):
 
                     return ["r"]
                 
 
-                elif c_bottomright:
+                elif c_bottomright(scores):
 
                     return ["l"]
                 
@@ -271,12 +245,12 @@ class AssignSystem:
             # Always check main side first
             if topside == 0:
 
-                if c_topleft:
+                if c_topleft(scores):
 
                     return ["r"]
                 
 
-                elif c_topright:
+                elif c_topright(scores):
 
                     return ["l"]
                 
@@ -306,25 +280,41 @@ class AssignSystem:
 
                 return ["l", "r", "u"]
 
+    # 1.
+    def validate_direction(self):
+
+        previous_direction = self.mazeEngine.previous_assignment()[0][1]
+
+
+        confirmed_directions = self._get_valid_directions(previous_direction)
+
+
+        return confirmed_directions
+
+
+
 
 
     # TODO: WTF IS THIS MESS, DELETE!
     # OR REMAKE USING C1, C2, C3 CONCEPTS
-    def _get_amount_of_assignments(self, chosen_direction, previous_pos):
+    # 2.1
+    def _get_amount_of_assignments(self, chosen_direction):
 
-        score = self.maze.scores
+        score = self.mazeEngine.get_scores()
         #last_direction = -1
         
-        if self.print_console:
-            print(f"╠{'═'*7}")
-            print(f"╠═══ assignment.py.Assignment._get_amount_of_assignments()")
 
+        if self.print_console:
+
+            print(f"╠{'═'*7}")
+            print(f"╠═══ assignsystem.py.AssignSystem._get_amount_of_assignments()")
 
 
         match chosen_direction:
+
             case "l":
 
-                border_distance = score.get(self.converted.get("l"))
+                border_distance = score.get(self.score_direction_translated.get("l"))
 
                 # grid = self.maze.grid[:]
                 # leftside = self.maze.scores.get("leftside")
@@ -341,7 +331,7 @@ class AssignSystem:
 
             case "r":
             
-                border_distance = score.get(self.converted.get("r"))
+                border_distance = score.get(self.score_direction_translated.get("r"))
             
 
                 #grid = self.maze.grid[:]
@@ -358,7 +348,7 @@ class AssignSystem:
 
             case "u":
 
-                border_distance = score.get(self.converted.get("u"))
+                border_distance = score.get(self.score_direction_translated.get("u"))
 
                 # grid = self.maze.grid[:]
                 # topside = self.maze.scores.get("topside")
@@ -375,7 +365,7 @@ class AssignSystem:
 
             case "d":
 
-                border_distance = score.get(self.converted.get("d"))
+                border_distance = score.get(self.score_direction_translated.get("d"))
 
                 # grid = self.maze.grid[:]
                 # bottomside = self.maze.scores.get("bottomside")
@@ -396,12 +386,12 @@ class AssignSystem:
 
 
         if self.print_console:
+            
             print(f"║   border_distance: {border_distance}")
-        #print(f"last_direction: {last_direction}")
+            #print(f"last_direction: {last_direction}")
 
 
         #if last_direction == -1:
-
         if border_distance > 4:
             
             amount_of_assignments = random.choice([1, 2, 3, 4])
@@ -426,24 +416,50 @@ class AssignSystem:
         else:
 
             if self.print_console:
+
                 print("║   BORDER_DIS == 1 ?")
+
+
             amount_of_assignments = 0
 
         
         #else:
-        #
+        
         #    print("CLOSE TO OLDER ASSIGNMENT !!!!!")
         #    amount_of_assignments = 0
 
 
             if self.print_console:
+
                 print(f"╠{'═'*7}")
+
 
         return amount_of_assignments
 
+    # 2.2
+    def _get_assignments(self, direction) -> object:
+
+        if direction == "l":
+
+            return Left(self)
 
 
+        elif direction == "r":
 
+            return Right(self)
+
+
+        elif direction == "u":
+
+            return Up(self)
+
+
+        elif direction == "d":
+
+            return Down(self)
+
+
+    # 2.
     def assign(
             
             self,
@@ -458,21 +474,21 @@ class AssignSystem:
         if self.print_console:
                 
 
-            print(f"╔{"═"*5} assignment.py.Assignment.assign()")
+            print(f"╔{"═"*5} @MazeEngine.assignSystem.AssignSystem.assign()")
             print("║")
 
 
             chosen_direction = random.choice(confirmed_directions)
             print(f"╠ chosen_direction: {chosen_direction}")
             print("║")
-            previous_pos = self.maze.previous_assignment()[1]
+            previous_pos = self.mazeEngine.previous_assignment()[1]
 
 
             # TODO: Last direction concept (cache?, recalling?)
             amount_of_assignments = self._get_amount_of_assignments(
                 
                 chosen_direction= chosen_direction,
-                previous_pos= previous_pos
+                #previous_pos= previous_pos
                 
             )
 
@@ -482,7 +498,9 @@ class AssignSystem:
             print(f"╠ amount_of_assignments: {amount_of_assignments}")
             print("║")
 
+
             match chosen_direction:
+
                 case "u":
 
                     UP = self._get_assignments("u")
@@ -500,11 +518,35 @@ class AssignSystem:
 
                     DOWN = self._get_assignments("d")
 
+
                     DOWN.down_assigner = DOWN.assigner(self, amount_of_assignments)
-                    print(f"{" "*amount_of_assignments}{amount_of_assignments} Down moves - assigned")
+
+
+                    #DOWN.down_cache = ""
+
+
+                    print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Down moves - assigned")
+                    print("║")
+                    print(f"╚{"═"*20}╝\n")
+
 
                     if DOWN.assign() == False:
-                        return False
+
+                        print("│")
+                        print(f"│ DOWN ASSIGNMENT FAILED")
+                        print(f"│ Amount of assignments: {amount_of_assignments}")
+                        print("│")
+                        print(f"└{'─'*20}┘\n")
+
+
+                        assignment_state = False
+                        return assignment_state, chosen_direction
+                    
+
+                    else:
+
+                        assignment_state = True
+
 
                     DOWN.down_assigner = None
 
@@ -514,10 +556,13 @@ class AssignSystem:
                     RIGHT = self._get_assignments("r")
 
 
-                    RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments, self.print_console)
+                    RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments)
+
+
+                    #RIGHT.right_cache = ""
+
+
                     print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Right moves - assigned")
-
-
                     print("║")
                     print(f"╚{"═"*20}╝\n")
 
@@ -529,6 +574,8 @@ class AssignSystem:
                         print(f"│ Amount of assignments: {amount_of_assignments}")
                         print("│")
                         print(f"└{'─'*20}┘\n")
+
+
                         assignment_state = False
                         return assignment_state, chosen_direction
                     
@@ -561,7 +608,7 @@ class AssignSystem:
                     LEFT.left_assigner = None
 
 
-            print(f"╔═════ assignment.Assignment.assign() Assignment No.{index+1}\n╚═          direction: {chosen_direction}\n")
+            print(f"╔═════ @MazeEngine.assignSystem.AssignSystem.assign()   -    TESTING LOOP No.{index+1}\n╚═          direction: {chosen_direction}\n")
 
 
             return assignment_state, chosen_direction
@@ -570,7 +617,7 @@ class AssignSystem:
         else:
 
             chosen_direction = random.choice(confirmed_directions)
-            previous_pos = self.maze.previous_assignment()[1]
+            previous_pos = self.mazeEngine.previous_assignment()[1]
 
 
             #TODO: Last direction concept (cache?, recalling?)
@@ -583,6 +630,7 @@ class AssignSystem:
 
 
             match chosen_direction:
+
                 case "u":
 
                     pass
@@ -590,7 +638,27 @@ class AssignSystem:
 
                 case "d":
 
-                    pass
+                    DOWN = self._get_assignments("d")
+
+
+                    DOWN.down_assigner = DOWN.assigner(self, amount_of_assignments)
+
+
+                    #DOWN.down_cache = ""
+
+
+                    if DOWN.assign() == False:
+
+                        assignment_state = False 
+                        return assignment_state, chosen_direction
+                    
+
+                    else:
+
+                        assignment_state = True
+
+
+                    DOWN.down_assigner = None
 
 
                 case "r":
@@ -601,11 +669,12 @@ class AssignSystem:
                     RIGHT.right_assigner = RIGHT.assigner(self, amount_of_assignments, self.print_console)
 
 
+                    #RIGHT.right_cache = ""
+
+
                     if RIGHT.assign() == False:
 
                         assignment_state = False
-
-
                         return assignment_state, chosen_direction
                     
 

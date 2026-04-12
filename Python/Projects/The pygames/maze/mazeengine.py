@@ -1,5 +1,7 @@
-import random
+from factoringsystem import FactoringSystem
+from assignsystem import AssignSystem
 
+import random
 
 
 class MazeEngine:
@@ -13,19 +15,9 @@ class MazeEngine:
             custom_starting_point: tuple | bool,
             custom_starting_direction: str | bool,
             print_console: bool,
-            object_factoringSystem: object,
-            object_assignSystem: object
             
         ):
         
-        self.maze = object_maze
-        self.size = size
-        self.custom_starting_point = custom_starting_point
-        self.custom_starting_direction = custom_starting_direction
-        self.print_console = print_console
-        self.factoringSystem = object_factoringSystem
-        self.assignSystem = object_assignSystem
-
         self.arrows = {
 
            "u": "↑",
@@ -35,6 +27,7 @@ class MazeEngine:
 
         }
         
+
         self.score_direction_translated = {
 
             "u": "topside",
@@ -54,10 +47,22 @@ class MazeEngine:
 
         }
 
+
         self._total_assignments = 0
         self._assignments = {}
         self._chosen_cell_pos = ()
         self._selected_cell_info = []
+
+
+        self.maze = object_maze
+        self.size = size
+        self.custom_starting_point = custom_starting_point
+        self.custom_starting_direction = custom_starting_direction
+        self.print_console = print_console
+
+        
+        self.factoringSystem = FactoringSystem()
+        self.assignSystem =  AssignSystem(self)
 
 
         self.grid = self.create_grid(self.size)
@@ -274,7 +279,7 @@ class MazeEngine:
                 
                 if print_console:
 
-                    print(f"\n>> DONE!✅\n  'S' at: (ROW: {ROW}, COL: {COL})")
+                    print(f" DONE!✅\n  'S' at: (ROW: {ROW}, COL: {COL})")
 
 
             # Starting direction
@@ -295,7 +300,7 @@ class MazeEngine:
 
                 if print_console:
 
-                    print(f"\n~ AVAILABLE_DIRECTIONS: {AVAILABLE_DIRECTIONS}")
+                    print(f"\n\n~ AVAILABLE_DIRECTIONS: {AVAILABLE_DIRECTIONS}")
                     print(f"~ RANDOMLY SELECTED DIRECTION: {RANDOM_VALID_DIRECTION}")
 
 
@@ -357,11 +362,13 @@ class MazeEngine:
                 previous_pos = False
 
 
-            print(f"previous_direction: {previous_direction}")
-            print(f"previous_pos: {previous_pos}")
+            print(f"    previous_direction: {previous_direction}")
+            print(f"    previous_pos: {previous_pos}")
+
 
 
             # Getting the factored condition and value
+            print("\n\n• CALCULATING FACTORING CONDITION\n")
             factored_direction_data, factoring_value = self.factoringSystem.check_condition(
 
                 previous_direction= previous_direction,
@@ -369,9 +376,16 @@ class MazeEngine:
                 print_console= print_console
 
             )
+            print(f" >> factored_direction_data: {factored_direction_data}", end= " ")
+            print(f" >> factoring_value: {factoring_value}", end= " ")
+            print("✅ DONE!")
+
+
+            print(f"\n\n~ OLD self.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
 
 
             # Choosing a cell
+            print("~ Choosing global selected cell (factoring!) . . .", end= " ")
             self.pick_selected_cell(
 
                 ROW + factoring_value[0],
@@ -379,20 +393,28 @@ class MazeEngine:
 
             )
             chosen_row, chosen_col = self.get_chosen_cell_pos()
+            print(f" >> ✅ chosen_row: {chosen_row}", end= " ")
+            print(f" >> ✅ chosen_col: {chosen_col}")
+            print(f"~ NEW self.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
+
+
+            print(f"\n• Inserting in grid:   {self.arrows.get(factored_direction_data)}", end= " ")         
 
 
             # Setting selected cell info
-            self.set_selected_cell_info(RANDOM_VALID_DIRECTION)
+            print("   >> Setting selected cell", end= " ")
+            self.set_selected_cell_info(factored_direction_data)
+            print("✅")
 
 
-            # Assigning direction.
-            print(f"\n• ASSIGNING: {factored_direction_data}", end=" ")
+            # Assigning direction
+            print(f"\n\n• ASSIGNING: {factored_direction_data}", end=" ")
             grid[ chosen_row ][ chosen_col ] = self.arrows.get(factored_direction_data)
-            print("✅ >> DONE!\n")
+            print("✅ DONE!")
 
 
             # Logging assignments
-            print(f"\n• LOGGING: {factored_direction_data}\n")
+            print(f"\n\n• LOGGING: {factored_direction_data}\n")
             self.log_assignments(
 
                 current_direction= RANDOM_VALID_DIRECTION,
@@ -404,25 +426,26 @@ class MazeEngine:
                 print_console= print_console
 
             )
-            print("✅ >> DONE!\n")
+            print("✅ DONE!")
 
 
             # Calculating scores for the first assignment
-            print(f"\n• CALCULATING SCORE FOR: {factored_direction_data}\n")
+            print(f"\n\n• CALCULATING SCORE FOR: {factored_direction_data}\n")
             self.score_calculator(
 
-                direction= factored_direction_data,
+                current_direction= factored_direction_data,
                 starting_row= ROW,
                 starting_col= COL,
                 state= "first_assignment",
+                factored_direction_data= factored_direction_data,
                 print_console= print_console
 
             )
-            print("✅ >> DONE!\n")
+            print("✅ DONE!")
 
 
             # Last assignment log
-            print(f"\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}\n")
+            print(f"\n\n• PREVIOUS LOGGED ASSIGNMENT: {self.previous_assignment()}\n")
             
 
             # Updating grid
@@ -488,6 +511,20 @@ class MazeEngine:
             )
 
 
+            # Choosing a cell
+            self.pick_selected_cell(
+
+                ROW + factoring_value[0],
+                COL + factoring_value[1]
+
+            )
+            chosen_row, chosen_col = self.get_chosen_cell_pos()
+
+
+            # Setting selected cell info
+            self.set_selected_cell_info(RANDOM_VALID_DIRECTION)
+
+
             # Assigning direction
             grid[ ROW + factoring_value[0] ][ COL + factoring_value[1] ] = self.arrows.get(factored_direction_data)
 
@@ -509,10 +546,11 @@ class MazeEngine:
             # Calculating scores for the first assignment
             self.score_calculator(
 
-                direction= factored_direction_data,
+                current_direction= factored_direction_data,
                 starting_row= ROW,
                 starting_col= COL,
                 state= "first_assignment",
+                factored_direction_data= factored_direction_data,
                 print_console= print_console
 
             )
@@ -631,14 +669,14 @@ class MazeEngine:
 
 
                 print("│")
-                print(f"├{"─"*10}  LOGGING (self.log_assignments)")
+                print(f"├{"─"*10}  LOGGING (@MazeEngine.log_assignments)")
                 print("│")
 
 
                 # SAFETY MEASURES, Shouldn't be required, due to available arguments in function
                 if not factoring_value:
 
-                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in self.log_assignments() function, calculating factoring value . . .\n\n\n")
+                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in @MazeEngine.log_assignments() function, calculating factoring value . . .\n\n\n")
 
 
                     if factored_direction_data:
@@ -678,14 +716,14 @@ class MazeEngine:
             # Accounting for first assignment log where no previous_pos and factoring_value arguments available
             else:
 
-                print(f"┌{"─"*10}  LOGGING (self.log_assignments)")
+                print(f"┌{"─"*10}  LOGGING (@MazeEngine.log_assignments)")
                 print("│")
 
 
                 # SAFETY MEASURES
                 if not factoring_value:
 
-                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in self.log_assignments() function, calculating factoring value . . .\n\n\n")
+                    print("\n\n\nWARNING: No factoring value argument passed in with previous position in @MazeEngine.log_assignments() function, calculating factoring value . . .\n\n\n")
 
 
                     if factored_direction_data:
@@ -920,7 +958,7 @@ class MazeEngine:
         total_directions = 1
         for key, value in self.get_assignments().items():
 
-            print(f"  •{total_directions: <10} {"   ->   "} •direction: ({key})  •grid_pos: {value}")
+            print(f" •{total_directions: <3}  ->   │ assignment:  {str(key[0]): <3} , {str(key[1]): >3} │ {"•grid_pos:": >12} {value}")
 
 
             total_directions += 1
@@ -934,10 +972,11 @@ class MazeEngine:
     def score_calculator(
             
             self,
-            direction: str,
+            current_direction: str,
             starting_row: int= None,
             starting_col: int= None,
             state: str= None,
+            factored_direction_data: str= None,
             print_console: bool= False
             
         ) -> None:
@@ -951,16 +990,22 @@ class MazeEngine:
             if state == "first_assignment":
 
                 # Printing old scores
-                print(f"┌{'─'*10}  CALCULATING SCORES (self.score_calculator)")
+                print(f"┌{'─'*10}  CALCULATING SCORES (@MazeEngine.score_calculator)")
+                print("│")
+                print(f"│ factored_direction_data: {factored_direction_data}")
                 print("│")
                 print(f"│ OLD")
-                print(f"│ Assignment No.{self.get_total_assignments()}")
+                print(f"│ Assignment No.0")
                 print("│")
                 self.print_scores()
 
 
+                print("│")
+                print(f"├ EXTRA SPECIAL calculating condition for first assignment ! (due to factored_direction_data: {factored_direction_data}),")
+
+
                 # (Row, Col) are the pos of 'S'
-                if direction == 'd':
+                if current_direction == 'd':
 
                     calculated_scores = {
 
@@ -972,7 +1017,7 @@ class MazeEngine:
                     }
 
 
-                elif direction == 'u':
+                elif current_direction == 'u':
 
                     calculated_scores = {
 
@@ -984,7 +1029,7 @@ class MazeEngine:
                     }
                 
 
-                elif direction == 'l':
+                elif current_direction == 'l':
 
                     calculated_scores = {
                         
@@ -996,7 +1041,7 @@ class MazeEngine:
                     }
                 
                 
-                elif direction == 'r':
+                elif current_direction == 'r':
 
                     calculated_scores = {
 
@@ -1013,9 +1058,8 @@ class MazeEngine:
 
                 # Printing new scores
                 print("│")
-                print("│")
                 print(f"│ NEW")
-                print(f"│ Assignment No.{self.get_total_assignments() + 1}")
+                print(f"│ Assignment No.1")
                 print("│")
                 self.print_scores()
                 print("│")
@@ -1026,7 +1070,9 @@ class MazeEngine:
                 
                 # Printing old scores
                 print("│")
-                print(f"├{'─'*10}  CALCULATING SCORES (self.score_calculator)")
+                print(f"├{'─'*10}  CALCULATING SCORES (@MazeEngine.score_calculator)")
+                print("│")
+                print(f"│ factored_direction_data: {factored_direction_data}")
                 print("│")
                 print(f"│ OLD")
                 print(f"│ Assignment No.{self.get_total_assignments()}")
@@ -1037,52 +1083,118 @@ class MazeEngine:
                 scores = self.get_scores()
 
 
-                if direction in ["d", "u"]:
+                if factored_direction_data[0] == factored_direction_data[-1]:
+
+                    print("│")
+                    print(f"├ No special calculating condition (due to factored_direction_data: {factored_direction_data})")
+                    print("│   Updating scores depending on the:")
+                    print("│         ♦ current direction assigned")
+
+
+                    if current_direction in ["d", "u"]:
+
+                        old_topside_score = scores.get(self.score_direction_translated.get("u"))
+                        old_bottomside_score = scores.get(self.score_direction_translated.get("d"))
+
+
+                        if current_direction == 'd':
+
+                            new_topside_score = old_topside_score + 1
+                            new_bottomside_score = old_bottomside_score - 1
+
+
+                        elif current_direction == 'u':
+
+                            new_topside_score = old_topside_score - 1
+                            new_bottomside_score = old_bottomside_score + 1
+
+
+                        self._scores[self.score_direction_translated.get("u")] = new_topside_score
+                        self._scores[self.score_direction_translated.get("d")] = new_bottomside_score
+
+
+                    elif current_direction in ["r", "l"]:
+
+                        old_rightside_score = scores.get(self.score_direction_translated.get("r"))
+                        old_leftside_score = scores.get(self.score_direction_translated.get("l"))
+
+
+                        if current_direction == 'r':
+
+                            new_rightside_score = old_rightside_score - 1
+                            new_leftside_score = old_leftside_score + 1
+
+
+                        elif current_direction == 'l':
+
+                            new_rightside_score = old_rightside_score + 1
+                            new_leftside_score = old_leftside_score - 1
+
+
+                        self._scores[self.score_direction_translated.get("r")] = new_rightside_score
+                        self._scores[self.score_direction_translated.get("l")] = new_leftside_score   
+
+                
+                else:
+
+                    print("│")
+                    print(f"├ Special calculating condition (due to factored_direction_data: {factored_direction_data}),")
+                    print("│   Updating scores depending on:")
+                    print("│         ♦ current direction assigned")
+                    print("│         ♦ previous direction")
+
 
                     old_topside_score = scores.get(self.score_direction_translated.get("u"))
                     old_bottomside_score = scores.get(self.score_direction_translated.get("d"))
-
-
-                    if direction == 'd':
-
-                        new_topside_score = old_topside_score + 1
-                        new_bottomside_score = old_bottomside_score - 1
-
-
-                    elif direction == 'u':
-
-                        new_topside_score = old_topside_score - 1
-                        new_bottomside_score = old_bottomside_score + 1
-
-
-                    self._scores[self.score_direction_translated.get("u")] = new_topside_score
-                    self._scores[self.score_direction_translated.get("d")] = new_bottomside_score
-
-
-                elif direction in ["r", "l"]:
-
                     old_rightside_score = scores.get(self.score_direction_translated.get("r"))
                     old_leftside_score = scores.get(self.score_direction_translated.get("l"))
 
 
-                    if direction == 'r':
-
-                        new_rightside_score = old_rightside_score - 1
-                        new_leftside_score = old_leftside_score + 1
+                    previous_direction = factored_direction_data[0]
 
 
-                    elif direction == 'l':
+                    if current_direction in ["d", "u"]:
 
-                        new_rightside_score = old_rightside_score + 1
-                        new_leftside_score = old_leftside_score - 1
+                        new_topside_score = old_topside_score
+                        new_bottomside_score = old_bottomside_score
+
+                        if previous_direction == "r":
+
+                            new_rightside_score = old_rightside_score - 1
+                            new_leftside_score = old_leftside_score + 1
 
 
+                        elif previous_direction == "l":
+
+                            new_rightside_score = old_rightside_score + 1
+                            new_leftside_score = old_leftside_score - 1
+
+
+                    elif current_direction in ["r", "l"]:
+
+                        new_rightside_score = old_rightside_score
+                        new_leftside_score = old_leftside_score
+
+
+                        if previous_direction == "d":
+
+                            new_topside_score = old_topside_score + 1
+                            new_bottomside_score = old_bottomside_score - 1
+
+
+                        elif previous_direction == "u":
+
+                            new_topside_score = old_topside_score - 1
+                            new_bottomside_score = old_bottomside_score + 1
+
+
+                    self._scores[self.score_direction_translated.get("u")] = new_topside_score
+                    self._scores[self.score_direction_translated.get("d")] = new_bottomside_score
                     self._scores[self.score_direction_translated.get("r")] = new_rightside_score
-                    self._scores[self.score_direction_translated.get("l")] = new_leftside_score   
+                    self._scores[self.score_direction_translated.get("l")] = new_leftside_score
 
 
                 # Printing new scores
-                print("│")
                 print("│")
                 print(f"│ NEW")
                 print(f"│ Assignment No.{self.get_total_assignments() + 1}")
@@ -1098,7 +1210,7 @@ class MazeEngine:
             if state == "first_assignment":
 
                 # (Row, Col) are the pos of 'S'
-                if direction == 'd':
+                if current_direction == 'd':
 
                     calculated_scores = {
 
@@ -1110,7 +1222,7 @@ class MazeEngine:
                     }
 
 
-                elif direction == 'u':
+                elif current_direction == 'u':
 
                     calculated_scores = {
 
@@ -1122,7 +1234,7 @@ class MazeEngine:
                     }
                 
 
-                elif direction == 'l':
+                elif current_direction == 'l':
 
                     calculated_scores = {
                         
@@ -1134,7 +1246,7 @@ class MazeEngine:
                     }
                 
                 
-                elif direction == 'r':
+                elif current_direction == 'r':
 
                     calculated_scores = {
 
@@ -1154,19 +1266,19 @@ class MazeEngine:
                 scores = self.get_scores()
 
 
-                if direction in ["d", "u"]:
+                if current_direction in ["d", "u"]:
 
                     old_topside_score = scores.get(self.score_direction_translated.get("u"))
                     old_bottomside_score = scores.get(self.score_direction_translated.get("d"))
 
 
-                    if direction == 'd':
+                    if current_direction == 'd':
 
                         new_topside_score = old_topside_score + 1
                         new_bottomside_score = old_bottomside_score - 1
 
 
-                    elif direction == 'u':
+                    elif current_direction == 'u':
 
                         new_topside_score = old_topside_score - 1
                         new_bottomside_score = old_bottomside_score + 1
@@ -1176,19 +1288,19 @@ class MazeEngine:
                     self._scores[self.score_direction_translated.get("d")] = new_bottomside_score
 
 
-                elif direction in ["r", "l"]:
+                elif current_direction in ["r", "l"]:
 
                     old_rightside_score = scores.get(self.score_direction_translated.get("r"))
                     old_leftside_score = scores.get(self.score_direction_translated.get("l"))
 
 
-                    if direction == 'r':
+                    if current_direction == 'r':
 
                         new_rightside_score = old_rightside_score - 1
                         new_leftside_score = old_leftside_score + 1
 
 
-                    elif direction == 'l':
+                    elif current_direction == 'l':
 
                         new_rightside_score = old_rightside_score + 1
                         new_leftside_score = old_leftside_score - 1
@@ -1263,18 +1375,19 @@ class MazeEngine:
 
         ### TESTING
         if self.print_console:
+
             print(f"\n ☻ LOOPING ASSIGNMENTS\n")
 
 
         for _ in range(5):
         
-            confirmed_directions = self.assignor.validate_direction()
+            confirmed_directions = self.assignSystem.validate_direction()
             # TESTING
-            confirmed_directions = random.choice(["r"])
+            confirmed_directions = random.choice(["r", "d"])
         
 
             # This is not stable, remake
-            assignment_state, final_direction = self.assignor.assign(
+            assignment_state, final_direction = self.assignSystem.assign(
                 
                 confirmed_directions= confirmed_directions,
                 index= _,
@@ -1295,7 +1408,10 @@ class MazeEngine:
 
 
         self.maze_completed = True
+
+
         if self.print_console:
+
             print(f"self.maze_completed: {self.maze_completed}")
 
 

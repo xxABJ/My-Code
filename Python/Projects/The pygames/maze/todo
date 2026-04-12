@@ -1,14 +1,5 @@
-• USE self._chosen_cell_info and self._selected_cell_info in maze.py
-
-• Fix assignment logics (assignment.py, right.py(90%), left.py, up.py, down.py)
+• Fix assignment logics (assignment.py, right.py(100%), left.py, up.py, down.py(100%))
 • @@@@ FIX assignment.py.__get_amount_of_assignments
-
-• Fix printing in general to make it useful without random debuging prints, only useful ones 
-☻☻ DONE:
-- r (prev r) movements! <- check
-
-• USE MazeEngine() !
-
 
 
 • Cache system (a, b, ):
@@ -22,8 +13,6 @@ b- From a , it should make it easier for the cache system to jump back to specif
 
 
 
-
-
 • After solid assignments and logging logics, figure out how the maze will be generated:
 - scanner 3x3?
 - last direction value? (Need to be fixed first)
@@ -32,7 +21,3 @@ b- From a , it should make it easier for the cache system to jump back to specif
 
 
 • Remove unwanted code
-
-
-• Reformat ( mazelogic.py -> [translations?, objects?, etc] )?
-

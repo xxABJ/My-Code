@@ -1,22 +1,12 @@
-import random
-
-
 class Right:
 
 
     class assigner:
 
-        def __init__(
-                
-                self,
-                right_factory,
-                num: int= 0,
-                print_console: bool= False
-                
-            ) -> None:
+        def __init__(self, assignSystem, num: int= 0) -> None:
 
-            self.right_factory = right_factory
-            self.print_console = print_console
+            self.assignSystem = assignSystem
+            self.print_console = assignSystem.print_console
 
 
             if num >= 0:
@@ -41,14 +31,14 @@ class Right:
                 return False
 
 
-            grid = self.right_factory.maze.grid[:]
+            grid = self.assignSystem.mazeEngine.grid
             current_direction = "r"
 
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
                 # Getting the previous assignment info
-                previous_assignment = self.right_factory.maze.previous_assignment()
+                previous_assignment = self.assignSystem.mazeEngine.previous_assignment()
                 length_of_assignments = previous_assignment[0][0]
                 previous_direction_data = previous_assignment[0][1]
                 previous_pos = previous_assignment[1]
@@ -65,6 +55,7 @@ class Right:
                     previous_direction = previous_direction_data
 
 
+                # THIS WILL BREAK THE CODE LATER!!!!!!!
                 # Can be possible -- TODO: skipping logic or method so it won't be possible
                 if grid[previous_pos[0]][previous_pos[1] + 1] == "S":
 
@@ -83,14 +74,14 @@ class Right:
 
                         if assignments == 1:
 
-                            print("┌─── right.py.Right.assigner.assign()")
+                            print("┌───      right.py.Right.assigner.assign()")
                             print("│")
 
 
                         else:
 
                             print("│")
-                            print("├─── right.py.Right.assigner.assign()")
+                            print("├───      right.py.Right.assigner.assign()")
                             print("│")
 
 
@@ -101,11 +92,12 @@ class Right:
                         print("│")
 
 
-                        print("├─ Getting factored condition and value for RIGHT CLASS:", end= " ")
+                        print("│")
+                        print("├ Getting factored condition and value for RIGHT CLASS:")
                         
                         
                         # Getting the factored condition and value
-                        factored_direction_data, factoring_value = self.right_factory.maze.factoring.check_condition(
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
 
                                 previous_direction= previous_direction,
                                 current_direction= current_direction,
@@ -114,37 +106,37 @@ class Right:
                         )                
                         
                         
-                        print(f" >> ✅ factored_direction_data: {factored_direction_data}", end= " ")
-                        print(f" >> ✅ factoring_value: {factoring_value}\n")
+                        print(f"├ factored_direction_data: {factored_direction_data}", end= " ")
+                        print(f" >> factoring_value: {factoring_value}  ✅")
+                        print("│")
                         print("│")
 
 
-                        print(f"│ OLD self.right_factory.maze.get_chosen_cell_pos(): {self.right_factory.maze.get_chosen_cell_pos()}")
-                        print("│")
+                        print(f"│ OLD self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
 
 
-                        print("│ choosing global selected cell . . .", end= " ")
+                        print("│ choosing global selected cell (factoring!) . . .", end= " ")
 
 
                         # Choosing a cell
-                        self.right_factory.maze.pick_selected_cell(
+                        self.assignSystem.mazeEngine.pick_selected_cell(
 
                             previous_pos[0] + factoring_value[0],
                             previous_pos[1] + factoring_value[1]
 
                         )
-                        chosen_row, chosen_col = self.right_factory.maze.get_chosen_cell_pos()
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
 
 
                         print(f" >> ✅ chosen_row: {chosen_row}", end= " ")
                         print(f" >> ✅ chosen_col: {chosen_col}")
+
+
+                        print(f"│ NEW self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
                         print("│")
 
 
-                        print(f"│ NEW self.right_factory.maze.get_chosen_cell_pos(): {self.right_factory.maze.get_chosen_cell_pos()}")
                         print("│")
-
-
                         print("│ RIGHT previous direction", end= "  ")
 
 
@@ -173,11 +165,11 @@ class Right:
 
                         print(previous_pos)
                         print("│")
+                        print("│")
 
 
                         # Loop cycle value
                         print(f"├─ loop: {assignments}")
-                        print("│")
 
 
                         # Account for the first move after first initial assignment
@@ -193,14 +185,14 @@ class Right:
                             print("├ ", end= "")
 
 
-                        print(f"* RIGHT CLASS * inserting in grid: {self.right_factory.maze.arrows.get(current_direction)}", end= " ")
+                        print(f"* RIGHT CLASS * inserting in grid: {self.assignSystem.arrows.get(current_direction)}", end= " ")
                         
                         
                         print(" >> Setting selected cell", end= " ")
 
 
                         # Setting selected cell info
-                        self.right_factory.maze.set_selected_cell_info(current_direction)
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
 
 
                         print("✅", end= " ")
@@ -210,19 +202,18 @@ class Right:
 
 
                         # Assigning the arrow to the chosen cell
-                        grid[ chosen_row ][ chosen_col ] = self.right_factory.maze.arrows.get(current_direction)
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
 
 
                         print("✅ >> DONE!")
-                        print("│")
 
 
-                        print(f"│ self.right_factory.maze.get_selected_cell_info(): {self.right_factory.maze.get_selected_cell_info()}")
+                        print(f"├─ self.assignSystem.mazeEngine.get_selected_cell_info(): {self.assignSystem.mazeEngine.get_selected_cell_info()}")
                         print("│")
 
 
                         # Logging the assignment
-                        self.right_factory.maze.log_assignments(
+                        self.assignSystem.mazeEngine.log_assignments(
 
                             current_direction= current_direction,
                             previous_pos= previous_pos,
@@ -234,10 +225,11 @@ class Right:
 
 
                         # Calculating the score after the assignment
-                        self.right_factory.maze.score_calculator(
+                        self.assignSystem.mazeEngine.score_calculator(
 
-                            direction= current_direction,
+                            current_direction= current_direction,
                             state= "",
+                            factored_direction_data= factored_direction_data,
                             print_console= self.print_console
 
                         )
@@ -254,17 +246,17 @@ class Right:
 
 
                         # Printing grid progression
-                        self.right_factory.maze.print_grid()
+                        self.assignSystem.mazeEngine.print_grid()
 
 
                         # Setting the updated grid to the maze
-                        self.right_factory.maze.grid = grid
+                        self.assignSystem.mazeEngine.grid = grid
 
 
                     else:
 
                         # Getting the factored condition and value
-                        factored_direction_data, factoring_value = self.right_factory.maze.factoring.check_condition(
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
 
                                 previous_direction= previous_direction,
                                 current_direction= current_direction,
@@ -274,25 +266,25 @@ class Right:
 
 
                         # Choosing a cell
-                        self.right_factory.maze.pick_selected_cell(
+                        self.assignSystem.mazeEngine.pick_selected_cell(
 
                             previous_pos[0] + factoring_value[0],
                             previous_pos[1] + factoring_value[1]
 
                         )
-                        chosen_row, chosen_col = self.right_factory.maze.get_chosen_cell_pos()
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
 
 
                         # Setting selected cell info
-                        self.right_factory.maze.set_selected_cell_info(current_direction)
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
 
 
                         # Assigning the arrow to the chosen cell
-                        grid[ chosen_row ][ chosen_col ] = self.right_factory.maze.arrows.get(current_direction)
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
 
                     
                         # Logging the assignment
-                        self.right_factory.maze.log_assignments(
+                        self.assignSystem.mazeEngine.log_assignments(
 
                             current_direction= current_direction,
                             previous_pos= previous_pos,
@@ -304,31 +296,31 @@ class Right:
 
 
                         # Calculating the score after the assignment
-                        self.right_factory.maze.score_calculator(
+                        self.assignSystem.mazeEngine.score_calculator(
 
-                            direction= current_direction,
+                            current_direction= current_direction,
                             state= "",
+                            factored_direction_data= factored_direction_data,
                             print_console= self.print_console
 
                         )
 
 
                         # Setting the updated grid to the maze
-                        self.right_factory.maze.grid = grid
+                        self.assignSystem.mazeEngine.grid = grid
 
 
     # Maybe useful for cache system designing
-    def __init__(self, maze):
+    def __init__(self, assignSystem):
         
-        self.maze = maze
-
-
-        self.direction = ""
-        self.alternative_directions = ["u", "d"]
+        self.assignSystem = assignSystem
 
 
         self.right_assigner = None
+        self.right_cache = None
 
+
+        # self.direction = ""
 
 
     def assign(self):

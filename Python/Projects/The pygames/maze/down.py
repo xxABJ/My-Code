@@ -54,9 +54,10 @@ class Down:
 
                     previous_direction = previous_direction_data
 
+
                 # THIS WILL BREAK THE CODE LATER!!!!!!!
                 # Can be possible -- TODO: skipping logic or method so it won't be possible
-                if grid[previous_pos[0]][previous_pos[1] + 1] == "S":
+                if grid[previous_pos[0] + 1][previous_pos[1]] == "S":
 
                     # Getting the factored condition and value
                     # Choosing a cell
@@ -141,25 +142,25 @@ class Down:
 
                         match previous_direction: 
 
-                            case "r":
-
-                                print("r", end= "  : ")
-
-
                             case "d":
 
                                 print("d", end= "  : ")
 
 
-                            case "u":
+                            case "r":
 
-                                print("u", end= "  : ")
+                                print("r", end= "  : ")
 
 
-                            # Shouldn't be possible
                             case "l":
 
                                 print("l", end= "  : ")
+
+
+                            # Shouldn't be possible
+                            case "u":
+
+                                print("u", end= "  : ")
 
 
                         print(previous_pos)
@@ -237,11 +238,15 @@ class Down:
                         if assignments != self.amount_of_moves:
 
                             print(f"├{'─'*30}┘")
+                            print("│")
 
 
                         else:
 
                             print(f"└{'─'*30}┘")
+
+
+                        self.assignSystem.mazeEngine.boundarySystem.set_boundaries()
 
 
                         # Printing grid progression

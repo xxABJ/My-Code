@@ -238,11 +238,15 @@ class Right:
                         if assignments != self.amount_of_moves:
 
                             print(f"├{'─'*30}┘")
+                            print("│")
 
 
                         else:
 
                             print(f"└{'─'*30}┘")
+
+
+                        self.assignSystem.mazeEngine.boundarySystem.set_boundaries()
 
 
                         # Printing grid progression

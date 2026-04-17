@@ -1,15 +1,12 @@
-• Fix assignment logics (assignment.py, right.py(100%), left.py, up.py, down.py(100%))
-• @@@@ FIX assignment.py.__get_amount_of_assignments
+• CLEAN UP Boundry system (boundrysystem.py)
+• CLEAN UP assignment.py.__get_amount_of_assignments
 
 
 • Cache system (a, b, ):
-a- static total cache_assignments = 5, to produce this system, some logic has to be implemented that would change the surrounding assignments with a block-radius to allow for the system to know when it should stop looping through the choosen number of assignments. 
--  raduis can be two types of blocks (to account for the randomly generated walls in between)
-- i.e. RED for one cell away from assignment, ORANGE for two cells away from assignment, GREEN for >= 3 away from assignments.
-
-b- From a , it should make it easier for the cache system to jump back to specific locations (cache_assignments) to soft-unlock by:
-- change directions
-- or go even further back
+- static total cache_assignments = 5
+- From a , it should make it easier for the cache system to jump back to specific locations (cache_assignments) to soft-unlock by:
+    - change directions
+    - or go even further back
 
 
 

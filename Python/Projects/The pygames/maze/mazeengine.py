@@ -1,3 +1,4 @@
+from boundrysystem import BoundarySystem
 from factoringsystem import FactoringSystem
 from assignsystem import AssignSystem
 
@@ -60,12 +61,14 @@ class MazeEngine:
         self.custom_starting_direction = custom_starting_direction
         self.print_console = print_console
 
-        
+        self.boundarySystem = BoundarySystem(self)
         self.factoringSystem = FactoringSystem()
         self.assignSystem =  AssignSystem(self)
 
 
         self.grid = self.create_grid(self.size)
+
+        self.boundarySystem.establish_boundaries()
 
 
         self.set_first_assingment_and_direction(
@@ -155,7 +158,7 @@ class MazeEngine:
                 else:
                 
                     # Cannot assign left
-                    if grid[row][col - 1] == "|":
+                    if grid[row][col - 1] == "|" or grid[row][col - 2] == "|":
                     
                     
                         #c_topleft
@@ -171,7 +174,7 @@ class MazeEngine:
 
 
                     # Cannot assign right
-                    elif grid[row][col + 1] == "|":
+                    elif grid[row][col + 1] == "|" or grid[row][col + 2] == "|":
                     
                         #c_topright
                         if grid[row - 1][col + 1] == "|":
@@ -186,13 +189,13 @@ class MazeEngine:
 
 
                     # Cannot assign up
-                    elif grid[row - 1][col] == "|":
+                    elif grid[row - 1][col] == "|" or grid[row - 2][col] == "|":
                     
                         available_directions = ["l", "r", "d"]
 
 
                     # Cannot assign down
-                    elif grid[row + 1][col] == "|":
+                    elif grid[row + 1][col] == "|" or grid[row + 2][col] == "|":
                     
                         available_directions = ["l", "r", "u"]
 
@@ -449,8 +452,8 @@ class MazeEngine:
             
 
             # Updating grid
+            self.boundarySystem.set_boundaries()
             self.grid = grid
-
 
             self.print_grid()
 
@@ -555,7 +558,7 @@ class MazeEngine:
 
             )
 
-
+            self.boundarySystem.set_boundaries()
             # Updating grid
             self.grid = grid
 
@@ -1379,11 +1382,11 @@ class MazeEngine:
             print(f"\n ☻ LOOPING ASSIGNMENTS\n")
 
 
-        for _ in range(5):
+        for _ in range(20):
         
             confirmed_directions = self.assignSystem.validate_direction()
             # TESTING
-            confirmed_directions = random.choice(["r", "d"])
+            #confirmed_directions = random.choice(["r", "d", "l"])
         
 
             # This is not stable, remake
@@ -1394,16 +1397,17 @@ class MazeEngine:
                 
             )
             
+
             if self.print_console:
 
                 if assignment_state == False:
 
-                    print(f"{"*"*5}\nINVALID assignment No.{_+1}\n\nassignment_state:  {assignment_state}\nfinal_direction:   {final_direction}\n{"*"*5}\n")
+                    print(f"\n\n{" "*22}┌{'─'*28}┐\n{" "*22}│ INVALID assignment No.{_+1}{" "*4}│\n{" "*22}│{" "*28}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*3}│\n{" "*22}│ final_direction:   {final_direction}{" "*7}│\n{" "*22}└{'─'*28}┘\n\n\n")
 
             
                 else:
 
-                    print(f"{"-"*5}\nSUCCESSFUL assignment No.{_+1}\n\nassignment_state:  {assignment_state}\nfinal_direction:   {final_direction}\n{"-"*5}\n")
+                    print(f"\n\n{" "*22}┌{'─'*28}┐\n{" "*22}│ SUCCESSFUL assignment No.{_+1} │\n{" "*22}│{" "*28}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*4}│\n{" "*22}│ final_direction:   {final_direction}{" "*7}│\n{" "*22}└{'─'*28}┘\n\n\n")
             
 
 

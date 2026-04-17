@@ -1,222 +1,332 @@
-import random
-
-
 class Left:
 
 
     class assigner:
 
-        def __init__(self, left_factory, num =False):
+        def __init__(self, assignSystem, num: int= 0) -> None:
 
-            self.left_factory = left_factory
+            self.assignSystem = assignSystem
+            self.print_console = assignSystem.print_console
 
 
             if num >= 0:
 
                 self.amount_of_moves = num
 
-        
-        def assign(self):
 
-            print(self.amount_of_moves)
+
+        def assign(self) -> None | bool:
+
+            # Invalid number of moves -> False
             if self.amount_of_moves == 0:
+
+                if self.print_console:
+
+                    print(f"┌─── left.py.Left.assigner.assign()")
+                    print("│")
+                    print(f"│ self.amount_of_moves: {self.amount_of_moves}")
+                    print("│")
+
+
                 return False
 
 
-            grid = self.left_factory.maze.grid[:]
+            grid = self.assignSystem.mazeEngine.grid
+            current_direction = "l"
 
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
-                previous_assignment = self.left_factory.maze.previous_assignment()
+                # Getting the previous assignment info
+                previous_assignment = self.assignSystem.mazeEngine.previous_assignment()
+                length_of_assignments = previous_assignment[0][0]
+                previous_direction_data = previous_assignment[0][1]
                 previous_pos = previous_assignment[1]
-                current_selected_cell = (previous_pos[0], previous_pos[1])
 
 
-                if grid[previous_pos[0]][previous_pos[1] - 1] == "S":
+                # Accounting for changed direction logged key
+                if len(previous_direction_data) != 1:
 
-                    updated_previous_pos = (
-                        current_selected_cell[0],
-                        current_selected_cell[1]
-                    )
+                    previous_direction = previous_direction_data[-1]
 
 
                 else:
 
-                    match previous_assignment[0][1]:
-
-                        #case self.left_factory.maze.arrows.get("l"):
-                        #case "←":
-                        case "l":
-
-                            print(f"prev l: {previous_pos}")
-                            
-
-                            if len(self.left_factory.maze.assignments) == 1:
-                                current_selected_cell = (previous_pos[0], previous_pos[1] - 1)
-
-                                grid[current_selected_cell[0]][current_selected_cell[1]] = self.left_factory.maze.arrows.get("l")
+                    previous_direction = previous_direction_data
 
 
-                                # pre = l
-                                updated_previous_pos = (
-                                    current_selected_cell[0],
-                                    current_selected_cell[1] + 1
-                                )
-                                
+                # THIS WILL BREAK THE CODE LATER!!!!!!!
+                # Can be possible -- TODO: skipping logic or method so it won't be possible
+                if grid[previous_pos[0]][previous_pos[1] - 1] == "S":
+
+                    # Getting the factored condition and value
+                    # Choosing a cell
+                    # Setting selected cell info
+                    # Assigning the arrow to the chosen cell
+                    # Calculating the score after the assignment
+
+                    return print("SKIPPING LOGIC REQUIRED: left.py.Left.assigner.assign()")
 
 
-                            else:
+                else:
 
-                                grid[current_selected_cell[0]][current_selected_cell[1]] = self.left_factory.maze.arrows.get("l")
+                    if self.print_console:
 
+                        if assignments == 1:
 
-                                # pre = l
-                                updated_previous_pos = (
-                                    current_selected_cell[0],
-                                    current_selected_cell[1]
-                                )
-                                
-
-                        #case self.left_factory.maze.arrows.get("d"):
-                        #case "↓":
-                        case "d":
-
-                            print(f"prev d: {previous_pos}")
-                            
-
-                            if len(self.left_factory.maze.assignments) == 1:
-                                current_selected_cell = (previous_pos[0] + 1, previous_pos[1])
+                            print("┌───      left.py.Left.assigner.assign()")
+                            print("│")
 
 
-                            else:
-                                pass
+                        else:
+
+                            print("│")
+                            print("├───      left.py.Left.assigner.assign()")
+                            print("│")
 
 
-                            grid[current_selected_cell[0]][current_selected_cell[1]] = self.left_factory.maze.arrows.get("l")
+                        print(f"├ previous_assignment: {previous_assignment}")
+                        print(f"├ previous_pos: {previous_pos}")
+                        print(f"├ previous_direction_data: {previous_direction_data}")
+                        print(f"├ previous_direction: {previous_direction}")
+                        print("│")
 
 
-                            # pre = d
-                            updated_previous_pos = (
-                                current_selected_cell[0],
-                                current_selected_cell[1]
-                            )
+                        print("│")
+                        print("├ Getting factored condition and value for LEFT CLASS:")
                         
-
-                        #case self.left_factory.maze.arrows.get("u"):
-                        #case "↑":
-                        case "u":
-
-                            print(f"prev u: {previous_pos}")
-
-                            
-                            if len(self.left_factory.maze.assignments) == 1:
-                                current_selected_cell = (previous_pos[0] - 1, previous_pos[1])
-
-
-                            else:
-                                pass
-
-
-                            grid[current_selected_cell[0]][current_selected_cell[1]] = self.left_factory.maze.arrows.get("l")
-
-
-                            # pre = u
-                            updated_previous_pos = (
-                                current_selected_cell[0],
-                                current_selected_cell[1]
-                            )
                         
+                        # Getting the factored condition and value
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
 
-                        #case self.left_factory.maze.arrows.get("r"):
-                        # case "←":
-                        case "r":
-                            # should not be possible
+                                previous_direction= previous_direction,
+                                current_direction= current_direction,
+                                print_console= self.print_console
 
-                            print(f"invalid prev r: {previous_pos}")
-
-
-                            if len(self.left_factory.maze.assignments) == 1:
-                                updated_previous_pos = False
-
-
-                            else:
-                                updated_previous_pos = False
-                
-
-                if not updated_previous_pos:
-                    return updated_previous_pos
-                
-
-                self.left_factory.maze.log_assignments(
-
-                    direction= "l",
-                    previous_pos= updated_previous_pos
-
-                )
+                        )                
+                        
+                        
+                        print(f"├ factored_direction_data: {factored_direction_data}", end= " ")
+                        print(f" >> factoring_value: {factoring_value}  ✅")
+                        print("│")
+                        print("│")
 
 
-                self.left_factory.maze.score_calculator(
-
-                    direction= "l",
-                    state= ""
-
-                )
-                #print(assignments)
+                        print(f"│ OLD self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
 
 
-            self.left_factory.maze.grid = grid
+                        print("│ choosing global selected cell (factoring!) . . .", end= " ")
 
 
-    def __init__(self, maze):
+                        # Choosing a cell
+                        self.assignSystem.mazeEngine.pick_selected_cell(
+
+                            previous_pos[0] + factoring_value[0],
+                            previous_pos[1] + factoring_value[1]
+
+                        )
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
+
+
+                        print(f" >> ✅ chosen_row: {chosen_row}", end= " ")
+                        print(f" >> ✅ chosen_col: {chosen_col}")
+
+
+                        print(f"│ NEW self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
+                        print("│")
+
+
+                        print("│")
+                        print("│ LEFT previous direction", end= "  ")
+
+
+                        match previous_direction: 
+
+                            case "l":
+
+                                print("l", end= "  : ")
+
+
+                            case "d":
+
+                                print("d", end= "  : ")
+
+
+                            case "u":
+
+                                print("u", end= "  : ")
+
+
+                            # Shouldn't be possible
+                            case "r":
+
+                                print("r", end= "  : ")
+
+
+                        print(previous_pos)
+                        print("│")
+                        print("│")
+
+
+                        # Loop cycle value
+                        print(f"├─ loop: {assignments}")
+
+
+                        # Account for the first move after first initial assignment
+                        if length_of_assignments == 1:
+
+                            print(f"├ SECOND - global chosen cell: {(chosen_row, chosen_col)}")
+                            print("├ SECOND - ", end= "")
+
+
+                        else:
+
+                            print(f"├ global chosen cell: {(chosen_row, chosen_col)}")
+                            print("├ ", end= "")
+
+
+                        print(f"* LEFT CLASS * inserting in grid: {self.assignSystem.arrows.get(current_direction)}", end= " ")
+                        
+                        
+                        print(" >> Setting selected cell", end= " ")
+
+
+                        # Setting selected cell info
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
+
+
+                        print("✅", end= " ")
+
+
+                        print(" >> Assigning the arrow in the grid", end= " ")
+
+
+                        # Assigning the arrow to the chosen cell
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
+
+
+                        print("✅ >> DONE!")
+
+
+                        print(f"├─ self.assignSystem.mazeEngine.get_selected_cell_info(): {self.assignSystem.mazeEngine.get_selected_cell_info()}")
+                        print("│")
+
+
+                        # Logging the assignment
+                        self.assignSystem.mazeEngine.log_assignments(
+
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
+
+                        )          
+
+
+                        # Calculating the score after the assignment
+                        self.assignSystem.mazeEngine.score_calculator(
+
+                            current_direction= current_direction,
+                            state= "",
+                            factored_direction_data= factored_direction_data,
+                            print_console= self.print_console
+
+                        )
+
+
+                        if assignments != self.amount_of_moves:
+
+                            print(f"├{'─'*30}┘")
+                            print("│")
+
+
+                        else:
+
+                            print(f"└{'─'*30}┘")
+
+
+                        self.assignSystem.mazeEngine.boundarySystem.set_boundaries()
+
+
+                        # Printing grid progression
+                        self.assignSystem.mazeEngine.print_grid()
+
+
+                        # Setting the updated grid to the maze
+                        self.assignSystem.mazeEngine.grid = grid
+
+
+                    else:
+
+                        # Getting the factored condition and value
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
+
+                                previous_direction= previous_direction,
+                                current_direction= current_direction,
+                                print_console= self.print_console
+
+                        )       
+
+
+                        # Choosing a cell
+                        self.assignSystem.mazeEngine.pick_selected_cell(
+
+                            previous_pos[0] + factoring_value[0],
+                            previous_pos[1] + factoring_value[1]
+
+                        )
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
+
+
+                        # Setting selected cell info
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
+
+
+                        # Assigning the arrow to the chosen cell
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
+
+                    
+                        # Logging the assignment
+                        self.assignSystem.mazeEngine.log_assignments(
+
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
+
+                        )          
+
+
+                        # Calculating the score after the assignment
+                        self.assignSystem.mazeEngine.score_calculator(
+
+                            current_direction= current_direction,
+                            state= "",
+                            factored_direction_data= factored_direction_data,
+                            print_console= self.print_console
+
+                        )
+
+
+                        # Setting the updated grid to the maze
+                        self.assignSystem.mazeEngine.grid = grid
+
+
+    # Maybe useful for cache system designing
+    def __init__(self, assignSystem):
         
-        self.maze = maze
-
-
-        self.direction = ""
-        self.alternative_directions = ["u", "d"]
+        self.assignSystem = assignSystem
 
 
         self.left_assigner = None
+        self.left_cache = None
 
 
-    def check(self):
-        
-        score = self.maze.scores.get('leftside')
-
-
-        if score >= 3:
-            
-            num = random.randint(1, 3)
-
-
-        elif score == 2:
-            
-            num = random.randint(1, 2)
-
-
-        elif score == 1:
-            
-            num = 1
-
-
-        elif score == 0:
-            
-            return self.alternative_directions
-
-
-        self.left_assigner = Left.assigner(self, num)
-        print(f"{" "*num}{num} left moves - assigned")
-        self.assign()
-
-
-        self.left_assigner = None
-        return False
+        # self.direction = ""
 
 
     def assign(self):
         
         return self.left_assigner.assign()
-    
-
-    

@@ -1,179 +1,334 @@
-import random
-
-
 class Up:
 
 
     class assigner:
 
-        def __init__(self, up_factory, num= False):
+        def __init__(self, assignSystem, num: int= 0) -> None:
 
-            self.up_factory = up_factory
-
+            self.assignSystem = assignSystem
+            self.print_console = assignSystem.print_console
 
 
             if num >= 0:
 
                 self.amount_of_moves = num
 
-        
-        def assign(self):
 
+
+        def assign(self) -> None | bool:
+
+            # Invalid number of moves -> False
             if self.amount_of_moves == 0:
+
+                if self.print_console:
+
+                    print(f"┌─── up.py.Up.assigner.assign()")
+                    print("│")
+                    print(f"│ self.amount_of_moves: {self.amount_of_moves}")
+                    print("│")
+
+
                 return False
 
-            grid = self.up_factory.maze.grid[:]
-            previous_assignment = self.up_factory.maze.previous_assignment()
-            previous_pos = previous_assignment[1]
+
+            grid = self.assignSystem.mazeEngine.grid
+            current_direction = "u"
 
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
 
+                # Getting the previous assignment info
+                previous_assignment = self.assignSystem.mazeEngine.previous_assignment()
+                length_of_assignments = previous_assignment[0][0]
+                previous_direction_data = previous_assignment[0][1]
+                previous_pos = previous_assignment[1]
 
-                if grid[previous_pos[0] - assignments][previous_pos[1]] == "S":
 
-                    pass
+                # Accounting for changed direction logged key
+                if len(previous_direction_data) != 1:
+
+                    previous_direction = previous_direction_data[-1]
 
 
                 else:
 
-                    grid[previous_pos[0] - assignments][previous_pos[1]] = self.up_factory.maze.arrows.get("u")
-                
-                
-                updated_previous_pos = (
-
-                    previous_pos[0] - (assignments - 1),
-                    previous_pos[1]
-
-                )
-                
-
-                self.up_factory.maze.log_assignments(
-
-                    direction= "u",
-                    previous_pos= updated_previous_pos
-
-                )
+                    previous_direction = previous_direction_data
 
 
-                self.up_factory.maze.score_calculator(
+                # THIS WILL BREAK THE CODE LATER!!!!!!!
+                # Can be possible -- TODO: skipping logic or method so it won't be possible
+                if grid[previous_pos[0] - 1][previous_pos[1]] == "S":
 
-                    direction= "u",
-                    state= ""
+                    # Getting the factored condition and value
+                    # Choosing a cell
+                    # Setting selected cell info
+                    # Assigning the arrow to the chosen cell
+                    # Calculating the score after the assignment
 
-                )
-                #print(assignments)
+                    return print("SKIPPING LOGIC REQUIRED: up.py.Up.assigner.assign()")
 
 
-            self.up_factory.maze.grid = grid
+                else:
+
+                    if self.print_console:
+
+                        if assignments == 1:
+
+                            print("┌───      up.py.Up.assigner.assign()")
+                            print("│")
 
 
-    def __init__(self, maze):
+                        else:
+
+                            print("│")
+                            print("├───      up.py.Up.assigner.assign()")
+                            print("│")
+
+
+                        print(f"├ previous_assignment: {previous_assignment}")
+                        print(f"├ previous_pos: {previous_pos}")
+                        print(f"├ previous_direction_data: {previous_direction_data}")
+                        print(f"├ previous_direction: {previous_direction}")
+                        print("│")
+
+
+                        print("│")
+                        print("├ Getting factored condition and value for UP CLASS:")
+                        
+                        
+                        # Getting the factored condition and value
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
+
+                                previous_direction= previous_direction,
+                                current_direction= current_direction,
+                                print_console= self.print_console
+
+                        )                
+                        
+                        
+                        print(f"├ factored_direction_data: {factored_direction_data}", end= " ")
+                        print(f" >> factoring_value: {factoring_value}  ✅")
+                        print("│")
+                        print("│")
+
+
+                        print(f"│ OLD self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
+
+
+                        print("│ choosing global selected cell (factoring!) . . .", end= " ")
+
+
+                        # Choosing a cell
+                        self.assignSystem.mazeEngine.pick_selected_cell(
+
+                            previous_pos[0] + factoring_value[0],
+                            previous_pos[1] + factoring_value[1]
+
+                        )
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
+
+
+                        print(f" >> ✅ chosen_row: {chosen_row}", end= " ")
+                        print(f" >> ✅ chosen_col: {chosen_col}")
+
+
+                        print(f"│ NEW self.assignSystem.mazeEngine.get_chosen_cell_pos(): {self.assignSystem.mazeEngine.get_chosen_cell_pos()}")
+                        print("│")
+
+
+                        print("│")
+                        print("│ UP previous direction", end= "  ")
+
+
+                        match previous_direction: 
+
+                            case "r":
+
+                                print("r", end= "  : ")
+
+
+                            case "d":
+
+                                print("d", end= "  : ")
+
+
+                            case "u":
+
+                                print("u", end= "  : ")
+
+
+                            # Shouldn't be possible
+                            case "l":
+
+                                print("l", end= "  : ")
+
+
+                        print(previous_pos)
+                        print("│")
+                        print("│")
+
+
+                        # Loop cycle value
+                        print(f"├─ loop: {assignments}")
+
+
+                        # Account for the first move after first initial assignment
+                        if length_of_assignments == 1:
+
+                            print(f"├ SECOND - global chosen cell: {(chosen_row, chosen_col)}")
+                            print("├ SECOND - ", end= "")
+
+
+                        else:
+
+                            print(f"├ global chosen cell: {(chosen_row, chosen_col)}")
+                            print("├ ", end= "")
+
+
+                        print(f"* UP CLASS * inserting in grid: {self.assignSystem.arrows.get(current_direction)}", end= " ")
+                        
+                        
+                        print(" >> Setting selected cell", end= " ")
+
+
+                        # Setting selected cell info
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
+
+
+                        print("✅", end= " ")
+
+
+                        print(" >> Assigning the arrow in the grid", end= " ")
+
+
+                        # Assigning the arrow to the chosen cell
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
+
+
+                        print("✅ >> DONE!")
+
+
+                        print(f"├─ self.assignSystem.mazeEngine.get_selected_cell_info(): {self.assignSystem.mazeEngine.get_selected_cell_info()}")
+                        print("│")
+
+
+                        # Logging the assignment
+                        self.assignSystem.mazeEngine.log_assignments(
+
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
+
+                        )          
+
+
+                        # Calculating the score after the assignment
+                        self.assignSystem.mazeEngine.score_calculator(
+
+                            current_direction= current_direction,
+                            state= "",
+                            factored_direction_data= factored_direction_data,
+                            print_console= self.print_console
+
+                        )
+
+
+                        if assignments != self.amount_of_moves:
+
+                            print(f"├{'─'*30}┘")
+                            print("│")
+
+
+                        else:
+
+                            print(f"└{'─'*30}┘")
+
+
+                        self.assignSystem.mazeEngine.boundarySystem.set_boundaries()
+
+
+                        # Printing grid progression
+                        self.assignSystem.mazeEngine.print_grid()
+
+
+                        # Setting the updated grid to the maze
+                        self.assignSystem.mazeEngine.grid = grid
+
+
+                    else:
+
+                        # Getting the factored condition and value
+                        factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
+
+                                previous_direction= previous_direction,
+                                current_direction= current_direction,
+                                print_console= self.print_console
+
+                        )       
+
+
+                        # Choosing a cell
+                        self.assignSystem.mazeEngine.pick_selected_cell(
+
+                            previous_pos[0] + factoring_value[0],
+                            previous_pos[1] + factoring_value[1]
+
+                        )
+                        chosen_row, chosen_col = self.assignSystem.mazeEngine.get_chosen_cell_pos()
+
+
+                        # Setting selected cell info
+                        self.assignSystem.mazeEngine.set_selected_cell_info(current_direction)
+
+
+                        # Assigning the arrow to the chosen cell
+                        grid[ chosen_row ][ chosen_col ] = self.assignSystem.arrows.get(current_direction)
+
+                    
+                        # Logging the assignment
+                        self.assignSystem.mazeEngine.log_assignments(
+
+                            current_direction= current_direction,
+                            previous_pos= previous_pos,
+                            factored_direction_data= factored_direction_data,
+                            factoring_value= factoring_value,
+                            print_console= self.print_console
+
+                        )          
+
+
+                        # Calculating the score after the assignment
+                        self.assignSystem.mazeEngine.score_calculator(
+
+                            current_direction= current_direction,
+                            state= "",
+                            factored_direction_data= factored_direction_data,
+                            print_console= self.print_console
+
+                        )
+
+
+                        # Setting the updated grid to the maze
+                        self.assignSystem.mazeEngine.grid = grid
+
+
+    # Maybe useful for cache system designing
+    def __init__(self, assignSystem):
         
-        self.maze = maze
-
-
-        self.side_wall_directions = ["l", "r"]
+        self.assignSystem = assignSystem
 
 
         self.up_assigner = None
+        self.up_cache = None
 
 
-    def check(self):
-        
-        previous_assignment = self.up_factory.maze.previous_assignment()
-        score = self.maze.scores.get('topside')
-
-
-        if score >= 3 and previous_assignment[0][1] != "d":
-            
-            num = random.randint(1, 3)
-
-
-        elif score == 2:
-            
-            num = random.randint(1, 2)
-
-
-        elif score == 1:
-            
-            num = 1
-
-
-        else:
-            
-            # Opposite directions
-            if previous_assignment[0][1] == "d":
-
-                return
-
-            # Side-wall detection
-            elif score == 0:
-                
-                return self.alternative_directions
-
-
-        self.up_assigner = Up.assigner(self, num)
-        print(f"{" "*num}{num} Up moves - assigned")
-        self.assign()
-
-
-        self.up_assigner = None
-        return False
-    
-
-    def check2(self):
-
-        pass
-
-        #previous_assignment = self.up_factory.maze.previous_assignment()
-        #score = self.maze.scores.get('topside')
-        #previous_direction = self.up_factory.maze.previous_assignment()[0][1]
-
-        #while self.invalid:
-        #    directions = self.get_cell_info2(previous_direction)
-
-        #self.assignment(directions)
-
-        
-        #if score >= 3 and previous_assignment[0][1] != "d":
-        #    
-        #    num = random.randint(1, 3)
-        
-        
-        #elif score == 2:
-        #    
-        #    num = random.randint(1, 2)
-        
-        
-        #elif score == 1:
-        #    
-        #    num = 1
-        
-        
-        #else:
-        #    
-        #    # Opposite directions
-        #    if previous_assignment[0][1] == "d":
-        
-        #        return
-        
-        #    # Side-wall detection
-        #    elif score == 0:
-        #        
-        #        return self.alternative_directions
-
-
-        #self.up_assigner = Up.assigner(self, num)
-        #print(f"{" "*num}{num} Up moves - assigned")
-        #self.assign()
-
-
-        #self.up_assigner = None
-        #return False
+        # self.direction = ""
 
 
     def assign(self):
         
         return self.up_assigner.assign()
+    
 

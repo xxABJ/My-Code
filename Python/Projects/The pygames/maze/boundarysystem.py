@@ -5,6 +5,15 @@ class BoundarySystem:
 
         self.mazeEngine = mazeEngine
 
+        self.forward_cell_factor = {
+
+            "u": [(-1, 0), "u"],
+            "d": [(1, 0), "d"],
+            "r": [(0, 1), "r"],
+            "l": [(0, -1), "l"],
+
+        }
+
 
     def establish_boundaries(self):
 
@@ -45,7 +54,6 @@ class BoundarySystem:
 
         print("Boundaries established")
         self.mazeEngine.print_grid()
-
 
 
     def set_boundaries(self):
@@ -455,11 +463,16 @@ class BoundarySystem:
                     continue
 
 
-        print("Set Boundaries Done")
-        #self.mazeEngine.print_grid()
+        print("\nSet Boundaries Done")
 
     
-    def get_next_boundary_type(self, current_direction, amounts_of_assignments=0):
+    def get_next_boundary_type(self, current_direction, amount_of_assignments=0, print_console1= False, print_console2= False):
+
+        if print_console1:
+            #print("║")
+            print(f"╠{'═'*2}")
+            print(f"╠═ │ boundarysystem.py.BoundarySystem.get_next_boundary_type()")
+            print("║  │")
 
         grid = self.mazeEngine.grid
 
@@ -469,16 +482,26 @@ class BoundarySystem:
         col = previous_chosen_cell[1]
 
 
-        print(f"╠ previous_chosen_cell: {previous_chosen_cell}")
-        print(f"╠ current_direction: {current_direction}")
-        
+
+        if amount_of_assignments != 0 and print_console1:
+
+            print(f"╠  │ previous_chosen_cell: {previous_chosen_cell}")
+            print(f"╠  │ current_direction: {current_direction}")
+            
 
         previous_direction = self.mazeEngine.previous_assignment()[0][1]
-        print(f"╠ previous_direction: {previous_direction}")
+
+
+        if amount_of_assignments != 0 and print_console1:
+
+            print(f"╠  │ previous_direction: {previous_direction}")
+            print("║  │")
+
 
         if len(previous_direction) > 1:
 
             previous_direction = previous_direction[-1]
+
 
         # Getting the factored condition and value
         factored_direction_data, factoring_value = self.mazeEngine.factoringSystem.check_condition(
@@ -490,160 +513,345 @@ class BoundarySystem:
         )
 
 
-        if len(previous_direction) != 1:
+        if amount_of_assignments == 0:
 
-            previous_direction = previous_direction[-1]
-
-
-        if amounts_of_assignments == 0:
-
+            if print_console1:
+                print(f"╠  │ amounts_of_assignments: {amount_of_assignments}")
+                print("║  │")
+                print(f"║  │ returning: {grid[row + factoring_value[0]][col + factoring_value[1]]}")
+                print(f"╠{'═'*2}")
 
             return grid[row + factoring_value[0]][col + factoring_value[1]]
 
 
         else:
 
-            match current_direction:
+            if print_console2:
 
-                case "u":
+                print("║  │ Checking if amount of assignments do not fail the boundary check...")
+                print("║  │ will it hit a   R   or a   |  ?   (ok / not ok)")
+                print(f"╠  │ amounts_of_assignments: {amount_of_assignments}")
 
-                    for forward_cell in range(1, amounts_of_assignments + 1):
+                row = row + factoring_value[0]
+                col = col + factoring_value[1]
+
+
+                forward_cell_factoring_data = self.forward_cell_factor[current_direction]
+                forward_cell_factoring_value = forward_cell_factoring_data[0]
+                forward_cell_factoring_direction = forward_cell_factoring_data[1]
+
+
+                for forward_cell in range(1, amount_of_assignments + 1):
+
+                    print("║  │")
+                    print(f"║  │   forward_cell: {forward_cell}")
+                    print("║  │")
+
+                    if forward_cell == 1:
+
+                        if forward_cell == amount_of_assignments:
+
+                            if grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]] not in ["|", "R"]:
+
+                                match forward_cell_factoring_direction:
+
+                                    case "u":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: ok {grid[row - 1][col]} {row - 1, col}")
+                                        print(f"╠{'═'*2}")
+
+
+                                    case "d":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: ok {grid[row + 1][col]} {row + 1, col}")
+                                        print(f"╠{'═'*2}")
+
+                                    
+                                    case "r":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: ok {grid[row][col + 1]} {row, col + 1}")
+                                        print(f"╠{'═'*2}")
+
+
+                                    case "l":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: ok {grid[row][col - 1]} {row, col - 1}")
+                                        print(f"╠{'═'*2}")
+
+
+                                return grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]]
+                            
+
+                            else:
+
+                                match forward_cell_factoring_direction:
+
+                                    case "u":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: not ok {grid[row - 1][col]} {row - 1, col}")
+                                        print(f"╠{'═'*2}")
+
+                                    
+                                    case "d":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: not ok {grid[row + 1][col]} {row + 1, col}")
+                                        print(f"╠{'═'*2}")
+
+
+                                    case "r":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: not ok {grid[row][col + 1]} {row, col + 1}")
+                                        print(f"╠{'═'*2}")
+
+
+                                    case "l":
+
+                                        print(f"║  │     next_boundary: ok {grid[row][col]} {row, col}")
+                                        print(f"║  │     boundary_after_next_boundary: not ok {grid[row][col - 1]} {row, col - 1}")
+                                        print(f"╠{'═'*2}")
+
+
+                                return [False, grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]]]
+                            
+                    
+                        if grid[row][col] not in ["|", "R"]:
+
+                            print(f"║  │     ok {grid[row][col]} {row, col}")  
+                            
+                            
+                            continue
+
+
+                        else:
+
+                            print(f"║  │     not ok {grid[row][col]} {row, col}")
+                            print(f"╠{'═'*2}")
+
+
+                            return [False, grid[row][col]]
                         
-                        if forward_cell == 1:
 
-                            row = row + factoring_value[0]
-                            col = col + factoring_value[1]
+                    # Due to factored value ... can be changed
+                    forward_cell = forward_cell - 1
 
-                            if grid[row - 1][col] not in ["|", "R"]:
 
-                                print("ok")
+                    match forward_cell_factoring_direction:
+
+                        case "u":
+
+                            if grid[row - forward_cell][col] not in ["|", "R"]:
+
+                                print(f"║  │     ok {grid[row - forward_cell][col]} {row - forward_cell, col}")
+
+
                                 continue
 
 
                             else:
 
-                                print("not ok")
-                                return [False, grid[row - 1][col]]
+                                print(f"║  │     not ok {grid[row - forward_cell][col]} {row - forward_cell, col}")
+                                print(f"╠{'═'*2}")
 
 
-                        if grid[row - forward_cell][col] not in ["|", "R"]:
-
-                            print("ok")
-                            continue
+                                return [False, grid[row - forward_cell][col]]
+                            
                         
+                        case "d":
 
-                        else:
+                            if grid[row + forward_cell][col] not in ["|", "R"]:
 
-                            print("not ok")
-                            return [False, grid[row - forward_cell][col]]
-                        
-
-                    return True
+                                print(f"║  │     ok {grid[row + forward_cell][col]} {row + forward_cell, col}")
 
 
-                case "d":
+                                continue
 
-                    for forward_cell in range(1, amounts_of_assignments + 1):
-                        
-                        if forward_cell == 1:
+                            
+                            else:
 
-                            row = row + factoring_value[0]
-                            col = col + factoring_value[1]
+                                print(f"║  │     not ok {grid[row + forward_cell][col]} {row + forward_cell, col}")
+                                print(f"╠{'═'*2}")
 
-                            if grid[row + 1][col] not in ["|", "R"]:
 
-                                print("ok")
+                                return [False, grid[row + forward_cell][col]]
+                            
+
+                        case "r":
+
+                            if grid[row][col + forward_cell] not in ["|", "R"]:
+
+                                print(f"║  │     ok {grid[row][col + forward_cell]} {row, col + forward_cell}")
+
+
                                 continue
 
 
                             else:
 
-                                print("not ok")
-                                return [False, grid[row + 1][col]]
+                                print(f"║  │     not ok {grid[row][col + forward_cell]} {row, col + forward_cell}")
+                                print(f"╠{'═'*2}")
 
 
-                        if grid[row + forward_cell][col] not in ["|", "R"]:
+                                return [False, grid[row][col + forward_cell]]
+                            
 
-                            print("ok")
-                            continue
-                        
+                        case "l":
 
-                        else:
+                            if grid[row][col - forward_cell] not in ["|", "R"]:
 
-                            print("not ok")
-                            return [False, grid[row + forward_cell][col]]
-                        
-
-                    return True
+                                print(f"║  │     ok {grid[row][col - forward_cell]} {row, col - forward_cell}")
 
 
-                case "r":
-
-                    for forward_cell in range(1, amounts_of_assignments + 1):
-                        
-                        if forward_cell == 1:
-
-                            row = row + factoring_value[0]
-                            col = col + factoring_value[1]
-
-                            if grid[row][col + 1] not in ["|", "R"]:
-
-                                print("ok")
                                 continue
 
 
                             else:
 
-                                print("not ok")
-                                return [False, grid[row][col + 1]]
+                                print(f"║  │     not ok {grid[row][col - forward_cell]} {row, col - forward_cell}")
+                                print(f"╠{'═'*2}")
 
 
-                        if grid[row][col + forward_cell] not in ["|", "R"]:
+                                return [False, grid[row][col - forward_cell]]
 
-                            print("ok")
+
+                print(f"╠{'═'*2}")
+
+
+                match forward_cell_factoring_direction:
+
+                    case "u":
+
+                        return grid[row - forward_cell][col]
+                    
+
+                    case "d":
+
+                        return grid[row + forward_cell][col]
+                    
+
+                    case "r":
+
+                        return grid[row][col + forward_cell]
+                    
+
+                    case "l":
+
+                        return grid[row][col - forward_cell]
+
+
+            else:
+
+                row = row + factoring_value[0]
+                col = col + factoring_value[1]
+
+
+                forward_cell_factoring_data = self.forward_cell_factor[current_direction]
+                forward_cell_factoring_value = forward_cell_factoring_data[0]
+                forward_cell_factoring_direction = forward_cell_factoring_data[1]
+
+
+                for forward_cell in range(1, amount_of_assignments + 1):
+
+                    if forward_cell == 1:
+
+                        if forward_cell == amount_of_assignments:
+
+                            if grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]] not in ["|", "R"]:
+
+                                return grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]]
+                            
+                            else:
+
+                                return [False, grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]]]
+                            
+                    
+                        if grid[row][col] not in ["|", "R"]:
+
                             continue
-                        
+
 
                         else:
 
-                            print("not ok")
-                            return [False, grid[row][col + forward_cell]]
+                            return [False, grid[row][col]]
                         
 
-                    return True
+                    # Due to factored value ... can be changed
+                    forward_cell = forward_cell - 1
 
 
-                case "l":
+                    match forward_cell_factoring_direction:
 
-                    for forward_cell in range(1, amounts_of_assignments + 1):
-                        
-                        if forward_cell == 1:
+                        case "u":
 
-                            row = row + factoring_value[0]
-                            col = col + factoring_value[1]
+                            if grid[row - forward_cell][col] not in ["|", "R"]:
 
-                            if grid[row][col - 1] not in ["|", "R"]:
-
-                                print("ok")
                                 continue
 
 
                             else:
 
-                                print("not ok")
-                                return [False, grid[row][col - 1]]
-
-
-                        if grid[row][col - forward_cell] not in ["|", "R"]:
-
-                            print("ok")
-                            continue
+                                return [False, grid[row - forward_cell][col]]
+                            
                         
+                        case "d":
 
-                        else:
+                            if grid[row + forward_cell][col] not in ["|", "R"]:
 
-                            print("not ok")
-                            return [False, grid[row][col - forward_cell]]
-                        
+                                continue
 
-                    return True
+                            
+                            else:
+
+                                return [False, grid[row + forward_cell][col]]
+                            
+
+                        case "r":
+
+                            if grid[row][col + forward_cell] not in ["|", "R"]:
+
+                                continue
+
+
+                            else:
+
+                                return [False, grid[row][col + forward_cell]]
+                            
+
+                        case "l":
+
+                            if grid[row][col - forward_cell] not in ["|", "R"]:
+
+                                continue
+
+
+                            else:
+
+                                return [False, grid[row][col - forward_cell]]
+                            
+                
+                match forward_cell_factoring_direction:
+
+                    case "u":
+
+                        return grid[row - forward_cell][col]
+                    
+
+                    case "d":
+
+                        return grid[row + forward_cell][col]
+                    
+
+                    case "r":
+
+                        return grid[row][col + forward_cell]
+                    
+
+                    case "l":
+
+                        return grid[row][col - forward_cell]

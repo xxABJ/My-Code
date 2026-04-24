@@ -155,7 +155,6 @@ class Maze:
             )
 
 
-
     def print_maze(self):
 
         for row in self.mazeEngine.maze:
@@ -173,7 +172,7 @@ class Maze:
 
 Maze(
 
-    size=30,
+    size=40,
     custom_starting_point= False,
     custom_starting_direction= False,
     print_console= True,

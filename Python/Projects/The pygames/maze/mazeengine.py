@@ -1,4 +1,4 @@
-from boundrysystem import BoundarySystem
+from boundarysystem import BoundarySystem
 from factoringsystem import FactoringSystem
 from assignsystem import AssignSystem
 
@@ -61,13 +61,13 @@ class MazeEngine:
         self.custom_starting_direction = custom_starting_direction
         self.print_console = print_console
 
+
         self.boundarySystem = BoundarySystem(self)
         self.factoringSystem = FactoringSystem()
         self.assignSystem =  AssignSystem(self)
 
 
         self.grid = self.create_grid(self.size)
-
         self.boundarySystem.establish_boundaries()
 
 
@@ -558,8 +558,8 @@ class MazeEngine:
 
             )
 
-            self.boundarySystem.set_boundaries()
             # Updating grid
+            self.boundarySystem.set_boundaries()
             self.grid = grid
 
 
@@ -1364,6 +1364,11 @@ class MazeEngine:
 
 
 
+    def recreate_cachepoint(self, full_assignment):
+
+        pass
+
+
 
     def create_maze(self):
 
@@ -1381,8 +1386,8 @@ class MazeEngine:
 
             print(f"\n ☻ LOOPING ASSIGNMENTS\n")
 
-
-        for _ in range(20):
+        failed = 0
+        for _ in range(30):
         
             confirmed_directions = self.assignSystem.validate_direction()
             # TESTING
@@ -1402,12 +1407,13 @@ class MazeEngine:
 
                 if assignment_state == False:
 
-                    print(f"\n\n{" "*22}┌{'─'*28}┐\n{" "*22}│ INVALID assignment No.{_+1}{" "*4}│\n{" "*22}│{" "*28}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*3}│\n{" "*22}│ final_direction:   {final_direction}{" "*7}│\n{" "*22}└{'─'*28}┘\n\n\n")
+                    print(f"\n\n{" "*22}┌{'─'*29}┐\n{" "*22}│ INVALID assignment No.{_+1: >2}    │\n{" "*22}│{" "*29}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*4}│\n{" "*22}│ final_direction:   {final_direction}{" "*8}│\n{" "*22}└{'─'*29}┘\n\n\n")
+                    failed += 1
 
             
                 else:
 
-                    print(f"\n\n{" "*22}┌{'─'*28}┐\n{" "*22}│ SUCCESSFUL assignment No.{_+1} │\n{" "*22}│{" "*28}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*4}│\n{" "*22}│ final_direction:   {final_direction}{" "*7}│\n{" "*22}└{'─'*28}┘\n\n\n")
+                    print(f"\n\n{" "*22}┌{'─'*29}┐\n{" "*22}│ SUCCESSFUL assignment No.{_+1: >2} │\n{" "*22}│{" "*29}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*5}│\n{" "*22}│ final_direction:   {final_direction}{" "*8}│\n{" "*22}└{'─'*29}┘\n\n\n")
             
 
 
@@ -1417,6 +1423,7 @@ class MazeEngine:
         if self.print_console:
 
             print(f"self.maze_completed: {self.maze_completed}")
+            print(f"failed assignments: {failed} / 30")
 
 
 

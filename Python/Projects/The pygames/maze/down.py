@@ -1,5 +1,9 @@
 class Down:
 
+    # Cache system
+    dynamic_cache_length = 0
+    down_cache = {}
+
 
     class assigner:
 
@@ -12,6 +16,11 @@ class Down:
             if num >= 0:
 
                 self.amount_of_moves = num
+
+
+        def cache_assignment(self, cache_batch: int, latest_assignment: tuple) -> None:
+
+            Down.down_cache[(cache_batch, latest_assignment[0])] = (latest_assignment[1][0], latest_assignment[1][1])
 
 
 
@@ -33,6 +42,7 @@ class Down:
 
             grid = self.assignSystem.mazeEngine.grid
             current_direction = "d"
+            Down.dynamic_cache_length += 1
 
 
             for assignments in range(1, 1 + (self.amount_of_moves)):
@@ -55,8 +65,7 @@ class Down:
                     previous_direction = previous_direction_data
 
 
-                # THIS WILL BREAK THE CODE LATER!!!!!!!
-                # Can be possible -- TODO: skipping logic or method so it won't be possible
+                # CAN NOT be possible
                 if grid[previous_pos[0] + 1][previous_pos[1]] == "S":
 
                     # Getting the factored condition and value
@@ -257,6 +266,12 @@ class Down:
                         self.assignSystem.mazeEngine.grid = grid
 
 
+                        # Adding to cache
+                        cache_batch = Down.dynamic_cache_length
+                        latest_assignment = self.assignSystem.mazeEngine.previous_assignment()
+                        self.cache_assignment(cache_batch, latest_assignment)
+
+
                     else:
 
                         # Getting the factored condition and value
@@ -314,17 +329,39 @@ class Down:
                         self.assignSystem.mazeEngine.grid = grid
 
 
-    # Maybe useful for cache system designing
+                        # Adding to cache
+                        cache_batch = Down.dynamic_cache_length
+                        latest_assignment = self.assignSystem.mazeEngine.previous_assignment()
+                        self.cache_assignment(cache_batch, latest_assignment)
+
+
+                    if self.print_console:
+
+                        print("\n")
+                        print(f"┌{'─'*15} DOWN CLASS CACHE {'─'*17}┐")
+
+
+                        k = 0
+                        for key, value in Down.down_cache.items():
+
+                            if k != key[0]:
+                                print(f"│\n├─ BATCH {key[0]}:\n│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")
+                                k = key[0]
+
+
+                            elif k == key[0]:
+                                print(f"│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")
+
+
+                        print("│")
+                        print(f"└{'─'*50}┘")
+                        print("\n")
+
+
     def __init__(self, assignSystem):
         
         self.assignSystem = assignSystem
-
-
         self.down_assigner = None
-        self.down_cache = None
-
-
-        # self.direction = ""
 
 
     def assign(self):

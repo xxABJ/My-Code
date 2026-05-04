@@ -1,6 +1,6 @@
 class Left:
 
-    # Cache system
+    # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
     left_cache = {}
 
@@ -270,6 +270,12 @@ class Left:
                         cache_batch = Left.dynamic_cache_length
                         latest_assignment = self.assignSystem.mazeEngine.previous_assignment()
                         self.cache_assignment(cache_batch, latest_assignment)
+
+                        for key, value in Left.left_cache.items():
+
+                            print()
+                            print(f"key: {key}")
+                            print(f"value: {value}")
 
 
                     else:

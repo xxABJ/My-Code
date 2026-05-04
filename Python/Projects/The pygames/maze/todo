@@ -1,30 +1,28 @@
-• CLEAN UP Boundary system (boundarysystem.py) -- MAKE LOGIC BETTER
+• Boundary system (boundarysystem.py) establish_boundaries & set_boundaries
 - add self.print_console arguments
-• CLEAN UP assignment.py.__get_amount_of_assignments
-- add self.print_console arguments
-
-
-• Tune boundary system accounting for random wall placing
-    - brute-force random walls won't work good enough, need better generation method
 
 
 • Cache system:
-- static total cache_assignments = 5,  cached moves will be in each direction class
 - it should make it easier for the cache system to jump back to specific locations (cache_assignments) to soft-unlock by:
     - change directions
     - or go even further back
 - a recreate_cache function in the engine to recreate a specific assignment when choosen, that would set boundaries later, without messing them up and continue
-    - use the failed variable to set a limit for when recreation is required!
-        - cache batch connections for long direction assignments
-    - use total assignments for difficulty settings
+
+- use the failed variable to set a limit for when recreation is required!
+    - cache batch connections for long direction assignments
+
+- use total assignments for difficulty settings !!
 
 
-
+## ??
 • After solid assignments and logging logics, figure out how the maze will be generated:
 - scanner 3x3?
 - last direction value? (Need to be fixed first)
 - Or a cached set of moves - limited? or unlimited in range? - to undo/recap when self locked
 -
 
+• Tune boundary system accounting for random wall placing
+    - brute-force random walls won't work good enough, need better generation method
+## ??
 
 • Remove unwanted code

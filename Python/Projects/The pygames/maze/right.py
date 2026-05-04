@@ -1,6 +1,6 @@
 class Right:
 
-    # Cache system
+    # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
     right_cache = {}
 

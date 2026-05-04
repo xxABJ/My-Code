@@ -1,5 +1,5 @@
 from mazeengine import MazeEngine
-import random
+#import random
 
 #from scanner import *
 

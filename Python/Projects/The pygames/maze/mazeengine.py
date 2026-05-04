@@ -1366,6 +1366,23 @@ class MazeEngine:
 
     def recreate_cachepoint(self, full_assignment):
 
+    # (or in each direction module)
+    # def cache_recreator
+        # "" key: (1, (9, 'd>l')) ""
+        # "" value: (5, 8) ""
+        # batch_variable
+
+        # def assignment_finder()
+            # dynamically! (same batch or different)
+
+        # def assignment_deleter()
+            # def grid_fixer()
+                # boundary_fixer()
+            # dynamic_cache_length_fixer
+
+        # def rerun_testing_loop() (now in mazeengine.py which means takes another loop cycle)
+
+
         pass
 
 
@@ -1374,11 +1391,13 @@ class MazeEngine:
 
         grid = self.grid
             
+        ## CHECK THIS
         # #TEMP Unable to go 'u' after first direction has been assigned
         # while self.random_direction == 'u' and len(self.assignments) == 1:
     
         #     self.random_direction = random.choice(self.available_directions)
         #     continue
+        ##
 
 
         ### TESTING
@@ -1386,8 +1405,9 @@ class MazeEngine:
 
             print(f"\n ☻ LOOPING ASSIGNMENTS\n")
 
+        loops = 5
         failed = 0
-        for _ in range(30):
+        for _ in range(loops):
         
             confirmed_directions = self.assignSystem.validate_direction()
             # TESTING
@@ -1423,7 +1443,7 @@ class MazeEngine:
         if self.print_console:
 
             print(f"self.maze_completed: {self.maze_completed}")
-            print(f"failed assignments: {failed} / 30")
+            print(f"failed assignments: {failed} / {loops}")
 
 
 

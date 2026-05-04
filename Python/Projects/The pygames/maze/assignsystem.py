@@ -1,7 +1,7 @@
-from up import *
-from down import *
-from right import *
-from left import *
+from up import Up
+from down import Down
+from right import Right
+from left import Left
 
 import random    
 
@@ -294,7 +294,8 @@ class AssignSystem:
         return confirmed_directions
 
 
-    # TODO: Tune it better
+
+
     # 2.1
     def _get_amount_of_assignments(self, chosen_direction):
 
@@ -305,8 +306,23 @@ class AssignSystem:
 
 
             score = self.mazeEngine.get_scores()
-            next_boundary = self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, amount_of_assignments=0, print_console1=True, print_console2=False)
-            boundary_after_next_boundary = self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, amount_of_assignments=1, print_console1=False, print_console2=False)
+
+
+            next_boundary = self.mazeEngine.boundarySystem.get_next_boundary(
+
+                current_direction= chosen_direction,
+                print_console= self.print_console
+
+            )
+
+
+            boundary_after_next_boundary = self.mazeEngine.boundarySystem.get_any_boundary(
+
+                current_direction= chosen_direction,
+                amount_of_assignments= 1,
+                print_console= False
+
+            )
 
 
             print("║")
@@ -340,8 +356,37 @@ class AssignSystem:
             print("║")
 
 
-            # This is for next boundary is O and the one after is in ["R", "|"] , but the assignment is invalid due to how the factoriing is required
-            if next_boundary in ["O", "G"] and type(boundary_after_next_boundary) == list:
+            # This is for if next boundary is in ["R", "|"] which means it is False and an invalid move
+            if type(next_boundary) == list:
+
+                print("║")
+                print(f"║   BORDER_DIS == {border_distance} ")
+                print(f"║   next_boundary: {next_boundary[1]}")
+                print("║")
+                print("║")
+                print(f"║   ❌self.mazeEngine.boundarySystem.get_next_boundary(chosen_direction)")
+
+                self.mazeEngine.boundarySystem.get_next_boundary(
+
+                    current_direction= chosen_direction,
+                    print_console= self.print_console,
+                    
+                    )
+
+                print(f"║   ❌{self.mazeEngine.boundarySystem.get_next_boundary(current_direction= chosen_direction, print_console= False)}")
+
+
+                amount_of_assignments = 0
+
+
+                print("║")
+                print(f"╠{'═'*9}")
+                input()
+                return amount_of_assignments
+
+
+            # This is for next boundary is O or G and the one after is in ["R", "|"] which means it is False and an invalid move
+            elif next_boundary in ["O", "G"] and type(boundary_after_next_boundary) == list:
 
                 print("║")
                 print(f"║   BORDER_DIS == {border_distance} ")
@@ -349,11 +394,17 @@ class AssignSystem:
                 print(f"║   the boundary after that: {boundary_after_next_boundary[1]}")
                 print("║")
                 print("║")
-                print(f"║   ❌self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 1)")
+                print(f"║   ❌self.mazeEngine.boundarySystem.get_any_boundary(chosen_direction, 1)")
 
-                self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 1, self.print_console, self.print_console)
+                self.mazeEngine.boundarySystem.get_any_boundary(
+                    
+                    current_direction= chosen_direction,
+                    amount_of_assignments= 1,
+                    print_console= self.print_console
+                    
+                    )
 
-                print(f"║   ❌{self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 1, False, False)}")
+                print(f"║   ❌{self.mazeEngine.boundarySystem.get_any_boundary(current_direction= chosen_direction, amount_of_assignments= 1, print_console= False)}")
 
 
                 amount_of_assignments = 0
@@ -392,7 +443,13 @@ class AssignSystem:
                 print("║")
 
 
-                VALID_AMOUNT_OF_ASSIGNMENTS = self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, amount_of_assignments, self.print_console, self.print_console)
+                VALID_AMOUNT_OF_ASSIGNMENTS = self.mazeEngine.boundarySystem.get_any_boundary(
+
+                    current_direction= chosen_direction,
+                    amount_of_assignments= amount_of_assignments,
+                    print_console= self.print_console
+
+                )
 
 
                 if type(VALID_AMOUNT_OF_ASSIGNMENTS) != list:
@@ -422,7 +479,23 @@ class AssignSystem:
         else:
 
             score = self.mazeEngine.get_scores()
-            next_boundary = self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 0, True, False)
+
+
+            next_boundary = self.mazeEngine.boundarySystem.get_next_boundary(
+
+                current_direction= chosen_direction,
+                print_console= self.print_console
+
+            )
+
+
+            boundary_after_next_boundary = self.mazeEngine.boundarySystem.get_any_boundary(
+
+                current_direction= chosen_direction,
+                amount_of_assignments= 1,
+                print_console= False
+
+            )
 
 
             match chosen_direction:
@@ -447,8 +520,31 @@ class AssignSystem:
                     border_distance = score.get(self.score_direction_translated.get("d"))
 
 
-            # This is for next boundary is O and the one after is in ["R", "|"] , but the assignment is invalid due to how the factoriing is required
-            if next_boundary in ["O", "G"] and type(self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 1, False, False)) == list and self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, 1,  False, False)[1] in ["R", "|"]:
+            # This is for if next boundary is in ["R", "|"] which means it is False and an invalid move
+            if type(next_boundary) == list:
+
+                # self.mazeEngine.boundarySystem.get_next_boundary(
+
+                #     current_direction= chosen_direction,
+                #     print_console= self.print_console,
+                    
+                #     )
+                
+
+                amount_of_assignments = 0
+                return amount_of_assignments
+
+
+            # This is for next boundary is O or G and the one after is in ["R", "|"] which means it is False and an invalid move
+            elif next_boundary in ["O", "G"] and type(boundary_after_next_boundary) == list:
+
+                # self.mazeEngine.boundarySystem.get_any_boundary(
+                    
+                #     current_direction= chosen_direction,
+                #     amount_of_assignments= 1,
+                #     print_console= self.print_console
+                    
+                #     )
 
 
                 amount_of_assignments = 0
@@ -470,17 +566,9 @@ class AssignSystem:
                 choices = [1, 2]
 
 
-            elif border_distance == 2:
+            elif 2 >= border_distance >= 1:
 
                 choices = [1]
-
-
-            # border_distance == 1 
-            # NOT POSSIBLE BECAUSE OF FIRST CONDITION
-            else:
-
-                print("\n\n\nHELLO\n\n\n")
-                input()
 
 
             while True:
@@ -488,7 +576,13 @@ class AssignSystem:
                 amount_of_assignments = random.choice(choices)
 
 
-                VALID_AMOUNT_OF_ASSIGNMENTS = self.mazeEngine.boundarySystem.get_next_boundary_type(chosen_direction, amount_of_assignments, self.print_console, self.print_console)
+                VALID_AMOUNT_OF_ASSIGNMENTS = self.mazeEngine.boundarySystem.get_any_boundary(
+
+                    current_direction= chosen_direction,
+                    amount_of_assignments= amount_of_assignments,
+                    print_console= self.print_console
+
+                )
 
 
                 if type(VALID_AMOUNT_OF_ASSIGNMENTS) != list:
@@ -506,7 +600,7 @@ class AssignSystem:
                     amount_of_assignments = 0
                     break
 
-            
+
             return amount_of_assignments
 
 
@@ -534,13 +628,7 @@ class AssignSystem:
 
 
     # 2.
-    def assign(
-            
-            self,
-            confirmed_directions,
-            index,
-            
-        ) -> tuple[bool, str]:
+    def assign(self, confirmed_directions, index) -> tuple[bool, str]:
 
         assignment_state = None
 
@@ -557,13 +645,11 @@ class AssignSystem:
             print("║")
 
 
-            # TODO: Last direction concept (cache?, recalling?)
             amount_of_assignments = self._get_amount_of_assignments(
                 
                 chosen_direction= chosen_direction,
                 
             )
-
 
 
             print("║")
@@ -583,7 +669,7 @@ class AssignSystem:
 
                     print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Up moves - assigned")
                     print("║")
-                    print(f"╚{"═"*20}╝\n")
+                    print(f"╚{"═"*30}╝\n")
 
 
                     if UP.assign() == False:
@@ -618,7 +704,7 @@ class AssignSystem:
 
                     print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Down moves - assigned")
                     print("║")
-                    print(f"╚{"═"*20}╝\n")
+                    print(f"╚{"═"*30}╝\n")
 
 
                     if DOWN.assign() == False:
@@ -652,7 +738,7 @@ class AssignSystem:
 
                     print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Right moves - assigned")
                     print("║")
-                    print(f"╚{"═"*20}╝\n")
+                    print(f"╚{"═"*30}╝\n")
 
 
                     if RIGHT.assign() == False:
@@ -686,7 +772,7 @@ class AssignSystem:
 
                     print(f"║ {" "*amount_of_assignments}{amount_of_assignments} Left moves - assigned")
                     print("║")
-                    print(f"╚{"═"*20}╝\n")
+                    print(f"╚{"═"*30}╝\n")
 
 
                     if LEFT.assign() == False:
@@ -721,7 +807,6 @@ class AssignSystem:
             chosen_direction = random.choice(confirmed_directions)
 
 
-            #TODO: Last direction concept (cache?, recalling?)
             amount_of_assignments = self._get_amount_of_assignments(
                 
                 chosen_direction= chosen_direction,
@@ -820,3 +905,5 @@ class AssignSystem:
 
 
             return assignment_state, chosen_direction
+        
+

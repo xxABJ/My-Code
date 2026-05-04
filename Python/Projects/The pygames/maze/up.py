@@ -1,6 +1,6 @@
 class Up:
 
-    # Cache system
+    # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
     up_cache = {}
 

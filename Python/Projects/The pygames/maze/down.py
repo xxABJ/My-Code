@@ -1,6 +1,6 @@
 class Down:
 
-    # Cache system
+    # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
     down_cache = {}
 

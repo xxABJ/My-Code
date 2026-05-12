@@ -489,7 +489,7 @@ class BoundarySystem:
 
 
     def get_next_boundary(self, current_direction, print_console= False):
-        
+
         if print_console:
 
             grid, previous_direction, previous_chosen_cell, row, col, factored_direction_data, factoring_value = self._system_variables(current_direction)
@@ -669,8 +669,7 @@ class BoundarySystem:
 
                     return grid[row][col - forward_cell]
 
-
-        
+    
         else:
 
             grid, previous_direction, previous_chosen_cell, row, col, factored_direction_data, factoring_value = self._system_variables(current_direction)
@@ -691,7 +690,7 @@ class BoundarySystem:
             )
 
 
-            for forward_cell in range(amount_of_assignments + 1):
+            for forward_cell in range(amount_of_assignments):
 
                 # The first iteration of the loop
                 if forward_cell == 0:
@@ -707,6 +706,9 @@ class BoundarySystem:
                         else:
 
                             return [False, grid[row + forward_cell_factoring_value[0]][col + forward_cell_factoring_value[1]]]
+                        
+
+                    continue
 
 
                 match forward_cell_factoring_direction:

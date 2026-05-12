@@ -114,6 +114,7 @@ class FactoringSystem:
             inserting_previous_direction = cls.changing_directions.get(previous_direction)
             inserting_current_direction = inserting_previous_direction.get(current_direction)
 
+
         else:
 
             inserting_current_direction = current_direction

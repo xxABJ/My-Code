@@ -2,7 +2,7 @@ class Up:
 
     # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
-    up_cache = {}
+    cached_directions = {}
 
 
     class assigner:
@@ -20,7 +20,7 @@ class Up:
 
         def cache_assignment(self, cache_batch: int, latest_assignment: tuple) -> None:
 
-            Up.up_cache[(cache_batch, latest_assignment[0])] = (latest_assignment[1][0], latest_assignment[1][1])
+            Up.cached_directions[(cache_batch, latest_assignment[0])] = (latest_assignment[1][0], latest_assignment[1][1])
 
 
 
@@ -65,7 +65,7 @@ class Up:
                     previous_direction = previous_direction_data
 
 
-                # CAN NOT be possible
+                # SHOULD NOT be allowed
                 if grid[previous_pos[0] - 1][previous_pos[1]] == "S":
 
                     # Getting the factored condition and value
@@ -342,7 +342,7 @@ class Up:
 
 
                         k = 0
-                        for key, value in Up.up_cache.items():
+                        for key, value in Up.cached_directions.items():
 
                             if k != key[0]:
                                 print(f"│\n├─ BATCH {key[0]}:\n│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")

@@ -381,7 +381,7 @@ class AssignSystem:
 
                 print("║")
                 print(f"╠{'═'*9}")
-                input()
+                #input()
                 return amount_of_assignments
 
 
@@ -412,7 +412,7 @@ class AssignSystem:
 
                 print("║")
                 print(f"╠{'═'*9}")
-                input()
+                #input()
                 return amount_of_assignments
 
 
@@ -640,7 +640,16 @@ class AssignSystem:
             print("║")
 
 
-            chosen_direction = random.choice(confirmed_directions)
+            if len(confirmed_directions) > 1:
+
+                chosen_direction = random.choice(confirmed_directions)
+
+
+            else:
+
+                chosen_direction = confirmed_directions[0]
+
+
             print(f"╠ chosen_direction: {chosen_direction}")
             print("║")
 
@@ -804,7 +813,14 @@ class AssignSystem:
 
         else:
 
-            chosen_direction = random.choice(confirmed_directions)
+            if len(confirmed_directions) > 1:
+
+                chosen_direction = random.choice(confirmed_directions)
+
+
+            else:
+
+                chosen_direction = confirmed_directions[0]
 
 
             amount_of_assignments = self._get_amount_of_assignments(
@@ -906,4 +922,9 @@ class AssignSystem:
 
             return assignment_state, chosen_direction
         
+
+
+    def get_cached_directions(self, latest_direction) -> dict[tuple, tuple]:
+
+        return self._get_direction_classes(latest_direction).cached_directions
 

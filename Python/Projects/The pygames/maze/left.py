@@ -2,7 +2,7 @@ class Left:
 
     # Cache system (BATCH NO., ASSIGNMENT INFO, GRID POS)
     dynamic_cache_length = 0
-    left_cache = {}
+    cached_directions = {}
 
 
     class assigner:
@@ -20,7 +20,7 @@ class Left:
 
         def cache_assignment(self, cache_batch: int, latest_assignment: tuple) -> None:
 
-            Left.left_cache[(cache_batch, latest_assignment[0])] = (latest_assignment[1][0], latest_assignment[1][1])
+            Left.cached_directions[(cache_batch, latest_assignment[0])] = (latest_assignment[1][0], latest_assignment[1][1])
 
 
 
@@ -65,7 +65,7 @@ class Left:
                     previous_direction = previous_direction_data
 
 
-                # CAN NOT be possible
+                # SHOULD NOT be allowed
                 if grid[previous_pos[0]][previous_pos[1] - 1] == "S":
 
                     # Getting the factored condition and value
@@ -74,7 +74,7 @@ class Left:
                     # Assigning the arrow to the chosen cell
                     # Calculating the score after the assignment
 
-                    return print("SKIPPING LOGIC REQUIRED: left.py.Left.assigner.assign()")
+                    return print("\nSKIPPING LOGIC REQUIRED: left.py.Left.assigner.assign()\n")
 
 
                 else:
@@ -271,12 +271,6 @@ class Left:
                         latest_assignment = self.assignSystem.mazeEngine.previous_assignment()
                         self.cache_assignment(cache_batch, latest_assignment)
 
-                        for key, value in Left.left_cache.items():
-
-                            print()
-                            print(f"key: {key}")
-                            print(f"value: {value}")
-
 
                     else:
 
@@ -348,7 +342,7 @@ class Left:
 
 
                         k = 0
-                        for key, value in Left.left_cache.items():
+                        for key, value in Left.cached_directions.items():
 
                             if k != key[0]:
                                 print(f"│\n├─ BATCH {key[0]}:\n│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")

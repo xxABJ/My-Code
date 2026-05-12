@@ -1364,7 +1364,62 @@ class MazeEngine:
 
 
 
-    def recreate_cachepoint(self, full_assignment):
+    def recreate_cachepoint(self):#, assignment_states: list, failed_direction: str):
+
+        def assignment_finder():#latest_assignment_number: int):
+
+            cached_directions = self.assignSystem.get_cached_directions(latest_direction= latest_direction)
+            latest_batch_number = list(cached_directions.keys())[-1][0]
+
+            print("CACHED DIRECTIONS:", cached_directions)
+            print()
+            print("LATEST BATCH NUMBER:", latest_batch_number)
+
+        
+        def assignment_deleter():
+
+            pass
+
+
+        # def state_checker():
+
+        #     if assignment_states == [False, False, False, False, False]:
+
+        #         pass
+
+
+        assignments_fulldata = self.get_assignments()
+        print("assignments_fulldata:", assignments_fulldata)
+        print()
+        latest_assignment_number = list(assignments_fulldata.keys())[-1][0]
+        print("latest_assignment_number", latest_assignment_number)
+        print()
+        latest_direction = list(assignments_fulldata.keys())[-1][1]
+        print("latest_direction", latest_direction)
+        print()
+
+        if len(latest_direction) > 1:
+
+            latest_direction = latest_direction[-1]
+        print("latest_direction", latest_direction)
+        print()
+
+        #failed_direction = failed_direction
+
+
+        assignment_finder()
+        print()
+
+
+        
+
+
+        
+
+
+
+
+    
 
     # (or in each direction module)
     # def cache_recreator
@@ -1380,7 +1435,7 @@ class MazeEngine:
                 # boundary_fixer()
             # dynamic_cache_length_fixer
 
-        # def rerun_testing_loop() (now in mazeengine.py which means takes another loop cycle)
+        # def rerun_testing_loop() (now in mazeengine.create_maze() which means takes another loop cycle)
 
 
         pass
@@ -1391,7 +1446,7 @@ class MazeEngine:
 
         grid = self.grid
             
-        ## CHECK THIS
+        #### CHECK THIS
         # #TEMP Unable to go 'u' after first direction has been assigned
         # while self.random_direction == 'u' and len(self.assignments) == 1:
     
@@ -1405,7 +1460,9 @@ class MazeEngine:
 
             print(f"\n ☻ LOOPING ASSIGNMENTS\n")
 
-        loops = 5
+
+        assignment_states = []
+        loops = 20
         failed = 0
         for _ in range(loops):
         
@@ -1430,13 +1487,130 @@ class MazeEngine:
                     print(f"\n\n{" "*22}┌{'─'*29}┐\n{" "*22}│ INVALID assignment No.{_+1: >2}    │\n{" "*22}│{" "*29}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*4}│\n{" "*22}│ final_direction:   {final_direction}{" "*8}│\n{" "*22}└{'─'*29}┘\n\n\n")
                     failed += 1
 
+
+                    previous_assignment = self.previous_assignment()
+                    previous_direction = previous_assignment[0][1]
+
+                    if len(previous_direction) != 1:
+
+                        previous_direction = previous_direction[-1]
+
+
+                    # Getting factored spot for the retry (current_direction should be the previous direction)
+                    factored_direction_data, factoring_value = self.assignSystem.mazeEngine.factoringSystem.check_condition(
+
+                            previous_direction= False,
+                            current_direction= previous_direction,
+                            print_console= False
+
+                    )
+
+
+                    chosen_cell = self.assignSystem.mazeEngine.get_selected_cell_info()[0]
+                    
+
+                    factored_active_spot = tuple(
+
+                        a + b for a, b in zip(
+                            
+                            chosen_cell,
+                            ( factoring_value[0], factoring_value[1] )
+
+                    ))
+
+                    
+                    direction_list = confirmed_directions
+
+                    if final_direction in direction_list:
+
+                        direction_list.remove(final_direction)
+
+
+                    print("direction_list:", direction_list)
+                    print("Entering while loop to test other directions in the same spot . . .\n    factored_active_spot:", factored_active_spot)
+                    print()
+                    input()
+
+
+                    while True:
+
+                        if len(direction_list) == 0:
+
+                            print("  --All directions have been tested for the same spot, breaking out of while loop . . .")
+                            print()
+                            input()
+                            break
+
+
+                        new_direction = random.choice(direction_list)
+                        print("Testing new direction:", new_direction)
+                        print("factored_active_spot:", factored_active_spot)
+                        print()
+
+
+                        assignment_state, final_direction = self.assignSystem.assign(
+                            
+                            confirmed_directions= confirmed_directions,
+                            index= _,
+                            
+                        )
+
+                        
+                        print(f"assignment_state: {assignment_state}, final_direction: {final_direction}")
+
+                        if assignment_state == True:
+                            
+                            print("New direction successful, breaking out of while loop . . .")
+                            print()
+                            input()
+                            break
+
+
+                        else:
+                            
+                            print("direction_list:", direction_list)
+                            print(f"New direction failed, removing from direction list: ({new_direction}) and testing another direction . . .")
+                            if new_direction in direction_list:
+
+                                direction_list.remove(new_direction)
+                                print(f"  UPDATED direction_list: {direction_list} , factored_active_spot: {factored_active_spot}")
+                                print()
+                                input()
+                                continue
+
+
+                    print("\nExecuting recreate_cachepoint() . . .\n")
+
+
+            
+
             
                 else:
 
                     print(f"\n\n{" "*22}┌{'─'*29}┐\n{" "*22}│ SUCCESSFUL assignment No.{_+1: >2} │\n{" "*22}│{" "*29}│\n{" "*22}│ assignment_state:  {assignment_state}{" "*5}│\n{" "*22}│ final_direction:   {final_direction}{" "*8}│\n{" "*22}└{'─'*29}┘\n\n\n")
-            
 
-
+        
+        # TESTING
+        print("get_cached_directions(r)")
+        print(self.assignSystem.get_cached_directions(latest_direction= "r"))
+        print()
+        print()
+        print("get_cached_directions(l)")
+        print(self.assignSystem.get_cached_directions(latest_direction= "l"))
+        print()
+        print()
+        print("get_cached_directions(u)")
+        print(self.assignSystem.get_cached_directions(latest_direction= "u"))
+        print()
+        print()
+        print("get_cached_directions(d)")
+        print(self.assignSystem.get_cached_directions(latest_direction= "d"))
+        print()
+        print()
+        self.recreate_cachepoint()
+        
+        
+        
         self.maze_completed = True
 
 

@@ -1462,7 +1462,7 @@ class MazeEngine:
 
 
         assignment_states = []
-        loops = 20
+        loops = 5
         failed = 0
         for _ in range(loops):
         
@@ -1529,7 +1529,7 @@ class MazeEngine:
                     print("direction_list:", direction_list)
                     print("Entering while loop to test other directions in the same spot . . .\n    factored_active_spot:", factored_active_spot)
                     print()
-                    input()
+                    #input()
 
 
                     while True:
@@ -1538,7 +1538,7 @@ class MazeEngine:
 
                             print("  --All directions have been tested for the same spot, breaking out of while loop . . .")
                             print()
-                            input()
+                            #input()
                             break
 
 
@@ -1562,7 +1562,7 @@ class MazeEngine:
                             
                             print("New direction successful, breaking out of while loop . . .")
                             print()
-                            input()
+                            #input()
                             break
 
 
@@ -1575,11 +1575,13 @@ class MazeEngine:
                                 direction_list.remove(new_direction)
                                 print(f"  UPDATED direction_list: {direction_list} , factored_active_spot: {factored_active_spot}")
                                 print()
-                                input()
+                                #input()
                                 continue
 
 
                     print("\nExecuting recreate_cachepoint() . . .\n")
+                    input()
+                    self.recreate_cachepoint()
 
 
             
@@ -1607,7 +1609,6 @@ class MazeEngine:
         print(self.assignSystem.get_cached_directions(latest_direction= "d"))
         print()
         print()
-        self.recreate_cachepoint()
         
         
         

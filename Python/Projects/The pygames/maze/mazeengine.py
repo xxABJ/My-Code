@@ -1374,11 +1374,40 @@ class MazeEngine:
             print("CACHED DIRECTIONS:", cached_directions)
             print()
             print("LATEST BATCH NUMBER:", latest_batch_number)
+            
+            batch_length = 0
+            for key, value in cached_directions.items():
+                
+                if key[0] == latest_batch_number:
+                    
+                    batch_length += 1
+
+            print(" -amount of directions in latest batch:", batch_length)
+            print()
+
+            # check if previous batch assignments are the same direction
+
 
         
         def assignment_deleter():
 
+            # account for a deleted batch/assignment/direction so if a previously deleted batch direction is returned too AFTER a new test loop direction is assigned and fails, this syustem should know not to include the first deleted batch direction in the next test loop
+
+            # a system to force delete a batch backwards due to it has exausted all possible directions
+
+            # assignment no
+            # batch length
+            # assignment dict remover
+            # grid fixer
             pass
+
+
+        def reentrying_loop():
+
+            # test loop with latest assignment no & direction accounted for for the valid direction list
+            pass
+
+
 
 
         # def state_checker():
@@ -1462,7 +1491,7 @@ class MazeEngine:
 
 
         assignment_states = []
-        loops = 5
+        loops = 8
         failed = 0
         for _ in range(loops):
         
@@ -1536,6 +1565,7 @@ class MazeEngine:
 
                         if len(direction_list) == 0:
 
+                            print("FAILED CACHE RECONSTRUCTION")
                             print("  --All directions have been tested for the same spot, breaking out of while loop . . .")
                             print()
                             #input()
@@ -1560,6 +1590,7 @@ class MazeEngine:
 
                         if assignment_state == True:
                             
+                            print("SUCCESSFUL CACHE RECONSTRUCTION")
                             print("New direction successful, breaking out of while loop . . .")
                             print()
                             #input()

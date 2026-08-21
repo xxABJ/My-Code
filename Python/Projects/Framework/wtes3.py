@@ -11,7 +11,7 @@ b = 5
 print(f"b: {b}")
 c = 6
 print(f"c: {c}")
-p = 7
+p = 5
 print(f"p: {p}")
 
 print(f"Equation: ({a}*{b}*{c})**{p}  \nanswer should be  = {(a*b*c)**p}  = {pow((a*b*c), p)}")
@@ -52,7 +52,7 @@ AN = 4
 print(f"AN: {AN}")
 TA = AN * p
 print(f"TA: {TA}")
-i = a * b # a * b / 0 = ind^^a*b
+i = a * b# a * b / 0 = ind^^a*b
 print(f"i: {i}")
 Ti = TA - i # TA - abs(ind^^a*b)
 print(f"Ti: {Ti}")
@@ -64,14 +64,16 @@ print()
 
 def Fi_(TA, Ti):
 
-    if Ti > 0:
+    # if Ti > 0:
 
-        Fi = Ti * AN
+    #     Fi = Ti * AN
     
 
-    else:
+    # else:
 
-        Fi = abs(Ti)
+    #     Fi = abs(Ti)
+    
+    Fi = abs(Ti)
 
     return Fi
 Fi = Fi_(TA, Ti)
@@ -195,20 +197,13 @@ def PF_(S6, AN):
         print("S6 is 0, PF is set to 0 to avoid division by zero.")
         PF = 0
 
-
-    # elif S6 < 1:
-
-    #     #PF = AN - (S6 * AN)
-    #     PF = AN
-
-
     elif S6 == 1:
 
         PF = (S6/10) * AN
 
     elif S6 > 1:
 
-        PF = (S6/10) - ((S6/10)/10)
+        PF = (S6/10) - (S6/10)/10
 
 
     else:
@@ -256,7 +251,7 @@ def R_(Q3, S6, I1, SPF, AN):
 
     #     print(f"Q3: {Q3}, S6: {S6}, I1: {I1}, SPF: {SPF}, f: {f}")
     # else:
-    print(f"Q3: {Q3}, S6: {S6}, I1: {I1}, SPF: {SPF}")
+    print(f"Q3: {Q3}, S6: {S6}, I1: {I1}, SPF: {SPF}, AN: {AN}")
     R = Q3 * S6 * I1 * SPF
 
     return R
@@ -296,13 +291,6 @@ print(f"f2: {f2}")
 f3 = f2 + I1
 print(f"f3: {f3}")
 
-
-if p == 2 or p == 3 or p == 4 or p == 5 or p == 6 or p == 7 or p == 8 or p == 9 or p == 10 or p == 11 or p == 12:
-
-    d = ((1/S6) * ((1/(I1_minus_1/2)) * ((I1_minus_1/2)-1)))
-    print(f"d: {d}")
-    f4 = f3 * ((1/S6) * ((1/(I1_minus_1/2)) * ((I1_minus_1/2)-1)))
-    print(f"f4: {f4}")
 
 # Optional correction layer: keeps your pipeline intact and compensates for the
 # factorial-scale drift that starts at p >= 4 in the else-only R_ version.
@@ -377,9 +365,4 @@ for test_p in range(0, 13):
         f"p={test_p:2d} | model={model_value:.6f} | corrected={corrected_value:.6f} | "
         f"expected={expected_value:.6f} | K={k:.6f} | model_ok={model_ok} | corrected_ok={corrected_ok}"
     )
-
-
-
-
-
 

@@ -926,5 +926,53 @@ class AssignSystem:
 
     def get_cached_directions(self, latest_direction) -> dict[tuple, tuple]:
 
+        match latest_direction:
+            
+            case "u":
+
+                direction = "UP"
+                
+
+            case "d":
+
+                direction = "DOWN"
+                
+            
+            case "r":
+
+                direction = "RIGHT"
+                
+            
+            case "l":
+
+                direction = "LEFT"
+
+
+        direction_class = self._get_direction_classes(latest_direction)
+  
+
+        if self.print_console:
+
+            print("\n")
+            print(f"┌{'─'*15} {direction} CLASS CACHE {'─'*17}┐")
+
+
+            k = 0
+            for key, value in direction_class.cached_directions.items():
+
+                if k != key[0]:
+                    print(f"│\n├─ BATCH {key[0]}:\n│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")
+                    k = key[0]
+
+
+                elif k == key[0]:
+                    print(f"│  assignment No. {str(key[1][0]): <3} , {str(key[1][1]): >3}  {"•grid_pos:": >10} {value}")
+
+
+            print("│")
+            print(f"└{'─'*50}┘")
+            print("\n")
+
+
         return self._get_direction_classes(latest_direction).cached_directions
 

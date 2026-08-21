@@ -1,54 +1,62 @@
-import pygame
-
 from settings import *
 
+# ^^ this is for current viewing file, and capabilities.
+    # real dependency connections are important in final main RUNNING file.
+        # but still imports are required for editorial reasons, can be removed when project is complete but will make all files have errors.
+
+
 class Game:
+
     def __init__(self):
+
+        # Pygame
         pygame.init()
-        self.MAIN = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.windowcaption = pygame.display.set_caption(("3ambaroo"))
+        pygame.display.set_caption("3ambaro!")
+
+
+        self.screen = pygame.display.set_mode(Settings.CANVAS.get_size())
+        self.canvas = Settings.CANVAS
         self.clock = pygame.time.Clock()
 
-        self.running = True
+        self.timer = 0
 
-    def reset_keys(self):
-        self.ESCAPE_KEY = False
-        self.ENTER_KEY = False
-        self.UP_KEY = False
-        self.DOWN_KEY = False
-        self.LEFT_KEY = False
-        self.RIGHT_KEY = False
-        self.BACKSPACE_KEY = False
 
-    def check_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.ESCAPE_KEY = True
-                if event.key == pygame.K_RETURN:
-                    self.ENTER_KEY = True
-                if event.key == pygame.K_UP:
-                    self.UP_KEY = True
-                if event.key == pygame.K_DOWN:
-                    self.DOWN_KEY = True
-                if event.key == pygame.K_LEFT:
-                    self.LEFT_KEY = True
-                if event.key == pygame.K_RIGHT:
-                    self.RIGHT_KEY = True
-                if event.key == pygame.K_BACKSPACE:
-                    self.BACKSPACE_KEY = True
-    
-    def game_loop(self):
-        self.clock.tick(FPS)
-        self.check_events()
-        if self.BACKSPACE_KEY:
-            pygame.QUIT
+        # Game Logic
+        self.gamelogic = Objects.get_object(self, "gamelogic")
 
-        self.MAIN.fill("blue")
-        self.reset_keys()
+        # Rendering
+        self.rendering = Objects.get_object(self, "rendering")
 
-a = Game()
-while a.running:
-    a.game_loop()
+
+    def run(self):
+
+
+        self.canvas.fill(Settings.bg_randomizor())
+        self.screen.blit(self.canvas, (0, 0))
+
+
+        while True:
+
+            for event in pygame.event.get():
+
+                # Exit
+                if event.type == pygame.QUIT:
+
+                    pygame.quit()
+                    exit()
+
+
+                # Game Logic
+                self.gamelogic.get_logic(event)
+
+
+            # Rendering
+            self.timer += 1
+            print(self.timer)
+            self.rendering.update()
+            if self.timer == 80:
+                self.timer = 0
+
+
+g = Game()
+g.run()

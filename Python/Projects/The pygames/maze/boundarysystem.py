@@ -557,7 +557,7 @@ class BoundarySystem:
             )
 
 
-            for forward_cell in range(amount_of_assignments + 1):
+            for forward_cell in range(amount_of_assignments):
 
                 print("║  │")
                 print(f"╠  │ forward_cell: {forward_cell} , MOVE: {forward_cell+1} , direction {forward_cell_factoring_direction}")

@@ -7,7 +7,7 @@ ien = 2
 ns = False
 pairs = False
 pair = 0
-while ien < 202:
+while ien < 1000:
 
     PD = sorted(PD)
 
